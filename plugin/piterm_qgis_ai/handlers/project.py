@@ -12,7 +12,7 @@ from qgis.core import (QgsBookmark, QgsCoordinateReferenceSystem, QgsProject,
                        QgsReferencedRectangle, QgsRectangle)
 
 from .. import compat
-from ..errors import bad_request, invalid, io_error, not_found
+from ..errors import bad_request, invalid, io_error, not_found, state
 from ..registry import command
 from .base import HandlerBase
 
@@ -173,7 +173,11 @@ class ProjectHandlers(HandlerBase):
                 raise bad_request("no bbox and no canvas extent available")
         target_crs = self.resolve_crs(crs) if crs else project.crs()
         bookmark = _make_bookmark(str(name), str(group or ""), rect, target_crs)
-        bookmark_id = project.bookmarkManager().addBookmark(bookmark)
+        result = project.bookmarkManager().addBookmark(bookmark)
+        bookmark_id, ok = (list(result) + [True])[:2] if isinstance(
+            result, (tuple, list)) else (result, True)
+        if ok is False:
+            raise bad_request("bookmark was not added (duplicate id?)")
         return {"id": str(bookmark_id), "name": str(name),
                 "extent": compat.rect_to_dict(rect), "crs": target_crs.authid()}
 
@@ -192,7 +196,14 @@ class ProjectHandlers(HandlerBase):
             if str(bookmark.id()) == str(id):
                 canvas = self.canvas
                 rect = bookmark.extent()
-                src = bookmark.crs()
+                src = None
+                crs_fn = getattr(bookmark, "crs", None)
+                if callable(crs_fn):
+                    src = crs_fn()
+                if src is None:
+                    # some builds hide QgsBookmark.crs(); the referenced
+                    # extent still carries it
+                    src = getattr(rect, "crs", lambda: None)()
                 dst = canvas.mapSettings().destinationCrs()
                 if src is not None and src.isValid() and src.authid() != dst.authid():
                     rect = compat.transform_rect(QgsRectangle(rect), src, dst,
@@ -229,14 +240,26 @@ class ProjectHandlers(HandlerBase):
     @command(name="project.themes_add", summary="Save current layer visibility as "
              "a theme (updates same name)", risk="write", tags=("project", "themes"))
     def project_themes_add(self, name):
+        from qgis.core import QgsMapThemeCollection
         project = QgsProject.instance()
         collection = project.mapThemeCollection()
         root = project.layerTreeRoot()
+        name = str(name)
+        model = _theme_model(self.iface, root)
+        if model is not None:
+            record = QgsMapThemeCollection.createThemeFromCurrentState(root,
+                                                                       model)
+            try:
+                collection.insert(name, record)
+            except TypeError:
+                collection.update(name, record)
+            return {"saved": name}
         try:
-            collection.insert(str(name), root)
-        except TypeError:
-            collection.update(str(name), root)
-        return {"saved": str(name)}
+            collection.insert(name, root)
+            return {"saved": name}
+        except TypeError as exc:
+            raise state("saving map themes needs a GUI session in this QGIS "
+                        "build (%s)" % exc)
 
     @command(name="project.themes_apply", summary="Restore layer visibility saved "
              "in a theme", risk="write", tags=("project", "themes"))
@@ -251,11 +274,23 @@ class ProjectHandlers(HandlerBase):
                 applied = False
         if not applied:
             collection = QgsProject.instance().mapThemeCollection()
-            try:
-                collection.applyTheme(str(name), QgsProject.instance().layerTreeRoot())
-                applied = True
-            except Exception as exc:  # noqa: BLE001
-                raise not_found("could not apply theme %r: %s" % (name, exc))
+            root = QgsProject.instance().layerTreeRoot()
+            model = _theme_model(self.iface, root)
+            last = None
+            attempts = []
+            if model is not None:
+                attempts.append(lambda: collection.applyTheme(str(name), root,
+                                                              model))
+            attempts.append(lambda: collection.applyTheme(str(name), root))
+            for fn in attempts:
+                try:
+                    fn()
+                    applied = True
+                    break
+                except Exception as exc:  # noqa: BLE001
+                    last = exc
+            if not applied:
+                raise not_found("could not apply theme %r: %s" % (name, last))
         return {"applied": str(name)}
 
     @command(name="project.themes_remove", summary="Remove a map theme",
@@ -299,8 +334,13 @@ class ProjectHandlers(HandlerBase):
         if keywords is not None:
             if isinstance(keywords, str):
                 keywords = [k.strip() for k in keywords.split(",") if k.strip()]
-            metadata.setKeywords(list(keywords))
-            changed["keywords"] = list(keywords)
+            values = [str(k) for k in keywords]
+            try:
+                metadata.setKeywords(values)
+            except TypeError:
+                # QGIS 3.44+: keywords is a {vocabulary: [values]} map
+                metadata.setKeywords({"": values})
+            changed["keywords"] = values
         project.setMetadata(metadata)
         project.setDirty(True)
         return {"changed": changed}
@@ -309,6 +349,26 @@ class ProjectHandlers(HandlerBase):
 # ---------------------------------------------------------------------------
 # module helpers
 # ---------------------------------------------------------------------------
+def _theme_model(iface, root):
+    """Resolve a QgsLayerTreeModel for map-theme calls: prefer the live tree
+    view's own model, fall back to constructing one, else None (a headless
+    session without a model cannot save/apply themes on QGIS 3.44+)."""
+    model = None
+    if iface is not None:
+        try:
+            view = iface.layerTreeView()
+            model = view.layerTreeModel() if view is not None else None
+        except Exception:  # noqa: BLE001
+            model = None
+    if model is None:
+        try:
+            from qgis.gui import QgsLayerTreeModel
+            model = QgsLayerTreeModel(root)
+        except Exception:  # noqa: BLE001
+            model = None
+    return model
+
+
 def _safe(fn):
     try:
         return fn()

@@ -318,10 +318,25 @@ class FeatureHandlers(HandlerBase):
              "features", risk="read", tags=("features", "selection"))
     def features_zoom_selection(self, layer, margin=1.1):
         target = self.resolve_vector({"layer": layer})
-        rect = target.boundingBoxOfSelected()
-        if rect is None or rect.isNull() or rect.isEmpty():
-            raise state("nothing selected on %s" % target.name())
         canvas = self.canvas
+        rect = target.boundingBoxOfSelected()
+        if target.selectedFeatureCount() == 0 or rect is None or rect.isNull():
+            raise state("nothing selected on %s" % target.name())
+        rect = QgsRectangle(rect)
+        if rect.width() <= 0 or rect.height() <= 0:
+            # a single point selects a zero-area box - pad it so the zoom has
+            # something to aim at
+            try:
+                base = canvas.mapSettings().extent().width()
+            except Exception:  # noqa: BLE001
+                base = 0.0
+            pad = max(base * 0.005, 1e-6)
+            if rect.width() <= 0:
+                rect.setXMinimum(rect.xMinimum() - pad)
+                rect.setXMaximum(rect.xMaximum() + pad)
+            if rect.height() <= 0:
+                rect.setYMinimum(rect.yMinimum() - pad)
+                rect.setYMaximum(rect.yMaximum() + pad)
         dst = canvas.mapSettings().destinationCrs()
         crs = target.crs()
         if crs.isValid() and crs.authid() != dst.authid():

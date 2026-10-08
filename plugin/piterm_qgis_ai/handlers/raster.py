@@ -152,7 +152,13 @@ class RasterHandlers(HandlerBase):
         try:
             if isinstance(renderer, QgsSingleBandPseudoColorRenderer):
                 function = renderer.shader().rasterShaderFunction()
-                ramp_name = function.type()
+                type_fn = (getattr(function, "colorRampType", None)
+                           or getattr(function, "type", None))
+                if callable(type_fn):
+                    try:
+                        ramp_name = str(type_fn())
+                    except Exception:  # noqa: BLE001
+                        ramp_name = None
                 for item in function.colorRampItemList():
                     color = item.color
                     entries.append({

@@ -127,3 +127,48 @@ answered into the console output (`dock_console_run.png`); skill CLI
   on 4.2.3 during the final sweep).
 * Diagnostics for any future session: `system.diagnose`, `system.metrics`,
   `system.audit_tail`, `session.journal_list`.
+
+## 9. Command coverage sweep (2026-10-09 00:05–00:35)
+
+Beyond the 63-check smoke, a dedicated sweep drives the **whole registered
+command surface** (194 commands) with real fixtures (vector/join/raster
+layers, layout + atlas, csv/gpkg/geojson, a loopback file server):
+
+* **Headless suite** — `scripts/qgis_command_coverage.py`: **149 passed / 0
+  failed** on 3.44.15, 4.2.3 and the 4.3.0-dev build
+  (`logs/coverage_3.44.15-Solothurn_20261009-000738.json`,
+  `logs/coverage_4.2.3-Belém_do_Pará_20261009-001107.json`,
+  `logs/coverage_4.3.0-Master_20261009-001122.json`).
+* **Live suite** — canvas / UI / themes / bookmarks / plugins + the zoom
+  family against the running GUIs: **33/33 on both instances**
+  (`logs/live_cov_9877_20261009.json`, `logs/live_cov_9887_20261009.json`);
+  `layers.active_set` was additionally verified by hand on both.
+* Union of smoke + both suites reaches **192 of 194 commands**. The two
+  deliberately not executed are `db.connection_add` / `db.import_layer` (they
+  would rewrite the operator's saved database connections — their read paths
+  and refusal paths are covered instead).
+* The headless soft-limits (`layers.active_set`, `bookmarks_zoom`,
+  `themes_add/apply` — all GUI-session features) are verified in the live
+  suite instead.
+
+### Real defects found & fixed by the sweep (17 across 21 commands)
+
+| # | Command(s) | Symptom | Fix |
+|---|---|---|---|
+| 1 | `layers.order`, `group_move_layer`, `group_remove` | detaching layer-tree nodes made the registry bridge delete the layers outright | clone-insert-then-remove node pattern; `layerId()` for group children |
+| 2 | `layers.set_source` | `setDataSource()` returns `None` on 3.44 → false failure | accept `isValid()` when not `False`; ogr/gdal provider fallback |
+| 3 | `layers.add_delimited` | percent-encoded URI breaks the delimitedtext provider | raw `delimiter`/`crs` + explicit `type=csv` |
+| 4 | `layout.info` | crash on shape items (no `.id()`) | guarded `getattr` |
+| 5 | `layout.add_table` | multi-frame placement API hidden in PyQt | `addMultiFrame` + `QgsLayoutFrame`; guarded `id()` |
+| 6 | `layout._place` | `attemptMove` absent on some item classes | fallback chain `attemptMove → setPosition → setPos` |
+| 7 | `style.copy` | `setStyleManager` not exposed | `QgsMapLayerStyle.readFromLayer/writeToLayer` |
+| 8 | `session.edit_rollback` | `rollback()` is `rollBack()` in the binding | spelling-safe call |
+| 9 | `raster.colormap_get` | `shader.type()` removed in 3.44 | `colorRampType()` fallback |
+| 10 | `project.bookmarks_add` | `addBookmark()` returns an `(id, ok)` tuple → unusable id | unpack + duplicate guard |
+| 11 | `project.bookmarks_zoom` | `QgsBookmark.crs()` not exposed | CRS taken from the referenced extent |
+| 12 | `project.metadata_set` | 3.44 `setKeywords()` now takes a vocabulary dict | try list → `{"": [...]}` |
+| 13 | `project.themes_add/apply` | 3.44 needs `MapThemeRecord` + a real tree model (a `None` model crashes natively) | live tree-view model + record API; clean refusal headless |
+| 14 | `system.shutdown` | reply lost — server stopped before the response was sent | deferred stop (250 ms) |
+| 15 | `plugins.enable/disable` | `startPlugin`/`stopPlugin` missing on some builds | `loadPlugin`/`unloadPlugin` fallbacks |
+| 16 | `canvas.scale_set`, `canvas.center_set` | `QgsMapCanvas.setScale` not exposed | `zoomScale` fallback |
+| 17 | `features.zoom_selection` | single-point selections have zero-area bounds → "nothing selected" | `selectedFeatureCount()` truth test + zero-area padding |

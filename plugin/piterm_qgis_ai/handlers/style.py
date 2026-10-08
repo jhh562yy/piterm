@@ -304,7 +304,17 @@ class StyleHandlers(HandlerBase):
     def style_copy(self, source_layer, target_layer):
         source = self.resolve_layer({"layer": source_layer})
         target = self.resolve_layer({"layer": target_layer})
-        target.setStyleManager(source.styleManager().clone())
+        try:
+            from qgis.core import QgsMapLayerStyle
+            style = QgsMapLayerStyle()
+            style.readFromLayer(source)
+            style.writeToLayer(target)
+        except (AttributeError, ImportError):
+            manager = getattr(target, "setStyleManager", None)
+            source_manager = getattr(source, "styleManager", None)
+            if not callable(manager) or not callable(source_manager):
+                raise invalid("this QGIS build cannot copy styles")
+            manager(source_manager().clone())
         target.triggerRepaint()
         return {"copied": source.id(), "into": target.id()}
 

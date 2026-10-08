@@ -66,7 +66,11 @@ class CanvasHandlers(HandlerBase):
         canvas = self.canvas
         changed = {}
         if scale is not None:
-            canvas.setScale(float(scale))
+            _scale_fn = (getattr(canvas, "setScale", None)
+                         or getattr(canvas, "zoomScale", None))
+            if _scale_fn is None:
+                raise state("this QGIS build cannot set the canvas scale")
+            _scale_fn(float(scale))
             changed["scale"] = float(scale)
         if rotation is not None:
             canvas.setRotation(float(rotation))
@@ -86,7 +90,11 @@ class CanvasHandlers(HandlerBase):
         if transform is not None:
             point = transform.transform(point)
         if scale is not None:
-            canvas.setScale(float(scale))
+            _scale_fn = (getattr(canvas, "setScale", None)
+                         or getattr(canvas, "zoomScale", None))
+            if _scale_fn is None:
+                raise state("this QGIS build cannot set the canvas scale")
+            _scale_fn(float(scale))
         canvas.setCenter(point)
         canvas.refresh()
         return {"center": compat.point_to_list(point), "scale": canvas.scale()}

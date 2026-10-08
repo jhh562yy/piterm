@@ -209,11 +209,11 @@ class LayerHandlers(HandlerBase):
                              crs="EPSG:4326", name=None):
         source = self.check_path(path, for_write=False)
         crs_value = self.resolve_crs(crs)
-        query = urllib.parse.urlencode({
-            "delimiter": delimiter, "xField": x_field, "yField": y_field,
-            "crs": crs_value.authid(),
-        })
-        uri = "file:///%s?%s" % (source.replace("\\", "/"), query)
+        # NB: the delimitedtext provider wants raw (unencoded) delimiter and
+        # CRS values plus an explicit type=csv; percent-encoding breaks it.
+        uri = ("file:///%s?type=csv&delimiter=%s&xField=%s&yField=%s&crs=%s"
+               % (source.replace("\\", "/"), delimiter, x_field, y_field,
+                  crs_value.authid()))
         display = name or os.path.splitext(os.path.basename(source))[0]
         layer = QgsVectorLayer(uri, display, "delimitedtext")
         if not layer.isValid():
@@ -304,18 +304,26 @@ class LayerHandlers(HandlerBase):
         if not isinstance(layer_ids, (list, tuple)) or not layer_ids:
             raise bad_request("layer_ids must be a non-empty list")
         root = self.project.layerTreeRoot()
-        nodes = []
-        for lid in layer_ids:
-            node = root.findLayer(str(lid))
+        seen = set()
+        for index, lid in enumerate(layer_ids):
+            lid_key = str(lid)
+            if lid_key in seen:
+                continue
+            seen.add(lid_key)
+            node = root.findLayer(lid_key)
             if node is None:
                 raise not_found("no layer tree node for id %r" % lid)
-            nodes.append(node)
-        for node in nodes:
+            # clone-insert, then drop the original: the registry bridge keeps
+            # the layer attached to the project because the clone (same layer
+            # id) still references it; detaching without a clone deletes the
+            # layer outright in this QGIS build.
+            clone = node.clone() if hasattr(node, "clone") else None
+            if clone is None:
+                raise state("this QGIS build cannot reorder layers safely")
+            root.insertChildNode(int(index), clone)
             parent = node.parent()
             if parent is not None:
                 parent.removeChildNode(node)
-        for index, node in enumerate(nodes):
-            root.insertChildNode(index, node)
         return {"order": [str(lid) for lid in layer_ids]}
 
     # ------------------------------------------------------------------
@@ -344,10 +352,13 @@ class LayerHandlers(HandlerBase):
         parent = _find_group(root, group)
         if parent is None:
             raise not_found("no group named %r" % group)
+        clone = node.clone() if hasattr(node, "clone") else None
+        if clone is None:
+            raise state("this QGIS build cannot move layers safely")
+        parent.insertChildNode(int(index), clone)
         old_parent = node.parent()
         if old_parent is not None:
             old_parent.removeChildNode(node)
-        parent.insertChildNode(int(index), node)
         return {"moved": target.id(), "into": _node_path(parent)}
 
     @command(name="layers.group_remove", summary="Remove a layer group (optionally "
@@ -357,8 +368,18 @@ class LayerHandlers(HandlerBase):
         node = _find_group(root, group)
         if node is None:
             raise not_found("no group named %r" % group)
-        layer_ids = [l.id() for l in node.findLayers()] if also_remove_layers else []
+        layer_ids = ([n.layerId() for n in node.findLayers()]
+                     if also_remove_layers else [])
         parent = node.parent()
+        if not also_remove_layers and parent is not None:
+            # keep the group's children: re-clone them one level up before the
+            # group node (and with it the original children) gets deleted
+            base = list(parent.children()).index(node)
+            for offset, child in enumerate(list(node.children())):
+                clone = child.clone() if hasattr(child, "clone") else None
+                if clone is None:
+                    raise state("this QGIS build cannot detach group children")
+                parent.insertChildNode(base + offset, clone)
         if parent is not None:
             parent.removeChildNode(node)
         if layer_ids:
@@ -416,9 +437,31 @@ class LayerHandlers(HandlerBase):
     def layers_set_source(self, layer, source):
         target = self.resolve_layer({"layer": layer})
         src = str(source)
-        ok = target.setDataSource(src, target.name(), target.providerType())
+        candidates = [target.providerType()]
+        ext = os.path.splitext(src.split("?")[0])[1].lower()
+        if ext in (".gpkg", ".shp", ".geojson", ".json", ".kml", ".gml",
+                   ".tab", ".mif"):
+            guess = "ogr"
+        elif ext in (".tif", ".tiff", ".vrt", ".img", ".asc", ".nc"):
+            guess = "gdal"
+        else:
+            guess = None
+        if guess and guess not in candidates:
+            candidates.append(guess)
+        ok = False
+        for provider in candidates:
+            try:
+                ret = target.setDataSource(src, target.name(), provider)
+            except Exception:  # noqa: BLE001
+                continue
+            # QGIS 3.44 returns None from this overload; isValid() is truth
+            if ret is not False and target.isValid():
+                ok = True
+                break
         if not ok:
-            raise invalid("setDataSource failed", detail={"source": src[:200]})
+            raise invalid("setDataSource failed",
+                          detail={"source": src[:200],
+                                  "providers_tried": candidates})
         target.triggerRepaint()
         return {"layer": target.id(), "source": target.source()}
 

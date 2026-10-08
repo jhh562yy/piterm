@@ -1,5 +1,17 @@
 # Changelog
 
+## Unreleased — command-coverage sweep (2026-10-09)
+
+* New `scripts/qgis_command_coverage.py` (headless) + live-GUI sweep: the union
+  of smoke + coverage exercises **192 of 194 commands** (2 skipped by design:
+  `db.connection_add` / `db.import_layer`); 149/0 headless on 3.44.15 and
+  4.2.3, 33/33 live on both GUIs.
+* 17 defects across 21 commands fixed (layer-tree reorder/group moves no longer
+  delete layers; delimited-text URI; multi-frame layout tables; bookmark
+  add/zoom API changes; map-theme 3.44 signatures; `setDataSource`/`setScale`/
+  `rollBack`/`colorRampType` binding fallbacks; deferred `system.shutdown`
+  reply; plugin enable/disable fallbacks; zero-area selection zoom).
+
 ## 1.0.0 — 2026-10-08
 
 First complete release. Everything below is implemented, wired and covered by

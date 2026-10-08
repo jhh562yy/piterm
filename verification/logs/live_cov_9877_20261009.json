@@ -1,0 +1,170 @@
+{
+ "port": 9877,
+ "results": [
+  {
+   "name": "ping",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "fixture.add_memory",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "fixture.insert",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.center_set",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.extent_get",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.extent_set",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.refresh",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.render",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.render_3d",
+   "ok": true,
+   "detail": "no open 3D map view found"
+  },
+  {
+   "name": "canvas.rotation_set",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.scale_get",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.scale_set",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.zoom_full",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "layers.zoom_to",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.zoom_features",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "canvas.screenshot",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "features.select",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "features.zoom_selection",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "features.selection_clear",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "features.identify",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ui.message",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "plugins.list",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "plugins.info",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.themes_add",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.themes_list",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.themes_apply",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.themes_remove",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.bookmarks_add",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.bookmarks_list",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.bookmarks_zoom",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "project.bookmarks_remove",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "ui.open_attribute_table",
+   "ok": true,
+   "detail": ""
+  },
+  {
+   "name": "cleanup.remove",
+   "ok": true,
+   "detail": ""
+  }
+ ]
+}

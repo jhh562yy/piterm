@@ -70,9 +70,10 @@ class PluginHandlers(HandlerBase):
             raise state("the bridge plugin cannot re-enable itself over the wire; "
                         "use the QGIS plugin manager")
         import qgis.utils as qu
-        start = getattr(qu, "startPlugin", None)
+        start = getattr(qu, "startPlugin", None) or getattr(qu, "loadPlugin",
+                                                            None)
         if start is None:
-            raise state("this QGIS build has no startPlugin helper")
+            raise state("this QGIS build has no startPlugin/loadPlugin helper")
         result = start(str(name))
         if result is False:
             raise not_found("could not start plugin %r" % name,
@@ -86,9 +87,10 @@ class PluginHandlers(HandlerBase):
             raise state("refusing to stop the bridge plugin over its own wire; "
                         "use the QGIS plugin manager")
         import qgis.utils as qu
-        stop = getattr(qu, "stopPlugin", None)
+        stop = getattr(qu, "stopPlugin", None) or getattr(qu, "unloadPlugin",
+                                                          None)
         if stop is None:
-            raise state("this QGIS build has no stopPlugin helper")
+            raise state("this QGIS build has no stopPlugin/unloadPlugin helper")
         stop(str(name))
         return {"disabled": str(name)}
 

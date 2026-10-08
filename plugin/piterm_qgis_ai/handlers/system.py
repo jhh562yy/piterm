@@ -291,8 +291,14 @@ class SystemHandlers(HandlerBase):
              tags=("system",))
     def system_shutdown(self):
         self.srv.log("shutdown requested over the wire", "warning")
-        self.srv.stop()
-        return {"stopped": True,
+        deferred = False
+        try:
+            from qgis.PyQt.QtCore import QTimer
+            QTimer.singleShot(250, self.srv.stop)  # let the reply go out first
+            deferred = True
+        except Exception:  # noqa: BLE001
+            self.srv.stop()
+        return {"stopped": True, "deferred": deferred,
                 "hint": "restart from the Piterm dock or plugin menu"}
 
 

@@ -105,7 +105,10 @@ class SessionHandlers(HandlerBase):
         if not target.isEditable():
             return {"layer": target.id(), "rolled_back": False,
                     "note": "layer is not in an edit session"}
-        target.rollback()
+        if hasattr(target, "rollBack"):
+            target.rollBack()
+        else:  # very old bindings
+            target.rollback()
         return {"layer": target.id(), "rolled_back": True}
 
     @command(name="session.edit_status", summary="Editing state and undo/redo "

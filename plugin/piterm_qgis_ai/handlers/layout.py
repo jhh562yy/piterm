@@ -71,7 +71,9 @@ class LayoutHandlers(HandlerBase):
         except Exception:  # noqa: BLE001
             iterator = []
         for item in iterator:
-            entry = {"id": item.id(), "type": type(item).__name__}
+            meta_id = getattr(item, "id", None)
+            entry = {"id": str(meta_id()) if callable(meta_id) else None,
+                     "type": type(item).__name__}
             for attr in ("x", "y", "width", "height"):
                 fn = getattr(item, attr, None)
                 if callable(fn):
@@ -224,22 +226,39 @@ class LayoutHandlers(HandlerBase):
              "layer", risk="write", tags=("layout",))
     def layout_add_table(self, name, layer, x=10, y=100, width=100, height=80,
                          max_features=100, table_id=""):
+        from qgis.core import QgsLayoutFrame, QgsRectangle
         layout = _find_layout(QgsProject.instance().layoutManager(), name)
         target = self.resolve_vector({"layer": layer})
         item = QgsLayoutItemAttributeTable(layout)
         if table_id:
             item.setId(str(table_id))
         item.setVectorLayer(target)
-        for setter, value in (("setMaximumNumberOfFeatures", int(max_features)),):
-            fn = getattr(item, setter, None)
-            if callable(fn):
-                try:
-                    fn(value)
-                except Exception:  # noqa: BLE001
-                    pass
-        _place(item, x, y, width, height)
-        layout.addLayoutItem(item)
-        return {"layout": layout.name(), "item": item.id(), "layer": target.id()}
+        fn = getattr(item, "setMaximumNumberOfFeatures", None)
+        if callable(fn):
+            try:
+                fn(int(max_features))
+            except Exception:  # noqa: BLE001
+                pass
+        # attribute tables are multi-frames: add the multi-frame first, then
+        # hang a positioned/resized frame off it (the item class itself does
+        # not expose the item placement API to Python)
+        layout.addMultiFrame(item)
+        frame = QgsLayoutFrame(layout, item)
+        try:
+            frame.attemptSetSceneRect(QgsRectangle(float(x), float(y),
+                                                   float(x) + float(width),
+                                                   float(y) + float(height)))
+        except Exception:  # noqa: BLE001
+            _place(frame, x, y, width, height)
+        item.addFrame(frame)
+        item_id = None
+        id_fn = getattr(item, "id", None)
+        if callable(id_fn):
+            try:
+                item_id = str(id_fn())
+            except Exception:  # noqa: BLE001
+                item_id = None
+        return {"layout": layout.name(), "item": item_id, "layer": target.id()}
 
     @command(name="layout.add_shape", summary="Add a rectangle/ellipse/triangle "
              "shape", risk="write", tags=("layout",))
@@ -433,9 +452,41 @@ def _layout_summary(layout):
 
 def _place(item, x, y, width, height):
     units = _mm_units()
-    item.attemptMove(QgsLayoutPoint(float(x), float(y), units))
+    point = QgsLayoutPoint(float(x), float(y), units)
+    moved = False
+    for fn_name in ("attemptMove", "setPosition", "setPos"):
+        fn = getattr(item, fn_name, None)
+        if not callable(fn):
+            continue
+        try:
+            fn(point)
+            moved = True
+            break
+        except TypeError:
+            try:
+                fn(float(x), float(y))
+                moved = True
+                break
+            except Exception:  # noqa: BLE001
+                continue
+        except Exception:  # noqa: BLE001
+            continue
     if width is not None and height is not None:
-        item.attemptResize(QgsLayoutSize(float(width), float(height), units))
+        size = QgsLayoutSize(float(width), float(height), units)
+        for fn_name in ("attemptResize", "setRect", "resize"):
+            fn = getattr(item, fn_name, None)
+            if not callable(fn):
+                continue
+            try:
+                if fn_name == "setRect":
+                    from qgis.core import QgsLayoutRect
+                    fn(QgsLayoutRect(point, size))
+                else:
+                    fn(size)
+                break
+            except Exception:  # noqa: BLE001
+                continue
+    return moved
 
 
 def _find_map_item(layout, map_id):

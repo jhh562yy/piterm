@@ -1,0 +1,1063 @@
+{
+ "ok": true,
+ "qgis": "4.2.3-Belém do Pará",
+ "checks": [
+  {
+   "name": "server.start",
+   "ok": true,
+   "ms": 0.7,
+   "value": "{\"running\": true, \"name\": \"Piterm Bridge\", \"host\": \"127.0.0.1\", \"frame_port\": 19887, \"http_port\": 19889, \"http_enabled\": true, \"clients\": 0, \"uptime_s\": 0.0, \"errors\": {}, \"stats\": {\"commands\": 0, \"errors\": 0, \"bytes_in\": 0, \"bytes_out\": 0, \"per_command\": {}}}"
+  },
+  {
+   "name": "fixture.add_points",
+   "ok": true,
+   "ms": 3.1,
+   "value": "{\"layer\": {\"id\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"name\": \"cov_points\", \"kind\": \"vector\", \"source\": \"Point?crs=EPSG:4326&uid={4fec7eae-2999-47a9-ab62-a0be97e2e34b}\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geometry_type\": \"Point\", \"feature_count\": 0, \"fields\": [\"name\","
+  },
+  {
+   "name": "fixture.insert_points",
+   "ok": true,
+   "ms": 1.7,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"inserted\": 5, \"fids\": null, \"fids_note\": \"provider assigns feature ids at commit time; query the layer to read them\", \"buffered\": false, \"warnings\": []}"
+  },
+  {
+   "name": "fixture.add_poly",
+   "ok": true,
+   "ms": 0.7,
+   "value": "{\"layer\": {\"id\": \"cov_poly_c4d081d2_c0d0_453d_b4f1_73aa3393db36\", \"name\": \"cov_poly\", \"kind\": \"vector\", \"source\": \"Polygon?crs=EPSG:4326&uid={5ed977f9-c123-4a04-b64d-20d2e3c2e1fb}\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geometry_type\": \"Polygon\", \"feature_count\": 0, \"fields\": [\"name\"]"
+  },
+  {
+   "name": "fixture.insert_poly",
+   "ok": true,
+   "ms": 1.4,
+   "value": "{\"layer\": \"cov_poly_c4d081d2_c0d0_453d_b4f1_73aa3393db36\", \"inserted\": 1, \"fids\": null, \"fids_note\": \"provider assigns feature ids at commit time; query the layer to read them\", \"buffered\": false, \"warnings\": []}"
+  },
+  {
+   "name": "fixture.add_join",
+   "ok": true,
+   "ms": 0.6,
+   "value": "{\"layer\": {\"id\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"name\": \"cov_join\", \"kind\": \"vector\", \"source\": \"Point?crs=EPSG:4326&uid={82c0d62b-af25-448a-ac6a-86dfbea1d303}\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geometry_type\": \"Point\", \"feature_count\": 0, \"fields\": [\"name\"], \"e"
+  },
+  {
+   "name": "fixture.insert_join",
+   "ok": true,
+   "ms": 0.4,
+   "value": "{\"layer\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"inserted\": 2, \"fids\": null, \"fids_note\": \"provider assigns feature ids at commit time; query the layer to read them\", \"buffered\": false, \"warnings\": []}"
+  },
+  {
+   "name": "io.write_text",
+   "ok": true,
+   "ms": 0.6,
+   "value": "{\"path\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov.csv\", \"bytes\": 24, \"appended\": false}"
+  },
+  {
+   "name": "layers.crs_get",
+   "ok": true,
+   "ms": 0.3,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"authid\": \"EPSG:4326\", \"description\": \"WGS 84\", \"geographic\": true, \"proj4\": \"+proj=longlat +datum=WGS84 +no_defs\"}"
+  },
+  {
+   "name": "layers.extent",
+   "ok": true,
+   "ms": 0.3,
+   "value": "{\"extent\": {\"xmin\": 1.0, \"ymin\": 1.0, \"xmax\": 5.0, \"ymax\": 5.0, \"width\": 4.0, \"height\": 4.0}, \"crs\": \"EPSG:4326\"}"
+  },
+  {
+   "name": "layers.fields_list",
+   "ok": true,
+   "ms": 0.3,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"fields\": [{\"name\": \"name\", \"type\": \"string\", \"alias\": \"\", \"length\": 0, \"precision\": 0, \"comment\": \"\", \"type_name\": \"QString\"}, {\"name\": \"value\", \"type\": \"double\", \"alias\": \"\", \"length\": 0, \"precision\": 0, \"comment\": \"\", \"type_name\": \"Doub"
+  },
+  {
+   "name": "layers.active_get",
+   "ok": true,
+   "ms": 16.9,
+   "value": "{\"active\": null}"
+  },
+  {
+   "name": "layers.active_set",
+   "ok": false,
+   "ms": 0.7,
+   "error": "BridgeError: no GUI session; cannot set the active layer",
+   "soft": true
+  },
+  {
+   "name": "layers.find",
+   "ok": true,
+   "ms": 0.6,
+   "value": "{\"count\": 3, \"layers\": [{\"id\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"name\": \"cov_join\", \"kind\": \"vector\", \"source\": \"Point?crs=EPSG:4326&uid={82c0d62b-af25-448a-ac6a-86dfbea1d303}\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geometry_type\": \"Point\", \"feature_count\": 2, \"fields\""
+  },
+  {
+   "name": "layers.visibility",
+   "ok": true,
+   "ms": 0.3,
+   "value": "{\"layer\": \"cov_poly_c4d081d2_c0d0_453d_b4f1_73aa3393db36\", \"visible\": false}"
+  },
+  {
+   "name": "layers.subset_filter_set",
+   "ok": true,
+   "ms": 0.4,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"subset\": \"\\\"value\\\" > 0\"}"
+  },
+  {
+   "name": "layers.subset_filter_clear",
+   "ok": true,
+   "ms": 0.3,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"subset\": \"\"}"
+  },
+  {
+   "name": "layers.rename",
+   "ok": true,
+   "ms": 0.2,
+   "value": "{\"renamed\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"name\": \"cov_join2\"}"
+  },
+  {
+   "name": "layers.joins_add",
+   "ok": true,
+   "ms": 1.1,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"join\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"join_field\": \"name\", \"target_field\": \"name\"}"
+  },
+  {
+   "name": "layers.joins_list",
+   "ok": true,
+   "ms": 0.4,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"joins\": [{\"join_layer_id\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"join_field\": \"name\", \"target_field\": \"name\", \"prefix\": \"j_\", \"memory_cache\": true}]}"
+  },
+  {
+   "name": "layers.joins_remove",
+   "ok": true,
+   "ms": 0.4,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"removed_join\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\"}"
+  },
+  {
+   "name": "layers.export",
+   "ok": true,
+   "ms": 210.8,
+   "value": "{\"path\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_points.gpkg\", \"format\": \"GPKG\", \"bytes\": 98304, \"reprojected\": false, \"notes\": []}"
+  },
+  {
+   "name": "layers.export.exists",
+   "ok": true,
+   "ms": 0.0,
+   "value": "true"
+  },
+  {
+   "name": "layers.duplicate",
+   "ok": true,
+   "ms": 5.2,
+   "value": "{\"layer\": {\"id\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"name\": \"cov_dup\", \"kind\": \"vector\", \"source\": \"memory?geometry=Point&crs=EPSG:4326&field=name:string(0,0)&field=value:double(0,0)&uid={f4f3badd-648e-4f5b-b974-21a2b8a2af90}\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geo"
+  },
+  {
+   "name": "layers.fields_rename",
+   "ok": true,
+   "ms": 1.5,
+   "value": "{\"layer\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"renamed\": \"value\", \"to\": \"val2\"}"
+  },
+  {
+   "name": "layers.fields_delete",
+   "ok": true,
+   "ms": 1.8,
+   "value": "{\"layer\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"deleted\": \"val2\"}"
+  },
+  {
+   "name": "layers.crs_set",
+   "ok": true,
+   "ms": 5.3,
+   "value": "{\"layer\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"crs\": \"EPSG:3857\", \"note\": \"coordinates were reinterpreted, not transformed\"}",
+   "soft": true
+  },
+  {
+   "name": "layers.set_source",
+   "ok": true,
+   "ms": 51.0,
+   "value": "{\"layer\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_points.gpkg\"}",
+   "soft": true
+  },
+  {
+   "name": "layers.source",
+   "ok": true,
+   "ms": 1.2,
+   "value": "{\"layer\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_points.gpkg\", \"public_source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_points.gpkg\", \"provider\": \"ogr\"}"
+  },
+  {
+   "name": "layers.opacity",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"layer\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"opacity\": 0.5}"
+  },
+  {
+   "name": "layers.set_property",
+   "ok": true,
+   "ms": 0.7,
+   "value": "{\"layer\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"changed\": {\"opacity\": 0.3, \"min_scale\": 1000.0}}",
+   "soft": true
+  },
+  {
+   "name": "layers.order.list",
+   "ok": true,
+   "ms": 4.5,
+   "value": "[\"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"cov_poly_c4d081d2_c0d0_453d_b4f1_73aa3393db36\"]"
+  },
+  {
+   "name": "layers.order",
+   "ok": true,
+   "ms": 1.8,
+   "value": "{\"order\": [\"cov_poly_c4d081d2_c0d0_453d_b4f1_73aa3393db36\", \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\"]}"
+  },
+  {
+   "name": "layers.group_create",
+   "ok": true,
+   "ms": 8.3,
+   "value": "{\"group\": \"cov_group\", \"parent\": \"\", \"path\": \"/cov_group\"}"
+  },
+  {
+   "name": "layers.group_move_layer",
+   "ok": true,
+   "ms": 6.4,
+   "value": "{\"moved\": \"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\", \"into\": \"/cov_group\"}"
+  },
+  {
+   "name": "layers.group_remove",
+   "ok": true,
+   "ms": 3.1,
+   "value": "{\"removed\": \"cov_group\", \"removed_layers\": [\"cov_points_54105644_b1da_4ada_84e9_7040cf706ee7\"]}"
+  },
+  {
+   "name": "layers.add_vector",
+   "ok": true,
+   "ms": 31.8,
+   "value": "{\"layer\": {\"id\": \"cov_from_gpkg_ef7b35bd_e1c8_43c7_827f_aec6170e4f88\", \"name\": \"cov_from_gpkg\", \"kind\": \"vector\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_points.gpkg\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geometry_type\": \"Point\", \"feature_count\": 5, \""
+  },
+  {
+   "name": "layers.add_delimited",
+   "ok": true,
+   "ms": 10.4,
+   "value": "{\"layer\": {\"id\": \"cov_csv_b37d5e79_de64_470a_9e2e_118d2281f312\", \"name\": \"cov_csv\", \"kind\": \"vector\", \"source\": \"file:///C:/Users/kn/AppData/Local/Temp/piterm_cov_oh_3mv41/cov.csv?type=csv&delimiter=,&xField=x&yField=y&crs=EPSG:4326\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geometry_typ"
+  },
+  {
+   "name": "layers.add_web",
+   "ok": true,
+   "ms": 22.3,
+   "value": "{\"layer\": {\"id\": \"cov_xyz_7c539b48_ba2c_4ab7_91a1_9c719a96ca1f\", \"name\": \"cov_xyz\", \"kind\": \"raster\", \"source\": \"type=xyz&zmin=0&zmax=19&url=http%3A%2F%2F127.0.0.1%3A19881%2F%7Bz%7D%2F%7Bx%7D%2F%7By%7D.png\", \"crs\": \"EPSG:3857\", \"visible\": true, \"group\": null, \"width\": 0, \"height\": 0, \"band_count\": 1",
+   "soft": true
+  },
+  {
+   "name": "layers.remove",
+   "ok": true,
+   "ms": 3.7,
+   "value": "{\"removed\": \"cov_from_gpkg_ef7b35bd_e1c8_43c7_827f_aec6170e4f88\", \"name\": \"cov_from_gpkg\"}"
+  },
+  {
+   "name": "features.get",
+   "ok": true,
+   "ms": 1.5,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"feature\": {\"fid\": 1, \"attributes\": {\"name\": \"a\", \"value\": 1.5}, \"geometry\": \"Point (1 1)\"}}"
+  },
+  {
+   "name": "features.update_geometry",
+   "ok": true,
+   "ms": 2.0,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"updated\": 1, \"warnings\": [], \"results\": [{\"fid\": 2, \"ok\": true}]}"
+  },
+  {
+   "name": "features.spatial_query",
+   "ok": true,
+   "ms": 2.4,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"predicate\": \"intersects\", \"count\": 5, \"truncated\": false, \"features\": [{\"fid\": 1, \"attributes\": {\"name\": \"a\", \"value\": 1.5}, \"geometry\": \"Point (1 1)\"}, {\"fid\": 2, \"attributes\": {\"name\": \"b\", \"value\": 3.0}, \"geometry\": \"Point (8 8)\"}, {\"f"
+  },
+  {
+   "name": "features.nearest",
+   "ok": true,
+   "ms": 2.0,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"scanned\": 5, \"count\": 2, \"features\": [{\"fid\": 1, \"attributes\": {\"name\": \"a\", \"value\": 1.5}, \"geometry\": \"Point (1 1)\", \"distance\": 0.07071067811865482}, {\"fid\": 3, \"attributes\": {\"name\": \"c\", \"value\": 4.5}, \"geometry\": \"Point (3 3)\", \"dis"
+  },
+  {
+   "name": "features.selection_clear",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"selected\": 0}"
+  },
+  {
+   "name": "features.cursors_list",
+   "ok": true,
+   "ms": 0.5,
+   "value": "{\"cursors\": []}"
+  },
+  {
+   "name": "features.delete",
+   "ok": true,
+   "ms": 1.8,
+   "value": "{\"layer\": \"cov_join_5d075d30_f8c9_43a2_a784_35211a53c293\", \"deleted\": 1, \"requested\": 1}"
+  },
+  {
+   "name": "features.field_stats",
+   "ok": true,
+   "ms": 1.8,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"field\": \"value\", \"stats\": {\"count\": 5.0, \"mean\": 4.5, \"max\": 7.5}}"
+  },
+  {
+   "name": "expression.functions_search",
+   "ok": true,
+   "ms": 62.2,
+   "value": "{\"count\": 5, \"functions\": [{\"name\": \"$geometry\", \"description\": \"<h3>function $geometry</h3>\\n<div class=\\\"description\\\"><p>Returns the geometry of the current feature. Can be used for processing with other functions. <b>WARNING: This function is deprecated. It is recommended to use the replacement "
+  },
+  {
+   "name": "style.classification_breaks",
+   "ok": true,
+   "ms": 3.3,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"field\": \"value\", \"classes\": 3, \"breaks\": [{\"lower\": 1.5, \"upper\": 3.5, \"label\": \"1.5 - 3.5\"}, {\"lower\": 3.5, \"upper\": 5.5, \"label\": \"3.5 - 5.5\"}, {\"lower\": 5.5, \"upper\": 7.5, \"label\": \"5.5 - 7.5\"}]}"
+  },
+  {
+   "name": "style.labeling_set",
+   "ok": true,
+   "ms": 3.3,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"enabled\": true, \"field\": \"name\"}"
+  },
+  {
+   "name": "style.labeling_get",
+   "ok": true,
+   "ms": 9.6,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"enabled\": true, \"labeling\": \"QgsVectorLayerSimpleLabeling\", \"field\": \"name\", \"is_expression\": false, \"font_size\": 10.0, \"color\": \"#000000\", \"buffer_enabled\": false, \"buffer_size\": 1.0}"
+  },
+  {
+   "name": "style.symbol_set",
+   "ok": true,
+   "ms": 2.2,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"symbols_changed\": 1}"
+  },
+  {
+   "name": "style.copy",
+   "ok": true,
+   "ms": 7.5,
+   "value": "{\"copied\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"into\": \"cov_poly_c4d081d2_c0d0_453d_b4f1_73aa3393db36\"}"
+  },
+  {
+   "name": "style.qml_save",
+   "ok": true,
+   "ms": 10.7,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"path\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov.qml\"}"
+  },
+  {
+   "name": "style.qml_apply",
+   "ok": true,
+   "ms": 23.7,
+   "value": "{\"layer\": \"cov_csv_b37d5e79_de64_470a_9e2e_118d2281f312\", \"applied\": true, \"message\": \"\"}"
+  },
+  {
+   "name": "session.edit_begin",
+   "ok": true,
+   "ms": 1.6,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"editable\": true}"
+  },
+  {
+   "name": "features.update",
+   "ok": true,
+   "ms": 1.6,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"updated\": 1, \"results\": [{\"fid\": 3, \"ok\": true, \"errors\": null}]}"
+  },
+  {
+   "name": "session.edit_commit",
+   "ok": true,
+   "ms": 1.9,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"committed\": true}"
+  },
+  {
+   "name": "session.undo",
+   "ok": true,
+   "ms": 1.1,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"undone\": 0, \"can_undo\": false}"
+  },
+  {
+   "name": "session.redo",
+   "ok": true,
+   "ms": 1.0,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"redone\": 0, \"can_redo\": false}"
+  },
+  {
+   "name": "session.edit_begin#2",
+   "ok": true,
+   "ms": 0.9,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"editable\": true}"
+  },
+  {
+   "name": "session.edit_rollback",
+   "ok": true,
+   "ms": 2.5,
+   "value": "{\"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\", \"rolled_back\": true}"
+  },
+  {
+   "name": "session.journal_list",
+   "ok": true,
+   "ms": 1.0,
+   "value": "{\"count\": 20, \"entries\": [{\"seq\": 42, \"ts\": 1791475862.7886107, \"cmd\": \"features.nearest\", \"params\": {\"layer\": \"cov_points\", \"x\": 1.05, \"y\": 1.05, \"k\": 2}, \"status\": \"ok\", \"t_ms\": 1.44, \"client\": \"coverage\"}, {\"seq\": 43, \"ts\": 1791475862.789699, \"cmd\": \"features.selection_clear\", \"params\": {\"layer\":"
+  },
+  {
+   "name": "session.journal_clear",
+   "ok": true,
+   "ms": 2.0,
+   "value": "{\"cleared\": 62}"
+  },
+  {
+   "name": "session.checkpoint_create",
+   "ok": true,
+   "ms": 98.5,
+   "value": "{\"checkpoint\": \"ckpt-20261009-001102-1\", \"name\": \"cov_ck\", \"created\": \"2026-10-09 00:11:03\", \"layers\": 5, \"size\": 14039}"
+  },
+  {
+   "name": "session.checkpoint_restore",
+   "ok": true,
+   "ms": 325.2,
+   "value": "{\"restored\": \"ckpt-20261009-001102-1\", \"name\": \"cov_ck\", \"ok\": true, \"layers\": 5}",
+   "soft": true
+  },
+  {
+   "name": "session.checkpoint_delete",
+   "ok": true,
+   "ms": 1.9,
+   "value": "{\"deleted\": \"ckpt-20261009-001102-1\"}",
+   "soft": true
+  },
+  {
+   "name": "fixture.raster",
+   "ok": true,
+   "ms": 1640.4,
+   "value": "true"
+  },
+  {
+   "name": "layers.add_raster",
+   "ok": true,
+   "ms": 28.3,
+   "value": "{\"layer\": {\"id\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"name\": \"cov_raster\", \"kind\": \"raster\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov.tif\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"width\": 20, \"height\": 20, \"band_count\": 1, \"provider\": \"gdal"
+  },
+  {
+   "name": "raster.info",
+   "ok": true,
+   "ms": 8.0,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"name\": \"cov_raster\", \"width\": 20, \"height\": 20, \"band_count\": 1, \"extent\": {\"xmin\": 0.0, \"ymin\": 0.0, \"xmax\": 10.0, \"ymax\": 10.0, \"width\": 10.0, \"height\": 10.0}, \"crs\": \"EPSG:4326\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_c",
+   "soft": true
+  },
+  {
+   "name": "raster.stats",
+   "ok": true,
+   "ms": 1.8,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"band\": 1, \"min\": 5.0, \"max\": 5.0, \"mean\": 5.0, \"std_dev\": 0.0, \"sum\": 2000.0, \"count\": 400, \"range\": 0.0}"
+  },
+  {
+   "name": "raster.histogram",
+   "ok": true,
+   "ms": 2.3,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"band\": 1, \"min\": 5.0, \"max\": 5.0, \"count\": 0, \"histogram\": []}"
+  },
+  {
+   "name": "raster.renderer_info",
+   "ok": true,
+   "ms": 4.5,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"renderer\": \"QgsSingleBandGrayRenderer\", \"type\": \"singlebandgray\", \"opacity\": 1.0}"
+  },
+  {
+   "name": "raster.minmax_set",
+   "ok": true,
+   "ms": 7.3,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"band\": 1, \"min\": 0, \"max\": 10, \"notes\": [\"gray contrast updated\"]}"
+  },
+  {
+   "name": "raster.colormap_set",
+   "ok": true,
+   "ms": 8.3,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"band\": 1, \"entries\": 2, \"classification\": \"interpolated\"}",
+   "soft": true
+  },
+  {
+   "name": "raster.colormap_get",
+   "ok": true,
+   "ms": 2.3,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"renderer\": \"QgsSingleBandPseudoColorRenderer\", \"ramp_type\": \"0\", \"entries\": [{\"value\": 0.0, \"color\": \"#000000\", \"label\": \"low\"}, {\"value\": 10.0, \"color\": \"#ff0000\", \"label\": \"high\"}]}"
+  },
+  {
+   "name": "raster.sample",
+   "ok": true,
+   "ms": 2.6,
+   "value": "{\"layer\": \"cov_raster_930f73a4_db94_42aa_835d_73a097aec28f\", \"crs\": \"\", \"points\": [{\"point\": [1.0, 1.0], \"layer_point\": [1.0, 1.0], \"values\": {\"1\": 5.0}, \"outside_extent\": false}, {\"point\": [5.0, 5.0], \"layer_point\": [5.0, 5.0], \"values\": {\"1\": 5.0}, \"outside_extent\": false}]}",
+   "soft": true
+  },
+  {
+   "name": "raster.export",
+   "ok": true,
+   "ms": 190.1,
+   "value": "{\"path\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_export.tif\", \"algorithm\": \"gdal:translate\", \"bytes\": 1966, \"log_tail\": [\"GDAL command:\", \"gdal_translate -of GTiff C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov.tif C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov"
+  },
+  {
+   "name": "raster.export.exists",
+   "ok": true,
+   "ms": 0.0,
+   "value": "true"
+  },
+  {
+   "name": "raster.calculator",
+   "ok": true,
+   "ms": 31.6,
+   "value": "{\"expression\": \"A@1 * 2\", \"output\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\calc.tif\", \"width\": 20, \"height\": 20, \"crs\": \"EPSG:4326\", \"loaded_layer\": {\"id\": \"calc_tif_24dce9b9_5551_4e2c_a996_30c7a17d4b9d\", \"name\": \"calc.tif\", \"kind\": \"raster\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Lo",
+   "soft": true
+  },
+  {
+   "name": "raster.zonal_stats",
+   "ok": true,
+   "ms": 4.3,
+   "value": "{\"algorithm\": \"native:zonalstatisticsfb\", \"warnings\": [], \"log_tail\": [\"Results: {'OUTPUT': 'cov_zonal_11bb1b19_bfa0_46dd_989a_1cd0349a182a'}\"], \"result\": {\"OUTPUT\": {\"id\": \"cov_zonal_11bb1b19_bfa0_46dd_989a_1cd0349a182a\", \"name\": \"cov_zonal\", \"kind\": \"vector\", \"source\": \"Polygon?crs=EPSG:4326&field",
+   "soft": true
+  },
+  {
+   "name": "processing.algorithms_get",
+   "ok": true,
+   "ms": 1.4,
+   "value": "{\"id\": \"native:buffer\", \"name\": \"Buffer\", \"group\": \"Vector geometry\", \"parameters\": [{\"name\": \"INPUT\", \"description\": \"Input layer\", \"type\": \"source\", \"default\": null, \"optional\": false}, {\"name\": \"DISTANCE\", \"description\": \"Distance\", \"type\": \"distance\", \"default\": 10, \"optional\": false}, {\"name\": "
+  },
+  {
+   "name": "processing.batch_execute",
+   "ok": true,
+   "ms": 3.9,
+   "value": "{\"count\": 2, \"ok_count\": 2, \"results\": [{\"index\": 0, \"ok\": true, \"algorithm\": \"native:buffer\", \"loaded_layers\": [{\"key\": \"OUTPUT\", \"id\": \"pb1_0d707ae9_bc55_4485_9a28_62bc131e2d70\", \"name\": \"pb1\", \"kind\": \"vector\", \"source\": \"MultiPolygon?crs=EPSG:4326&field=name:string(0,0)&field=value:double(0,0)&u"
+  },
+  {
+   "name": "processing.models_list",
+   "ok": true,
+   "ms": 2.9,
+   "value": "{\"count\": 0, \"models\": []}"
+  },
+  {
+   "name": "processing.models_run",
+   "ok": true,
+   "refused": true,
+   "code": "E_NOT_FOUND",
+   "ms": 20.9
+  },
+  {
+   "name": "job.start.setup",
+   "ok": true,
+   "ms": 2.3,
+   "value": "{\"job\": \"job-1\", \"algorithm\": \"native:buffer\", \"state\": \"queued\"}"
+  },
+  {
+   "name": "job.get",
+   "ok": true,
+   "ms": 0.9,
+   "value": "{\"id\": \"job-1\", \"kind\": \"processing\", \"title\": \"Buffer\", \"state\": \"succeeded\", \"progress\": 100, \"message\": \"\", \"created\": 1791475865.322005, \"started\": 1791475865.325426, \"finished\": 1791475865.3275924, \"elapsed\": 0.002, \"result\": {\"algorithm\": \"native:buffer\", \"warnings\": [], \"log_tail\": [], \"resul"
+  },
+  {
+   "name": "job.log",
+   "ok": true,
+   "ms": 1.1,
+   "value": "{\"id\": \"job-1\", \"lines\": []}"
+  },
+  {
+   "name": "job.cancel",
+   "ok": true,
+   "refused": true,
+   "code": "E_NOT_FOUND",
+   "ms": 0.6
+  },
+  {
+   "name": "job.clear",
+   "ok": true,
+   "ms": 0.4,
+   "value": "{\"cleared\": 1}"
+  },
+  {
+   "name": "io.convert",
+   "ok": true,
+   "ms": 215.4,
+   "value": "{\"converted\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_converted.geojson\", \"algorithm\": \"gdal:convertformat\", \"exists\": true, \"log_tail\": [\"GDAL command:\", \"ogr2ogr -f \\\"GeoJSON\\\" C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_converted.geojson C:\\\\Users\\\\kn\\\\App",
+   "soft": true
+  },
+  {
+   "name": "io.import_file",
+   "ok": true,
+   "ms": 27.0,
+   "value": "{\"kind\": \"vector\", \"layer\": {\"id\": \"cov_converted_8888d934_3c99_4cc6_882c_e79f870c9601\", \"name\": \"cov_converted\", \"kind\": \"vector\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_converted.geojson\", \"crs\": \"EPSG:4326\", \"visible\": true, \"group\": null, \"geometry_type\": \"Point",
+   "soft": true
+  },
+  {
+   "name": "io.fetch_url",
+   "ok": true,
+   "ms": 115.9,
+   "value": "{\"url\": \"http://127.0.0.1:19881/cov.csv\", \"path\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_fetched.csv\", \"bytes\": 24, \"info\": {\"status\": 200, \"content_type\": \"application/vnd.ms-excel\"}, \"layer\": {\"id\": \"cov_fetched_c086d6a5_aa93_46cb_a897_494574b86152\", \"name\": \"cov_fetched\", "
+  },
+  {
+   "name": "io.fetch_url.content",
+   "ok": true,
+   "ms": 25.5,
+   "value": "true"
+  },
+  {
+   "name": "layout.create",
+   "ok": true,
+   "ms": 16.9,
+   "value": "{\"name\": \"cov_layout\", \"page\": {\"width\": 210.0, \"height\": 297.0, \"units\": \"mm\"}, \"items\": 2}"
+  },
+  {
+   "name": "layout.list",
+   "ok": true,
+   "ms": 2.1,
+   "value": "{\"count\": 1, \"layouts\": [{\"name\": \"cov_layout\", \"page\": {\"width\": 210.0, \"height\": 297.0, \"units\": \"mm\"}, \"items\": 2}]}"
+  },
+  {
+   "name": "layout.add_map",
+   "ok": true,
+   "ms": 6.7,
+   "value": "{\"layout\": \"cov_layout\", \"item\": \"main_map\", \"extent\": null}"
+  },
+  {
+   "name": "layout.add_legend",
+   "ok": true,
+   "ms": 3.2,
+   "value": "{\"layout\": \"cov_layout\", \"item\": \"\", \"linked_map\": \"main_map\"}"
+  },
+  {
+   "name": "layout.add_scalebar",
+   "ok": true,
+   "ms": 15.3,
+   "value": "{\"layout\": \"cov_layout\", \"item\": \"\"}"
+  },
+  {
+   "name": "layout.add_label",
+   "ok": true,
+   "ms": 2.5,
+   "value": "{\"layout\": \"cov_layout\", \"item\": \"\"}"
+  },
+  {
+   "name": "layout.add_picture",
+   "ok": true,
+   "ms": 55.5,
+   "value": "{\"layout\": \"cov_layout\", \"item\": \"\", \"source\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_logo.png\"}",
+   "soft": true
+  },
+  {
+   "name": "layout.add_shape",
+   "ok": true,
+   "ms": 3.6,
+   "value": "{\"layout\": \"cov_layout\", \"item\": \"\", \"shape\": \"rectangle\"}",
+   "soft": true
+  },
+  {
+   "name": "layout.add_table",
+   "ok": true,
+   "ms": 19.5,
+   "value": "{\"layout\": \"cov_layout\", \"item\": null, \"layer\": \"cov_points_2ba52a46_c4ae_40c2_b219_c331bb8c5a46\"}",
+   "soft": true
+  },
+  {
+   "name": "layout.info",
+   "ok": true,
+   "ms": 5.5,
+   "value": "{\"layout\": \"cov_layout\", \"items\": [{\"id\": \"\", \"type\": \"QgsLayoutFrame\", \"x\": 100.0, \"y\": 10.0}, {\"id\": \"\", \"type\": \"QgsLayoutItemShape\", \"x\": 5.0, \"y\": 5.0}, {\"id\": \"\", \"type\": \"QgsLayoutItemPicture\", \"x\": 170.0, \"y\": 135.0}, {\"id\": \"\", \"type\": \"QgsLayoutItemLabel\", \"x\": 10.0, \"y\": 132.0}, {\"id\": \"\""
+  },
+  {
+   "name": "layout.export",
+   "ok": true,
+   "ms": 197.4,
+   "value": "{\"exported\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_layout.pdf\", \"format\": \"pdf\", \"result\": 0}"
+  },
+  {
+   "name": "layout.export.exists",
+   "ok": true,
+   "ms": 0.1,
+   "value": "true"
+  },
+  {
+   "name": "layout.export.png",
+   "ok": true,
+   "ms": 193.0,
+   "value": "{\"exported\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_layout.png\", \"format\": \"png\", \"result\": 0}",
+   "soft": true
+  },
+  {
+   "name": "layout.export.png.exists",
+   "ok": true,
+   "ms": 0.1,
+   "value": "true",
+   "soft": true
+  },
+  {
+   "name": "layout.atlas_configure",
+   "ok": true,
+   "ms": 2.1,
+   "value": "{\"layout\": \"cov_layout\", \"coverage\": \"cov_poly_c4d081d2_c0d0_453d_b4f1_73aa3393db36\", \"enabled\": true, \"features\": 0}",
+   "soft": true
+  },
+  {
+   "name": "layout.atlas_export",
+   "ok": true,
+   "ms": 109.3,
+   "value": "{\"exported\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_atlas.pdf\", \"format\": \"pdf\", \"pages\": 0}",
+   "soft": true
+  },
+  {
+   "name": "layout.remove",
+   "ok": true,
+   "ms": 4.3,
+   "value": "{\"removed\": \"cov_layout\"}"
+  },
+  {
+   "name": "project.metadata_get",
+   "ok": true,
+   "ms": 2.0,
+   "value": "{\"title\": \"\", \"abstract\": \"\", \"keywords\": [], \"categories\": [], \"identifier\": \"\"}"
+  },
+  {
+   "name": "project.metadata_set",
+   "ok": true,
+   "ms": 2.2,
+   "value": "{\"changed\": {\"title\": \"Coverage sweep\", \"abstract\": \"command coverage\", \"keywords\": [\"cov\"]}}"
+  },
+  {
+   "name": "project.bookmarks_add",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"id\": \"{72d86a86-7b27-42e8-aba4-a31a7b1ec4a4}\", \"name\": \"cov_bm\", \"extent\": {\"xmin\": 0.0, \"ymin\": 0.0, \"xmax\": 10.0, \"ymax\": 10.0, \"width\": 10.0, \"height\": 10.0}, \"crs\": \"\"}",
+   "soft": true
+  },
+  {
+   "name": "project.bookmarks_list",
+   "ok": true,
+   "ms": 1.1,
+   "value": "{\"bookmarks\": [{\"id\": \"{72d86a86-7b27-42e8-aba4-a31a7b1ec4a4}\", \"name\": \"cov_bm\", \"group\": \"\", \"extent\": {\"xmin\": 0.0, \"ymin\": 0.0, \"xmax\": 10.0, \"ymax\": 10.0, \"width\": 10.0, \"height\": 10.0}, \"crs\": \"\"}]}"
+  },
+  {
+   "name": "project.bookmarks_zoom",
+   "ok": false,
+   "ms": 0.6,
+   "error": "BridgeError: no map canvas available (headless session?)",
+   "soft": true
+  },
+  {
+   "name": "project.bookmarks_remove",
+   "ok": true,
+   "ms": 0.5,
+   "value": "{\"removed\": \"{72d86a86-7b27-42e8-aba4-a31a7b1ec4a4}\"}"
+  },
+  {
+   "name": "project.themes_add",
+   "ok": false,
+   "ms": 0.9,
+   "error": "BridgeError: saving map themes needs a GUI session in this QGIS build (QgsMapThemeCollection.insert(): argument 2 has unexpected type 'QgsLayerTree')",
+   "soft": true
+  },
+  {
+   "name": "project.themes_list",
+   "ok": true,
+   "ms": 1.9,
+   "value": "{\"themes\": []}"
+  },
+  {
+   "name": "project.themes_apply",
+   "ok": false,
+   "ms": 1.1,
+   "error": "BridgeError: could not apply theme 'cov_theme': QgsMapThemeCollection.applyTheme(): not enough arguments",
+   "soft": true
+  },
+  {
+   "name": "project.themes_remove",
+   "ok": true,
+   "ms": 2.2,
+   "value": "{\"removed\": \"cov_theme\"}"
+  },
+  {
+   "name": "project.variables_list",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"variables\": {}}"
+  },
+  {
+   "name": "project.variables_remove",
+   "ok": true,
+   "ms": 2.1,
+   "value": "{\"removed\": \"cov_var\", \"existed\": true}"
+  },
+  {
+   "name": "project.set_crs",
+   "ok": true,
+   "ms": 1.5,
+   "value": "{\"crs\": \"EPSG:3857\", \"description\": \"WGS 84 / Pseudo-Mercator\"}",
+   "soft": true
+  },
+  {
+   "name": "project.save",
+   "ok": true,
+   "ms": 118.8,
+   "value": "{\"saved\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_proj.qgz\", \"ok\": true, \"dirty\": false}"
+  },
+  {
+   "name": "project.new",
+   "ok": true,
+   "ms": 210.8,
+   "value": "{\"created\": true, \"saved\": null, \"warnings\": []}"
+  },
+  {
+   "name": "project.new.cleared",
+   "ok": true,
+   "ms": 0.6,
+   "value": "true"
+  },
+  {
+   "name": "project.open",
+   "ok": true,
+   "ms": 336.8,
+   "value": "{\"opened\": \"C:\\\\Users\\\\kn\\\\AppData\\\\Local\\\\Temp\\\\piterm_cov_oh_3mv41\\\\cov_proj.qgz\", \"ok\": true, \"layer_count\": 12, \"invalid_layers\": [], \"hint\": null}"
+  },
+  {
+   "name": "project.open.loaded",
+   "ok": true,
+   "ms": 4.5,
+   "value": "true"
+  },
+  {
+   "name": "python.exec",
+   "ok": true,
+   "ms": 2.9,
+   "value": "{\"stdout\": \"3.142\\n\", \"elapsed\": 0.0, \"deadline_hit\": false, \"variables\": {\"math\": {\"type\": \"module\", \"repr\": \"<module 'math' (built-in)>\"}}}"
+  },
+  {
+   "name": "python.exec.result",
+   "ok": true,
+   "ms": 0.0,
+   "value": "true"
+  },
+  {
+   "name": "python.exec.blocks_import",
+   "ok": true,
+   "refused": true,
+   "code": "E_EXEC",
+   "ms": 0.8
+  },
+  {
+   "name": "python.exec.blocks_open",
+   "ok": true,
+   "refused": true,
+   "code": "E_EXEC",
+   "ms": 0.5
+  },
+  {
+   "name": "python.exec_full",
+   "ok": true,
+   "refused": true,
+   "code": "E_FORBIDDEN",
+   "ms": 0.7
+  },
+  {
+   "name": "db.connections_list",
+   "ok": true,
+   "ms": 1.1,
+   "value": "{\"count\": 0, \"connections\": []}"
+  },
+  {
+   "name": "db.tables",
+   "ok": true,
+   "refused": true,
+   "code": "E_NOT_FOUND",
+   "ms": 2.1
+  },
+  {
+   "name": "db.sql",
+   "ok": true,
+   "refused": true,
+   "code": "E_NOT_FOUND",
+   "ms": 1.3
+  },
+  {
+   "name": "db.add_layer",
+   "ok": true,
+   "refused": true,
+   "code": "E_NOT_FOUND",
+   "ms": 0.9
+  },
+  {
+   "name": "db.connection_remove",
+   "ok": true,
+   "ms": 1.3,
+   "value": "{\"removed\": \"nope\", \"kind\": \"postgres\"}",
+   "soft": true
+  },
+  {
+   "name": "plugins.list",
+   "ok": true,
+   "ms": 0.9,
+   "value": "{\"count\": 0, \"plugins\": []}"
+  },
+  {
+   "name": "plugins.info",
+   "ok": true,
+   "ms": 2.0,
+   "value": "{\"name\": \"Piterm QGIS AI\", \"path\": \"G:\\\\AIato\\\\pi\\\\piterm-qgis-ai\\\\plugin\\\\piterm_qgis_ai\", \"loaded\": false, \"active\": false, \"description\": \"Production-grade AI control bridge for QGIS: TCP/NDJSON/HTTP transports, 160+ commands, background jobs, checkpoints, journal replay, workflow runner and a fu"
+  },
+  {
+   "name": "plugins.enable",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"enabled\": \"cov_dummy\"}",
+   "soft": true
+  },
+  {
+   "name": "plugins.disable",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"disabled\": \"cov_dummy\"}",
+   "soft": true
+  },
+  {
+   "name": "plugins.reload",
+   "ok": true,
+   "ms": 0.6,
+   "value": "{\"reloaded\": \"cov_dummy\"}",
+   "soft": true
+  },
+  {
+   "name": "system.config_get",
+   "ok": true,
+   "ms": 1.6,
+   "value": "{\"settings_prefix\": \"piterm_qgis_ai\", \"config\": {\"auth.enabled\": false, \"auth.token\": \"\", \"mode.read_only\": false, \"mode.allow_execute\": true, \"mode.confirm_destructive\": false, \"mode.host\": \"127.0.0.1\", \"mode.frame_port\": null, \"mode.http_port\": null, \"mode.autostart\": false, \"dangerous.allow_full_"
+  },
+  {
+   "name": "system.config_set",
+   "ok": true,
+   "ms": 0.7,
+   "value": "{\"key\": \"limits.max_clients\", \"value\": 16, \"security\": {\"auth_enabled\": false, \"read_only\": false, \"allow_execute\": true, \"confirm_destructive\": false, \"allow_full_python\": false, \"paths_allow\": [\"*\"], \"paths_deny\": [], \"max_clients\": 16, \"rate_per_sec\": 0.0, \"audit_enabled\": false, \"token_set\": fal"
+  },
+  {
+   "name": "system.audit_tail",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"entries\": []}",
+   "soft": true
+  },
+  {
+   "name": "system.messages",
+   "ok": true,
+   "ms": 0.5,
+   "value": "{\"messages\": [{\"ts\": 1791475862.3770084, \"text\": \"client connected: conn-1 from 127.0.0.1:55005\", \"level\": \"info\"}, {\"ts\": 1791475863.360213, \"text\": \"client connected: conn-2 from 127.0.0.1:55006\", \"level\": \"info\"}]}",
+   "soft": true
+  },
+  {
+   "name": "system.events_poll",
+   "ok": true,
+   "ms": 0.5,
+   "value": "{\"events\": [], \"latest\": 0}"
+  },
+  {
+   "name": "system.clients",
+   "ok": true,
+   "ms": 0.6,
+   "value": "{\"clients\": [{\"id\": \"conn-1\", \"kind\": \"frame\", \"remote\": \"127.0.0.1:55005\", \"client\": \"coverage\", \"client_version\": \"1.0.0\", \"connected_s\": 5.0, \"commands\": 143, \"errors\": 12, \"subscriptions\": []}, {\"id\": \"conn-2\", \"kind\": \"frame\", \"remote\": \"127.0.0.1:55006\", \"client\": \"coverage-long\", \"client_vers"
+  },
+  {
+   "name": "system.clients_kick",
+   "ok": true,
+   "ms": 0.9,
+   "value": "{\"kicked\": true, \"id\": \"conn-3\"}",
+   "soft": true
+  },
+  {
+   "name": "system.shutdown",
+   "ok": true,
+   "ms": 0.8,
+   "value": "{\"stopped\": true, \"deferred\": true, \"hint\": \"restart from the Piterm dock or plugin menu\"}"
+  }
+ ],
+ "coverage": {
+  "manifest_total": 194,
+  "exercised_headless": 131,
+  "soft_failures": [
+   "layers.active_set",
+   "project.bookmarks_zoom",
+   "project.themes_add",
+   "project.themes_apply"
+  ],
+  "not_exercised_headless": [
+   "canvas.center_set",
+   "canvas.extent_get",
+   "canvas.extent_set",
+   "canvas.refresh",
+   "canvas.render",
+   "canvas.render_3d",
+   "canvas.rotation_set",
+   "canvas.scale_get",
+   "canvas.scale_set",
+   "canvas.screenshot",
+   "canvas.zoom_features",
+   "canvas.zoom_full",
+   "db.connection_add",
+   "db.import_layer",
+   "expression.evaluate",
+   "expression.validate",
+   "features.cursor_close",
+   "features.cursor_fetch",
+   "features.cursor_open",
+   "features.field_calculator",
+   "features.geometry_info",
+   "features.identify",
+   "features.insert",
+   "features.query",
+   "features.select",
+   "features.selection_get",
+   "features.transform_coordinates",
+   "features.zoom_selection",
+   "io.export_layer",
+   "io.read_text",
+   "job.list",
+   "layers.add_memory",
+   "layers.count",
+   "layers.fields_add",
+   "layers.info",
+   "layers.list",
+   "layers.tree",
+   "layers.unique_values",
+   "layers.zoom_to",
+   "layout.item_move_resize",
+   "processing.algorithms_search",
+   "processing.execute",
+   "processing.providers",
+   "processing.start",
+   "project.info",
+   "project.variables_set",
+   "session.checkpoint_list",
+   "session.edit_status",
+   "session.journal_export",
+   "session.workflow_run",
+   "style.ramps_list",
+   "style.renderer_get",
+   "style.renderer_set",
+   "system.batch",
+   "system.capabilities",
+   "system.diagnose",
+   "system.hello",
+   "system.help",
+   "system.info",
+   "system.metrics",
+   "system.ping",
+   "ui.message",
+   "ui.open_attribute_table"
+  ],
+  "live_only": [
+   "canvas.center_set",
+   "canvas.extent_get",
+   "canvas.extent_set",
+   "canvas.refresh",
+   "canvas.render",
+   "canvas.render_3d",
+   "canvas.rotation_set",
+   "canvas.scale_get",
+   "canvas.scale_set",
+   "canvas.screenshot",
+   "canvas.zoom_features",
+   "canvas.zoom_full",
+   "features.identify",
+   "features.zoom_selection",
+   "layers.zoom_to",
+   "ui.message",
+   "ui.open_attribute_table"
+  ],
+  "skipped_by_design": [
+   "db.connection_add",
+   "db.import_layer"
+  ]
+ }
+}
