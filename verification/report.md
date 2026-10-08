@@ -36,7 +36,7 @@ Key artifacts: `docs/TOOLS.md` (23 KB), `mcp/piterm_qgis_mcp/manifest.json`
 |---|---|---|---|
 | R1 | Source-level benchmark study | `docs/RESEARCH.md` — architecture, mechanisms, pitfalls of all three references + design-decision table | ✅ |
 | R2 | Plugin loads headless on QGIS 3.44 **and** 4.2 | `scripts/qgis_headless_smoke.py` → **63/63 checks** each: `verification/logs/smoke_3.44.15-Solothurn_20261008-234023.json`, `smoke_4.2.3-Belém_do_Pará_20261008-234106.json` | ✅ |
-| R3 | MCP server handshake + tool calls | minimal stdio: `tests/test_min_roundtrip.py`; official SDK probe: `scripts/mcp_fastmcp_probe.py` against live QGIS → `initialize ok (protocol 2025-11-25)`, **196 tools**, `system_ping`/`layers_list`/`piterm_status` all answered | ✅ |
+| R3 | MCP server handshake + tool calls | minimal stdio: `tests/test_min_roundtrip.py`; official SDK probe: `scripts/mcp_fastmcp_probe.py` against live QGIS → `initialize ok (protocol 2025-11-25)`, **196 tools**, `system_ping`/`layers_list`/`piterm_status` all answered; streamable-http transport verified end-to-end too (loopback 18990, see `logs/mcp_streamable_http_probe_20261008.md`) | ✅ |
 | R4 | Skill/CLI performs real operations | live QGIS 3.44 via CLI: `layers.add_memory`, `features.insert` (5), `layers.zoom_to`, `canvas.render`, `canvas.screenshot`, `processing.execute native:buffer`, `session.checkpoint_create`; HTTP `/rpc` ping; both GUI instances answering (9877 / 9887) | ✅ |
 | R5 | Deploy scripts with backup/uninstall | `scripts/install.ps1` deployed to both profiles (39 files each), ini enable + backups (`...plugins\piterm_qgis_ai.bak-20261008-233919`, `QGIS3.ini.bak-piterm-*`), autostart configured for both | ✅ |
 | R6 | Security & control chain | read-only blocks writes (`E_FORBIDDEN`), token reject/accept (`E_AUTH` / ok), path allow/deny (`E_PATH_DENIED`), audit + journal + checkpoint + undo verified in smoke; sandbox rules unit-tested | ✅ |
@@ -72,6 +72,16 @@ powershell -ExecutionPolicy Bypass -File scripts\install.ps1          # or -All 
   `verification/live_desktop.png` (full desktop with QGIS + dock).
 * Audit/journal/backups exist on disk under the two profiles.
 
+**Final-state re-verification (23:49–23:50 local, post-settlement):** fresh
+headless smokes re-ran green — **63/63** on both generations
+(`logs/smoke_3.44.15-Solothurn_20261008-234944.json`,
+`logs/smoke_4.2.3-Belém_do_Pará_20261008-235005.json`); MCP
+**streamable-http** end-to-end probe passed on loopback
+(`logs/mcp_streamable_http_probe_20261008.md`); live E2E redone on both
+instances (add layer → insert 5 → zoom → render → remove; `final_344.png` /
+`final_42.png`; layer count back to 0); skill CLI `piterm_qgis.py ping/hello`
+answered.
+
 ## 6. Real defects found & fixed during verification
 
 | # | Symptom | Root cause | Fix |
@@ -91,8 +101,8 @@ powershell -ExecutionPolicy Bypass -File scripts\install.ps1          # or -All 
   machine is an incomplete OSGeo4W stub — `bin\setup.bat` only, no interpreter —
   so the 4.2 line is covered by 4.2.3).
 * macOS/Linux paths in `install.py` are untested on this machine.
-* `streamable-http` transport of the full MCP server is implemented but the
-  end-to-end probe used stdio (the transport clients use by default).
+* `streamable-http` transport of the full MCP server: verified end-to-end on
+  loopback (127.0.0.1:18990, 2026-10-08 23:49) in addition to the stdio path.
 * GUI screenshots were taken from the desktop; the dock's interactive console
   was exercised headlessly (`system.help`/capabilities) rather than by UI clicks.
 
@@ -104,5 +114,9 @@ powershell -ExecutionPolicy Bypass -File scripts\install.ps1          # or -All 
   back on `allow_execute=false` (it was temporarily enabled during the live demo
   via `system.config_set`; flip it in the dock to re-enable
   Processing/`python.exec`).
+* Both instances share the same `paths.allow` (`~`, `:TEMP:`, `:PROJECT:`,
+  `...\verification`); the whitelist is enforced per instance — a render to a
+  non-allow-listed path fails with the exact path in the error (observed live
+  on 4.2.3 during the final sweep).
 * Diagnostics for any future session: `system.diagnose`, `system.metrics`,
   `system.audit_tail`, `session.journal_list`.
