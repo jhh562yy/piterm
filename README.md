@@ -21,7 +21,7 @@ AI agent / skill / curl
 │  QTcpServer on the Qt event loop (0 threads)│
 │  dispatcher: auth → policy → validate →     │
 │              handler → audit/journal        │
-│  160+ commands · jobs · checkpoints ·       │
+│  194 commands · jobs · checkpoints ·        │
 │  journal replay · workflow runner · cursors │
 └────────────────────────────────────────────┘
 ```
@@ -42,7 +42,7 @@ Four goals, each with concrete mechanisms (not slogans):
 ```
 piterm-qgis-ai/
 ├─ plugin/piterm_qgis_ai/     QGIS plugin (GPL-2.0-or-later)
-│  ├─ handlers/               16 modules, 160+ @command methods
+│  ├─ handlers/               16 modules, 194 @command methods
 │  ├─ server.py               QTcpServer frame+HTTP listeners, reentrancy guard
 │  ├─ dispatcher.py           auth → policy → validate → execute → audit
 │  ├─ security.py             tokens, scopes, paths, rate limit, audit log
@@ -57,9 +57,10 @@ piterm-qgis-ai/
 │  ├─ server.py               FastMCP server (dynamic tools from the live catalog)
 │  └─ registry.py             tool catalog + compound mode
 ├─ skill/piterm-qgis-ai/      SKILL.md + piterm_qgis.py (same minimal core)
-├─ scripts/                   installer, manifest/doc generator, headless smoke
+├─ scripts/                   installer, manifest/doc gen, headless smoke +
+│                             command-coverage + live-coverage, verify_all.ps1
 ├─ docs/                      RESEARCH · ARCHITECTURE · PROTOCOL · TOOLS · SECURITY · PERFORMANCE · INSTALL · COMPAT
-└─ tests/                     wire/security/manifest/round-trip tests
+└─ tests/                     wire/security/manifest/round-trip + sandbox units
 ```
 
 ## Quick start (this machine)
@@ -95,7 +96,7 @@ uv run --directory <repo> python -m piterm_qgis_mcp serve
 
 ## Command surface
 
-160+ commands across `system` · `project` · `layers` · `features` · `raster` ·
+194 commands across `system` · `project` · `layers` · `features` · `raster` ·
 `processing` · `job` · `canvas` · `style` · `layout` · `session` · `io` ·
 `db` · `plugins` · `expression` · `python` · `ui` ·
 see **[docs/TOOLS.md](docs/TOOLS.md)** (generated from the live registry) or ask
@@ -130,13 +131,25 @@ no eval/open/dunder escape hatches) alongside a deliberately gated
 ## Testing
 
 ```bash
-# unit tests (no QGIS needed)
+# unit tests (no QGIS needed) - wire / security / manifest / round-trip /
+# sandbox-interlock
 .venv/Scripts/python -m pytest tests -q
 
-# headless end-to-end on a real QGIS install
-"C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat" scripts/qgis_headless_smoke.py
+# one-command full matrix: pytest + smoke + sandboxed coverage + live GUI
+powershell -ExecutionPolicy Bypass -File scripts/verify_all.ps1 -Sandbox
+
+# ...or the pieces individually:
+"C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat" scripts/qgis_headless_smoke.py       # 63 checks
 "C:\Program Files\QGIS 4.2.3\bin\python-qgis.bat"       scripts/qgis_headless_smoke.py
+"C:\Program Files\QGIS 3.44.15\bin\python-qgis-ltr.bat" scripts/qgis_command_coverage.py --sandbox-db
+python scripts/qgis_live_coverage.py 9877             # 33 live checks vs a running bridge
 ```
+
+Current matrix (2026-10-09): 3.44.15 / 4.2.3 / 4.3.0-dev — smoke 63/63 each,
+coverage 177 pass / 0 hard fail each (133/194 exercised headless + the two
+sandboxed db writers, the rest covered live), live 33/33 per instance; the
+union is the full **194 commands**. Evidence lands in `verification/logs/`
+(see `verification/report.md` §9–§11).
 
 ## License
 

@@ -1,0 +1,25 @@
+**********************
+PowerShell 记录开始
+开始时间: 20261009002843
+用户名: DESKTOP-5KDGRSM\kn
+RunAs 用户: DESKTOP-5KDGRSM\kn
+配置名称: 
+计算机: DESKTOP-5KDGRSM (Microsoft Windows NT 10.0.26100.0)
+主机应用程序: C:\Program Files\PowerShell\7\pwsh.dll -NoLogo -NoProfile -NonInteractive -Command [Console]::InputEncoding = [System.Text.UTF8Encoding]::new($false); [Console]::OutputEncoding = [System.Text.UTF8Encoding]::new($false); $OutputEncoding = [Console]::OutputEncoding; cd G:\AIato\pi\piterm-qgis-ai; .\scripts\verify_all.ps1 -SkipUnit -SkipSmoke -SkipCoverage -SkipLive 2>&1 | Select-Object -Last 4; Write-Output "exit: $LASTEXITCODE"
+进程 ID: 5760
+PSVersion: 7.6.6
+PSEdition: Core
+GitCommitId: 7.6.6
+OS: Microsoft Windows 10.0.26100
+Platform: Win32NT
+PSCompatibleVersions: 1.0, 2.0, 3.0, 4.0, 5.0, 5.1, 6.0, 7.0
+PSRemotingProtocolVersion: 2.4
+SerializationVersion: 1.1.0.1
+WSManStackVersion: 3.0
+**********************
+verify_all  root=G:\AIato\pi\piterm-qgis-ai
+verify_all  versions=3.44.15, 4.2.3, 4.3.0-dev  sandbox=False
+**********************
+PowerShell 记录结束
+结束时间: 20261009002843
+**********************

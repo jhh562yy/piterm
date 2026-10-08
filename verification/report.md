@@ -231,3 +231,36 @@ via `QgsVectorFileWriter.CreateOrOverwriteLayer`; server kinds keep an
   `bin\setup.bat` + `etc\preremove-conf.bat`, no executables — so it is not a
   runnable build and is excluded; the verified matrix is 3.44.15 / 4.2.3 /
   4.3.0-dev.
+
+## 11. One-command verification (`scripts/verify_all.ps1`, 2026-10-09 00:30)
+
+The live-GUI sweep now ships in-repo (`scripts/qgis_live_coverage.py` —
+portable paths, per-check JSON, non-zero exit on failure) and a single entry
+point runs the whole matrix:
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\verify_all.ps1 -Sandbox
+```
+
+* pipeline: pytest → smoke (63) per build → sandboxed command-coverage per
+  build → live sweep per running instance;
+* every suite's full console output is teed into
+  `verification/logs/verify_all_<stamp>.log` (61 KB for the reference run),
+  next to the usual per-suite JSONs; exit code 0 only when everything passed;
+* switches: `-Versions`, `-LivePorts`,
+  `-SkipUnit / -SkipSmoke / -SkipCoverage / -SkipLive`.
+
+Reference run — whole matrix in ≈36 s (`logs/verify_all_20261009-003025.log`):
+
+| suite | 3.44.15 | 4.2.3 | 4.3.0-dev |
+|---|---|---|---|
+| pytest (36 tests) | `36 passed in 2.51s` | — | — |
+| smoke 63 | ok `…003031` | ok `…003043` | ok `…003054` |
+| coverage, sandboxed db (177 pass / 0 hard fail each) | `…003037` | `…003051` | `…003059` |
+| live 33 | 9877 ok `…003100` | 9887 ok `…003101` | — |
+
+The sandbox-interlock units (`tests/test_coverage_sandbox.py`) guard the
+`--sandbox-db` safety contract: the settings root must live under
+`_scratch/cov_sandbox` (prefix tricks and mismatched env roots are rejected),
+so this command can never write to operator profiles. Suite runtimes measured
+by the run: pytest ≈2.5 s, smoke ≈5 s, coverage ≈6 s, live ≈2 s per instance.

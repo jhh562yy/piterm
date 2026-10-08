@@ -132,3 +132,23 @@ echo '{"type":"layers.list"}' | ncat 127.0.0.1 9877
 | Client can't see tools | check the client spawns `python` on PATH; use absolute paths in configs |
 | Hermes-style agent breaks with pydantic errors | use the “Hermes” snippet (clears venv env vars in a .bat) |
 | QGIS log full of “listening failed” | another bridge instance is already bound; stop duplicates |
+
+## 8. Verifying the installation
+
+```powershell
+# one command: pytest + smoke + sandboxed coverage + live GUI, per installed build
+powershell -ExecutionPolicy Bypass -File scripts\verify_all.ps1 -Sandbox
+
+# quick pass without the heavy sweeps:
+scripts\verify_all.ps1 -SkipCoverage -SkipLive
+```
+
+Every suite drops JSON evidence into `verification\logs\` and the full console
+output of every suite is teed into `verification\logs\verify_all_<stamp>.log`.
+`-Sandbox` additionally exercises the two connection-writing commands
+(`db.connection_add` / `db.import_layer`) against a throwaway settings root —
+operator profiles are never touched (hash-diff evidence included). Individual
+suites: `scripts\qgis_headless_smoke.py` (63 checks),
+`scripts\qgis_command_coverage.py` (194-command sweep),
+`scripts\qgis_live_coverage.py <port>` (33 live checks). See
+`verification/report.md` §9–§11 for the current matrix.

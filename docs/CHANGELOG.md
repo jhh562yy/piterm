@@ -24,6 +24,17 @@
 * Coverage-script hygiene: QGIS-native GeoPackage fixture, per-run port
   overrides (`PITERM_COV_PORT`…), failure `detail` in logs, zero
   ResourceWarnings under `-X dev`.
+* Verification suites are fully in-repo and one-command now: the live-GUI sweep
+  moved to `scripts/qgis_live_coverage.py` (portable paths, per-check JSON,
+  non-zero exit on failure), and `scripts/verify_all.ps1` runs pytest + smoke +
+  sandboxed coverage + live in one pass (full run log under
+  `verification/logs/verify_all_*.log`; the whole reference matrix takes ≈36 s).
+* New `tests/test_coverage_sandbox.py` pins the `--sandbox-db` interlock
+  (settings root must live under `_scratch/cov_sandbox`; prefix tricks and
+  mismatched env roots are rejected) and the cleanup helpers — test suite
+  **26 → 36**.
+* README refreshed: 160+ → **194 commands**; the testing section documents the
+  full matrix and `verify_all.ps1`.
 
 ## 1.0.0 — 2026-10-08
 

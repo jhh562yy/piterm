@@ -1,0 +1,911 @@
+verify_all  root=G:\AIato\pi\piterm-qgis-ai
+verify_all  versions=3.44.15, 4.2.3, 4.3.0-dev  sandbox=True
+
+=== unit tests (pytest) ===
+....................................                                     [100%]
+36 passed in 2.51s
+
+=== smoke / 3.44.15 ===
+[check] server.start                           ok (2 ms)
+[check] ping                                   ok (20 ms)
+[check] hello                                  ok (1 ms)
+[check] command_count>=120                     ok (0 ms)
+[check] info                                   ok (100 ms)
+[check] help.search                            ok (2 ms)
+[check] capabilities                           ok (6 ms)
+[check] metrics                                ok (1 ms)
+[check] diagnose                               ok (1 ms)
+[check] http.ping                              ok (21 ms)
+[check] layers.add_memory                      ok (3 ms)
+[check] layers.list                            ok (0 ms)
+[check] layers.info                            ok (0 ms)
+[check] layers.fields_add                      ok (0 ms)
+[check] layers.tree                            ok (0 ms)
+[check] features.insert                        ok (1 ms)
+[check] features.query                         ok (1 ms)
+[check] features.query.ordered                 ok (0 ms)
+[check] features.count                         ok (0 ms)
+[check] features.field_stats                   ok (2 ms)
+[check] features.unique                        ok (1 ms)
+[check] features.update                        ok (0 ms)
+[check] features.select                        ok (1 ms)
+[check] features.selection                     ok (0 ms)
+[check] field_calculator                       ok (1 ms)
+[check] geometry_info                          ok (0 ms)
+[check] cursor.open                            ok (0 ms)
+[check] cursor.fetch                           ok (0 ms)
+[check] cursor.close                           ok (0 ms)
+[check] expression.validate                    ok (1 ms)
+[check] expression.evaluate                    ok (0 ms)
+[check] transform.coordinates                  ok (2 ms)
+[check] style.renderer_set.graduated           ok (2 ms)
+[check] style.renderer_get                     ok (1 ms)
+[check] style.ramps_list                       ok (492 ms)
+[check] processing.providers                   ok (543 ms)
+[check] processing.search                      ok (2 ms)
+[check] processing.execute.buffer              ok (3 ms)
+[check] processing.start.job                   ok (1 ms)
+[check] job.completed                          ok (0 ms)
+[check] job.list                               ok (1 ms)
+[check] io.export_layer                        ok (51 ms)
+[check] io.export.exists                       ok (0 ms)
+[check] io.read_text                           ok (2 ms)
+[check] project.save                           ok (26 ms)
+[check] project.info                           ok (1 ms)
+[check] project.variables                      ok (0 ms)
+[check] checkpoint.create                      ok (18 ms)
+[check] checkpoint.list                        ok (1 ms)
+[check] journal.export                         ok (1 ms)
+[check] journal.replay.exists                  ok (0 ms)
+[check] workflow.run                           ok (1 ms)
+[check] workflow.refs                          ok (1 ms)
+[check] workflow.dry_run                       ok (0 ms)
+[check] batch                                  ok (0 ms)
+[check] undo.status                            ok (0 ms)
+[check] policy.read_only_blocks_write          ok (expected E_FORBIDDEN)
+[check] policy.read_only_allows_read           ok (0 ms)
+[check] policy.token_rejected                  ok (expected E_AUTH)
+[check] policy.token_ok                        ok (1 ms)
+[check] policy.path_denied                     ok (expected E_PATH_DENIED)
+[check] registry.count>=120                    ok (0 ms)
+[check] registry.count.note                    ok (0 ms)
+SMOKE OK | passed=63 failed=0 | G:\AIato\pi\piterm-qgis-ai\verification\logs\smoke_3.44.15-Solothurn_20261009-003031.json
+
+=== coverage / 3.44.15 (sandboxed db) ===
+[cov] server.start                             ok     ok
+[cov] fixture.add_points                       ok     ok
+[cov] fixture.insert_points                    ok     ok
+[cov] fixture.add_poly                         ok     ok
+[cov] fixture.insert_poly                      ok     ok
+[cov] fixture.add_join                         ok     ok
+[cov] fixture.insert_join                      ok     ok
+[cov] io.write_text                            ok     ok
+[cov] layers.crs_get                           ok     ok
+[cov] layers.extent                            ok     ok
+[cov] layers.fields_list                       ok     ok
+[cov] layers.active_get                        ok     ok
+[cov] layers.active_set                        soft   FAIL: BridgeError: no GUI session; cannot set the active layer
+[cov] layers.find                              ok     ok
+[cov] layers.visibility                        ok     ok
+[cov] layers.subset_filter_set                 ok     ok
+[cov] layers.subset_filter_clear               ok     ok
+[cov] layers.rename                            ok     ok
+[cov] layers.joins_add                         ok     ok
+[cov] layers.joins_list                        ok     ok
+[cov] layers.joins_remove                      ok     ok
+[cov] layers.export                            ok     ok
+[cov] layers.export.exists                     ok     ok
+[cov] layers.duplicate                         ok     ok
+[cov] layers.fields_rename                     ok     ok
+[cov] layers.fields_delete                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\compat.py:249: DeprecationWarning: QgsCoordinateReferenceSystem.createFromId() is deprecated
+  if not crs.createFromId(int(text)):
+[cov] layers.crs_set                           soft   ok
+[cov] layers.set_source                        soft   ok
+[cov] layers.source                            ok     ok
+[cov] layers.opacity                           ok     ok
+[cov] layers.set_property                      soft   ok
+[cov] layers.order.list                        ok     ok
+[cov] layers.order                             ok     ok
+[cov] layers.group_create                      ok     ok
+[cov] layers.group_move_layer                  ok     ok
+[cov] layers.group_remove                      ok     ok
+[cov] layers.add_vector                        ok     ok
+[cov] layers.add_delimited                     ok     ok
+[cov] layers.add_web                           soft   ok
+[cov] layers.remove                            ok     ok
+[cov] features.get                             ok     ok
+[cov] features.update_geometry                 ok     ok
+[cov] features.spatial_query                   ok     ok
+[cov] features.nearest                         ok     ok
+[cov] features.selection_clear                 ok     ok
+[cov] features.cursors_list                    ok     ok
+[cov] features.delete                          ok     ok
+[cov] features.field_stats                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\style.py:525: DeprecationWarning: QgsGraduatedSymbolRenderer.setMode() is deprecated
+  renderer.setMode(mode)
+[cov] expression.functions_search              ok     ok
+[cov] style.classification_breaks              ok     ok
+[cov] style.labeling_set                       ok     ok
+[cov] style.labeling_get                       ok     ok
+[cov] style.symbol_set                         ok     ok
+[cov] style.copy                               ok     ok
+[cov] style.qml_save                           ok     ok
+[cov] style.qml_apply                          ok     ok
+[cov] session.edit_begin                       ok     ok
+[cov] features.update                          ok     ok
+[cov] session.edit_commit                      ok     ok
+[cov] session.undo                             ok     ok
+[cov] session.redo                             ok     ok
+[cov] session.edit_begin#2                     ok     ok
+[cov] session.edit_rollback                    ok     ok
+[cov] session.journal_list                     ok     ok
+[cov] session.journal_clear                    ok     ok
+[cov] session.checkpoint_create                ok     ok
+[cov] session.checkpoint_restore               soft   ok
+[cov] session.checkpoint_delete                soft   ok
+[cov] fixture.raster                           ok     ok
+[cov] layers.add_raster                        ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:46: DeprecationWarning: QgsRasterInterface.bandStatistics() is deprecated
+  stats = provider.bandStatistics(band, _stats_enum(),
+[cov] raster.info                              soft   ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:70: DeprecationWarning: QgsRasterInterface.bandStatistics() is deprecated
+  stats = target.dataProvider().bandStatistics(band, _stats_enum(),
+[cov] raster.stats                             ok     ok
+ERROR 5: cov.tif, band 1: dfMax should be strictly greater than dfMin
+[cov] raster.histogram                         ok     ok
+[cov] raster.renderer_info                     ok     ok
+[cov] raster.minmax_set                        ok     ok
+[cov] raster.colormap_set                      soft   ok
+[cov] raster.colormap_get                      ok     ok
+[cov] raster.sample                            soft   ok
+[cov] raster.export                            ok     ok
+[cov] raster.export.exists                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:317: DeprecationWarning: QgsRasterCalculator constructor is deprecated
+  calculator = QgsRasterCalculator(str(expression), out_path, "GTiff",
+[cov] raster.calculator                        soft   ok
+[cov] raster.zonal_stats                       soft   ok
+[cov] processing.algorithms_get                ok     ok
+[cov] processing.batch_execute                 ok     ok
+[cov] processing.models_list                   ok     ok
+[cov] processing.models_run                    ok     ok
+[cov] job.start.setup                          ok     ok
+[cov] job.get                                  ok     ok
+[cov] job.log                                  ok     ok
+[cov] job.cancel                               ok     ok
+[cov] job.clear                                ok     ok
+[cov] io.convert                               soft   ok
+[cov] io.import_file                           soft   ok
+[cov] io.fetch_url                             ok     ok
+[cov] io.fetch_url.content                     ok     ok
+[cov] layout.create                            ok     ok
+[cov] layout.list                              ok     ok
+[cov] layout.add_map                           ok     ok
+[cov] layout.add_legend                        ok     ok
+[cov] layout.add_scalebar                      ok     ok
+[cov] layout.add_label                         ok     ok
+[cov] layout.add_picture                       soft   ok
+[cov] layout.add_shape                         soft   ok
+[cov] layout.add_table                         soft   ok
+[cov] layout.info                              ok     ok
+[cov] layout.export                            ok     ok
+[cov] layout.export.exists                     ok     ok
+ERROR 6: The PNG driver does not support update access to existing datasets.
+[cov] layout.export.png                        soft   ok
+[cov] layout.export.png.exists                 soft   ok
+[cov] layout.atlas_configure                   soft   ok
+[cov] layout.atlas_export                      soft   ok
+[cov] layout.remove                            ok     ok
+[cov] project.metadata_get                     ok     ok
+[cov] project.metadata_set                     ok     ok
+[cov] project.bookmarks_add                    soft   ok
+[cov] project.bookmarks_list                   ok     ok
+[cov] project.bookmarks_zoom                   soft   FAIL: BridgeError: no map canvas available (headless session?)
+[cov] project.bookmarks_remove                 ok     ok
+[cov] project.themes_add                       soft   FAIL: BridgeError: saving map themes needs a GUI session in this QGIS build (QgsMapThemeCollection.insert(): argument 2 has unexpected type 'QgsLayerTree')
+[cov] project.themes_list                      ok     ok
+[cov] project.themes_apply                     soft   FAIL: BridgeError: could not apply theme 'cov_theme': QgsMapThemeCollection.applyTheme(): not enough arguments
+[cov] project.themes_remove                    ok     ok
+[cov] project.variables_list                   ok     ok
+[cov] project.variables_remove                 ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\compat.py:249: DeprecationWarning: QgsCoordinateReferenceSystem.createFromId() is deprecated
+  if not crs.createFromId(int(text)):
+[cov] project.set_crs                          soft   ok
+[cov] project.save                             ok     ok
+[cov] project.new                              ok     ok
+[cov] project.new.cleared                      ok     ok
+[cov] project.open                             ok     ok
+[cov] project.open.loaded                      ok     ok
+[cov] python.exec                              ok     ok
+[cov] python.exec.result                       ok     ok
+[cov] python.exec.blocks_import                ok     ok
+[cov] python.exec.blocks_open                  ok     ok
+[cov] python.exec_full                         ok     ok
+[cov] db.connections_list                      ok     ok
+[cov] db.tables                                ok     ok
+[cov] db.sql                                   ok     ok
+[cov] db.add_layer                             ok     ok
+[cov] db.connection_remove                     soft   ok
+[cov] sandbox.interlock                        ok     ok
+[cov] sandbox.gpkg_fixture                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\layers.py:192: DeprecationWarning: QgsField constructor is deprecated
+  field = QgsField(str(spec.get("name")),
+[cov] sandbox.source_layer                     ok     ok
+[cov] sandbox.source_seed                      ok     ok
+[cov] sandbox.source_layer2                    ok     ok
+[cov] sandbox.source_seed2                     ok     ok
+[cov] db.connection_add                        ok     ok
+[cov] db.connection_add#pg                     ok     ok
+[cov] db.connection_add#invalid                ok     ok
+[cov] db.connections_list#added                ok     ok
+[cov] sandbox.settings_readback                ok     ok
+[cov] db.tables                                ok     ok
+[cov] db.import_layer                          ok     ok
+[cov] db.import_layer#exists                   ok     ok
+[cov] db.tables#imported                       ok     ok
+[cov] db.sql#read                              ok     ok
+[cov] db.import_layer#overwrite                ok     ok
+[cov] db.sql#read#overwrite                    ok     ok
+[cov] db.add_layer                             ok     ok
+[cov] db.add_layer#count                       ok     ok
+[cov] db.connection_remove#gpkg                ok     ok
+[cov] db.connection_remove#pg                  ok     ok
+[cov] db.connections_list#cleaned              ok     ok
+[cov] sandbox.evidence                         ok     ok
+[cov] layers.remove#db                         ok     ok
+[cov] layers.remove#db-src                     ok     ok
+[cov] layers.remove#db-src2                    ok     ok
+[cov] sandbox.cleanup                          ok     ok
+[cov] plugins.list                             ok     ok
+[cov] plugins.info                             ok     ok
+[cov] plugins.enable                           soft   ok
+[cov] plugins.disable                          soft   ok
+[cov] plugins.reload                           soft   ok
+[cov] system.config_get                        ok     ok
+[cov] system.config_set                        ok     ok
+[cov] system.audit_tail                        soft   ok
+[cov] system.messages                          soft   ok
+[cov] system.events_poll                       ok     ok
+[cov] system.clients                           ok     ok
+[cov] system.clients_kick                      soft   ok
+[cov] system.shutdown                          ok     ok
+COVERAGE OK | passed=177 failed=4 | exercised=133/194 | G:\AIato\pi\piterm-qgis-ai\verification\logs\coverage_3.44.15-Solothurn_20261009-003037.json
+  SOFT layers.active_set: BridgeError: no GUI session; cannot set the active layer
+  SOFT project.bookmarks_zoom: BridgeError: no map canvas available (headless session?)
+  SOFT project.themes_add: BridgeError: saving map themes needs a GUI session in this QGIS build (QgsMapThemeCollection.insert(): argument 2 has unexpected type 'QgsLayerTree')
+  SOFT project.themes_apply: BridgeError: could not apply theme 'cov_theme': QgsMapThemeCollection.applyTheme(): not enough arguments
+
+=== smoke / 4.2.3 ===
+[check] server.start                           ok (1 ms)
+[check] ping                                   ok (12 ms)
+[check] hello                                  ok (1 ms)
+[check] command_count>=120                     ok (0 ms)
+[check] info                                   ok (42 ms)
+[check] help.search                            ok (1 ms)
+[check] capabilities                           ok (6 ms)
+[check] metrics                                ok (1 ms)
+[check] diagnose                               ok (1 ms)
+[check] http.ping                              ok (19 ms)
+[check] layers.add_memory                      ok (247 ms)
+[check] layers.list                            ok (1 ms)
+[check] layers.info                            ok (1 ms)
+[check] layers.fields_add                      ok (1 ms)
+[check] layers.tree                            ok (0 ms)
+[check] features.insert                        ok (1 ms)
+[check] features.query                         ok (1 ms)
+[check] features.query.ordered                 ok (0 ms)
+[check] features.count                         ok (1 ms)
+[check] features.field_stats                   ok (1 ms)
+[check] features.unique                        ok (0 ms)
+[check] features.update                        ok (0 ms)
+[check] features.select                        ok (0 ms)
+[check] features.selection                     ok (0 ms)
+[check] field_calculator                       ok (1 ms)
+[check] geometry_info                          ok (0 ms)
+[check] cursor.open                            ok (0 ms)
+[check] cursor.fetch                           ok (0 ms)
+[check] cursor.close                           ok (0 ms)
+[check] expression.validate                    ok (0 ms)
+[check] expression.evaluate                    ok (0 ms)
+[check] transform.coordinates                  ok (2 ms)
+[check] style.renderer_set.graduated           ok (5 ms)
+[check] style.renderer_get                     ok (1 ms)
+[check] style.ramps_list                       ok (0 ms)
+[check] processing.providers                   ok (1547 ms)
+[check] processing.search                      ok (7 ms)
+[check] processing.execute.buffer              ok (5 ms)
+[check] processing.start.job                   ok (3 ms)
+[check] job.completed                          ok (0 ms)
+[check] job.list                               ok (1 ms)
+[check] io.export_layer                        ok (43 ms)
+[check] io.export.exists                       ok (0 ms)
+[check] io.read_text                           ok (3 ms)
+[check] project.save                           ok (53 ms)
+[check] project.info                           ok (3 ms)
+[check] project.variables                      ok (2 ms)
+[check] checkpoint.create                      ok (53 ms)
+[check] checkpoint.list                        ok (1 ms)
+[check] journal.export                         ok (5 ms)
+[check] journal.replay.exists                  ok (0 ms)
+[check] workflow.run                           ok (4 ms)
+[check] workflow.refs                          ok (2 ms)
+[check] workflow.dry_run                       ok (1 ms)
+[check] batch                                  ok (1 ms)
+[check] undo.status                            ok (2 ms)
+[check] policy.read_only_blocks_write          ok (expected E_FORBIDDEN)
+[check] policy.read_only_allows_read           ok (2 ms)
+[check] policy.token_rejected                  ok (expected E_AUTH)
+[check] policy.token_ok                        ok (4 ms)
+[check] policy.path_denied                     ok (expected E_PATH_DENIED)
+[check] registry.count>=120                    ok (0 ms)
+[check] registry.count.note                    ok (0 ms)
+SMOKE OK | passed=63 failed=0 | G:\AIato\pi\piterm-qgis-ai\verification\logs\smoke_4.2.3-Belém_do_Pará_20261009-003043.json
+
+=== coverage / 4.2.3 (sandboxed db) ===
+[cov] server.start                             ok     ok
+[cov] fixture.add_points                       ok     ok
+[cov] fixture.insert_points                    ok     ok
+[cov] fixture.add_poly                         ok     ok
+[cov] fixture.insert_poly                      ok     ok
+[cov] fixture.add_join                         ok     ok
+[cov] fixture.insert_join                      ok     ok
+[cov] io.write_text                            ok     ok
+[cov] layers.crs_get                           ok     ok
+[cov] layers.extent                            ok     ok
+[cov] layers.fields_list                       ok     ok
+[cov] layers.active_get                        ok     ok
+[cov] layers.active_set                        soft   FAIL: BridgeError: no GUI session; cannot set the active layer
+[cov] layers.find                              ok     ok
+[cov] layers.visibility                        ok     ok
+[cov] layers.subset_filter_set                 ok     ok
+[cov] layers.subset_filter_clear               ok     ok
+[cov] layers.rename                            ok     ok
+[cov] layers.joins_add                         ok     ok
+[cov] layers.joins_list                        ok     ok
+[cov] layers.joins_remove                      ok     ok
+[cov] layers.export                            ok     ok
+[cov] layers.export.exists                     ok     ok
+[cov] layers.duplicate                         ok     ok
+[cov] layers.fields_rename                     ok     ok
+[cov] layers.fields_delete                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\compat.py:249: DeprecationWarning: QgsCoordinateReferenceSystem.createFromId() is deprecated: Since 3.10. We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+  if not crs.createFromId(int(text)):
+[cov] layers.crs_set                           soft   ok
+[cov] layers.set_source                        soft   ok
+[cov] layers.source                            ok     ok
+[cov] layers.opacity                           ok     ok
+[cov] layers.set_property                      soft   ok
+[cov] layers.order.list                        ok     ok
+[cov] layers.order                             ok     ok
+[cov] layers.group_create                      ok     ok
+[cov] layers.group_move_layer                  ok     ok
+[cov] layers.group_remove                      ok     ok
+[cov] layers.add_vector                        ok     ok
+[cov] layers.add_delimited                     ok     ok
+[cov] layers.add_web                           soft   ok
+[cov] layers.remove                            ok     ok
+[cov] features.get                             ok     ok
+[cov] features.update_geometry                 ok     ok
+[cov] features.spatial_query                   ok     ok
+[cov] features.nearest                         ok     ok
+[cov] features.selection_clear                 ok     ok
+[cov] features.cursors_list                    ok     ok
+[cov] features.delete                          ok     ok
+[cov] features.field_stats                     ok     ok
+[cov] expression.functions_search              ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\style.py:525: DeprecationWarning: QgsGraduatedSymbolRenderer.setMode() is deprecated: Since 3.10. Use classficationMethod() instead.
+  renderer.setMode(mode)
+[cov] style.classification_breaks              ok     ok
+[cov] style.labeling_set                       ok     ok
+[cov] style.labeling_get                       ok     ok
+[cov] style.symbol_set                         ok     ok
+[cov] style.copy                               ok     ok
+[cov] style.qml_save                           ok     ok
+[cov] style.qml_apply                          ok     ok
+[cov] session.edit_begin                       ok     ok
+[cov] features.update                          ok     ok
+[cov] session.edit_commit                      ok     ok
+[cov] session.undo                             ok     ok
+[cov] session.redo                             ok     ok
+[cov] session.edit_begin#2                     ok     ok
+[cov] session.edit_rollback                    ok     ok
+[cov] session.journal_list                     ok     ok
+[cov] session.journal_clear                    ok     ok
+[cov] session.checkpoint_create                ok     ok
+[cov] session.checkpoint_restore               soft   ok
+[cov] session.checkpoint_delete                soft   ok
+[cov] fixture.raster                           ok     ok
+[cov] layers.add_raster                        ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:46: DeprecationWarning: QgsRasterInterface.bandStatistics() is deprecated: Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument.
+  stats = provider.bandStatistics(band, _stats_enum(),
+[cov] raster.info                              soft   ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:70: DeprecationWarning: QgsRasterInterface.bandStatistics() is deprecated: Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument.
+  stats = target.dataProvider().bandStatistics(band, _stats_enum(),
+ERROR 5: cov.tif, band 1: dfMax should be strictly greater than dfMin
+[cov] raster.stats                             ok     ok
+[cov] raster.histogram                         ok     ok
+[cov] raster.renderer_info                     ok     ok
+[cov] raster.minmax_set                        ok     ok
+[cov] raster.colormap_set                      soft   ok
+[cov] raster.colormap_get                      ok     ok
+[cov] raster.sample                            soft   ok
+[cov] raster.export                            ok     ok
+[cov] raster.export.exists                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:317: DeprecationWarning: QgsRasterCalculator constructor is deprecated: Since 3.8. Use the version with transformContext instead.
+  calculator = QgsRasterCalculator(str(expression), out_path, "GTiff",
+[cov] raster.calculator                        soft   ok
+[cov] raster.zonal_stats                       soft   ok
+[cov] processing.algorithms_get                ok     ok
+[cov] processing.batch_execute                 ok     ok
+[cov] processing.models_list                   ok     ok
+[cov] processing.models_run                    ok     ok
+[cov] job.start.setup                          ok     ok
+[cov] job.get                                  ok     ok
+[cov] job.log                                  ok     ok
+[cov] job.cancel                               ok     ok
+[cov] job.clear                                ok     ok
+[cov] io.convert                               soft   ok
+[cov] io.import_file                           soft   ok
+[cov] io.fetch_url                             ok     ok
+[cov] io.fetch_url.content                     ok     ok
+[cov] layout.create                            ok     ok
+[cov] layout.list                              ok     ok
+[cov] layout.add_map                           ok     ok
+[cov] layout.add_legend                        ok     ok
+[cov] layout.add_scalebar                      ok     ok
+[cov] layout.add_label                         ok     ok
+[cov] layout.add_picture                       soft   ok
+[cov] layout.add_shape                         soft   ok
+[cov] layout.add_table                         soft   ok
+[cov] layout.info                              ok     ok
+[cov] layout.export                            ok     ok
+[cov] layout.export.exists                     ok     ok
+ERROR 6: The PNG driver does not support update access to existing datasets.
+[cov] layout.export.png                        soft   ok
+[cov] layout.export.png.exists                 soft   ok
+[cov] layout.atlas_configure                   soft   ok
+[cov] layout.atlas_export                      soft   ok
+[cov] layout.remove                            ok     ok
+[cov] project.metadata_get                     ok     ok
+[cov] project.metadata_set                     ok     ok
+[cov] project.bookmarks_add                    soft   ok
+[cov] project.bookmarks_list                   ok     ok
+[cov] project.bookmarks_zoom                   soft   FAIL: BridgeError: no map canvas available (headless session?)
+[cov] project.bookmarks_remove                 ok     ok
+[cov] project.themes_add                       soft   FAIL: BridgeError: saving map themes needs a GUI session in this QGIS build (QgsMapThemeCollection.insert(): argument 2 has unexpected type 'QgsLayerTree')
+[cov] project.themes_list                      ok     ok
+[cov] project.themes_apply                     soft   FAIL: BridgeError: could not apply theme 'cov_theme': QgsMapThemeCollection.applyTheme(): not enough arguments
+[cov] project.themes_remove                    ok     ok
+[cov] project.variables_list                   ok     ok
+[cov] project.variables_remove                 ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\compat.py:249: DeprecationWarning: QgsCoordinateReferenceSystem.createFromId() is deprecated: Since 3.10. We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+  if not crs.createFromId(int(text)):
+[cov] project.set_crs                          soft   ok
+[cov] project.save                             ok     ok
+[cov] project.new                              ok     ok
+[cov] project.new.cleared                      ok     ok
+[cov] project.open                             ok     ok
+[cov] project.open.loaded                      ok     ok
+[cov] python.exec                              ok     ok
+[cov] python.exec.result                       ok     ok
+[cov] python.exec.blocks_import                ok     ok
+[cov] python.exec.blocks_open                  ok     ok
+[cov] python.exec_full                         ok     ok
+[cov] db.connections_list                      ok     ok
+[cov] db.tables                                ok     ok
+[cov] db.sql                                   ok     ok
+[cov] db.add_layer                             ok     ok
+[cov] db.connection_remove                     soft   ok
+[cov] sandbox.interlock                        ok     ok
+[cov] sandbox.gpkg_fixture                     ok     ok
+[cov] sandbox.source_layer                     ok     ok
+[cov] sandbox.source_seed                      ok     ok
+[cov] sandbox.source_layer2                    ok     ok
+[cov] sandbox.source_seed2                     ok     ok
+[cov] db.connection_add                        ok     ok
+[cov] db.connection_add#pg                     ok     ok
+[cov] db.connection_add#invalid                ok     ok
+[cov] db.connections_list#added                ok     ok
+[cov] sandbox.settings_readback                ok     ok
+[cov] db.tables                                ok     ok
+[cov] db.import_layer                          ok     ok
+[cov] db.import_layer#exists                   ok     ok
+[cov] db.tables#imported                       ok     ok
+[cov] db.sql#read                              ok     ok
+[cov] db.import_layer#overwrite                ok     ok
+[cov] db.sql#read#overwrite                    ok     ok
+[cov] db.add_layer                             ok     ok
+[cov] db.add_layer#count                       ok     ok
+[cov] db.connection_remove#gpkg                ok     ok
+[cov] db.connection_remove#pg                  ok     ok
+[cov] db.connections_list#cleaned              ok     ok
+[cov] sandbox.evidence                         ok     ok
+[cov] layers.remove#db                         ok     ok
+[cov] layers.remove#db-src                     ok     ok
+[cov] layers.remove#db-src2                    ok     ok
+[cov] sandbox.cleanup                          ok     ok
+[cov] plugins.list                             ok     ok
+[cov] plugins.info                             ok     ok
+[cov] plugins.enable                           soft   ok
+[cov] plugins.disable                          soft   ok
+[cov] plugins.reload                           soft   ok
+[cov] system.config_get                        ok     ok
+[cov] system.config_set                        ok     ok
+[cov] system.audit_tail                        soft   ok
+[cov] system.messages                          soft   ok
+[cov] system.events_poll                       ok     ok
+[cov] system.clients                           ok     ok
+[cov] system.clients_kick                      soft   ok
+[cov] system.shutdown                          ok     ok
+COVERAGE OK | passed=177 failed=4 | exercised=133/194 | G:\AIato\pi\piterm-qgis-ai\verification\logs\coverage_4.2.3-Belém_do_Pará_20261009-003051.json
+  SOFT layers.active_set: BridgeError: no GUI session; cannot set the active layer
+  SOFT project.bookmarks_zoom: BridgeError: no map canvas available (headless session?)
+  SOFT project.themes_add: BridgeError: saving map themes needs a GUI session in this QGIS build (QgsMapThemeCollection.insert(): argument 2 has unexpected type 'QgsLayerTree')
+  SOFT project.themes_apply: BridgeError: could not apply theme 'cov_theme': QgsMapThemeCollection.applyTheme(): not enough arguments
+
+=== smoke / 4.3.0-dev ===
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\providers\qgsproviderregistry.cpp(327) : (QgsProviderRegistry::init) [5ms] Checking D:/qgis/4.3.0/apps/qgis-dev/plugins/plugin_grass8.dll: ...invalid (lib not loadable): Cannot load library D:\qgis\4.3.0\apps\qgis-dev\plugins\plugin_grass8.dll: 找不到指定的模块。
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\providers\qgsproviderregistry.cpp(327) : (QgsProviderRegistry::init) [4ms] Checking D:/qgis/4.3.0/apps/qgis-dev/plugins/provider_grass8.dll: ...invalid (lib not loadable): Cannot load library D:\qgis\4.3.0\apps\qgis-dev\plugins\provider_grass8.dll: 找不到指定的模块。
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\providers\qgsproviderregistry.cpp(327) : (QgsProviderRegistry::init) [0ms] Checking D:/qgis/4.3.0/apps/qgis-dev/plugins/provider_grassraster8.dll: ...invalid (lib not loadable): Cannot load library D:\qgis\4.3.0\apps\qgis-dev\plugins\provider_grassraster8.dll: 找不到指定的模块。
+[check] server.start                           ok (1 ms)
+[check] ping                                   ok (9 ms)
+[check] hello                                  ok (1 ms)
+[check] command_count>=120                     ok (0 ms)
+[check] info                                   ok (36 ms)
+[check] help.search                            ok (0 ms)
+[check] capabilities                           ok (2 ms)
+[check] metrics                                ok (0 ms)
+[check] diagnose                               ok (0 ms)
+[check] http.ping                              ok (118 ms)
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [596ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[check] layers.add_memory                      ok (246 ms)
+[check] layers.list                            ok (1 ms)
+[check] layers.info                            ok (1 ms)
+[check] layers.fields_add                      ok (1 ms)
+[check] layers.tree                            ok (0 ms)
+[check] features.insert                        ok (1 ms)
+[check] features.query                         ok (1 ms)
+[check] features.query.ordered                 ok (0 ms)
+[check] features.count                         ok (0 ms)
+[check] features.field_stats                   ok (1 ms)
+[check] features.unique                        ok (0 ms)
+[check] features.update                        ok (1 ms)
+[check] features.select                        ok (1 ms)
+[check] features.selection                     ok (0 ms)
+[check] field_calculator                       ok (1 ms)
+[check] geometry_info                          ok (0 ms)
+[check] cursor.open                            ok (0 ms)
+[check] cursor.fetch                           ok (0 ms)
+[check] cursor.close                           ok (0 ms)
+[check] expression.validate                    ok (0 ms)
+[check] expression.evaluate                    ok (0 ms)
+[check] transform.coordinates                  ok (2 ms)
+[check] style.renderer_set.graduated           ok (4 ms)
+[check] style.renderer_get                     ok (0 ms)
+[check] style.ramps_list                       ok (0 ms)
+[check] processing.providers                   ok (254 ms)
+[check] processing.search                      ok (2 ms)
+[check] processing.execute.buffer              ok (2 ms)
+[check] processing.start.job                   ok (1 ms)
+[check] job.completed                          ok (0 ms)
+[check] job.list                               ok (1 ms)
+[check] io.export_layer                        ok (22 ms)
+[check] io.export.exists                       ok (0 ms)
+[check] io.read_text                           ok (1 ms)
+[check] project.save                           ok (18 ms)
+[check] project.info                           ok (1 ms)
+[check] project.variables                      ok (0 ms)
+[check] checkpoint.create                      ok (16 ms)
+[check] checkpoint.list                        ok (0 ms)
+[check] journal.export                         ok (1 ms)
+[check] journal.replay.exists                  ok (0 ms)
+[check] workflow.run                           ok (1 ms)
+[check] workflow.refs                          ok (1 ms)
+[check] workflow.dry_run                       ok (0 ms)
+[check] batch                                  ok (0 ms)
+[check] undo.status                            ok (1 ms)
+[check] policy.read_only_blocks_write          ok (expected E_FORBIDDEN)
+[check] policy.read_only_allows_read           ok (0 ms)
+[check] policy.token_rejected                  ok (expected E_AUTH)
+[check] policy.token_ok                        ok (0 ms)
+[check] policy.path_denied                     ok (expected E_PATH_DENIED)
+[check] registry.count>=120                    ok (0 ms)
+[check] registry.count.note                    ok (0 ms)
+SMOKE OK | passed=63 failed=0 | G:\AIato\pi\piterm-qgis-ai\verification\logs\smoke_4.3.0-Master_20261009-003054.json
+
+=== coverage / 4.3.0-dev (sandboxed db) ===
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\providers\qgsproviderregistry.cpp(327) : (QgsProviderRegistry::init) [4ms] Checking D:/qgis/4.3.0/apps/qgis-dev/plugins/plugin_grass8.dll: ...invalid (lib not loadable): Cannot load library D:\qgis\4.3.0\apps\qgis-dev\plugins\plugin_grass8.dll: 找不到指定的模块。
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\providers\qgsproviderregistry.cpp(327) : (QgsProviderRegistry::init) [3ms] Checking D:/qgis/4.3.0/apps/qgis-dev/plugins/provider_grass8.dll: ...invalid (lib not loadable): Cannot load library D:\qgis\4.3.0\apps\qgis-dev\plugins\provider_grass8.dll: 找不到指定的模块。
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\providers\qgsproviderregistry.cpp(327) : (QgsProviderRegistry::init) [0ms] Checking D:/qgis/4.3.0/apps/qgis-dev/plugins/provider_grassraster8.dll: ...invalid (lib not loadable): Cannot load library D:\qgis\4.3.0\apps\qgis-dev\plugins\provider_grassraster8.dll: 找不到指定的模块。
+[cov] server.start                             ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [439ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] fixture.add_points                       ok     ok
+[cov] fixture.insert_points                    ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [301ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] fixture.add_poly                         ok     ok
+[cov] fixture.insert_poly                      ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [1ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] fixture.add_join                         ok     ok
+[cov] fixture.insert_join                      ok     ok
+[cov] io.write_text                            ok     ok
+[cov] layers.crs_get                           ok     ok
+[cov] layers.extent                            ok     ok
+[cov] layers.fields_list                       ok     ok
+[cov] layers.active_get                        ok     ok
+[cov] layers.active_set                        soft   FAIL: BridgeError: no GUI session; cannot set the active layer
+[cov] layers.find                              ok     ok
+[cov] layers.visibility                        ok     ok
+[cov] layers.subset_filter_set                 ok     ok
+[cov] layers.subset_filter_clear               ok     ok
+[cov] layers.rename                            ok     ok
+[cov] layers.joins_add                         ok     ok
+[cov] layers.joins_list                        ok     ok
+[cov] layers.joins_remove                      ok     ok
+[cov] layers.export                            ok     ok
+[cov] layers.export.exists                     ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [84ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] layers.duplicate                         ok     ok
+[cov] layers.fields_rename                     ok     ok
+[cov] layers.fields_delete                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\compat.py:249: DeprecationWarning: QgsCoordinateReferenceSystem.createFromId() is deprecated: Since 3.10. We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+  if not crs.createFromId(int(text)):
+[cov] layers.crs_set                           soft   ok
+[cov] layers.set_source                        soft   ok
+[cov] layers.source                            ok     ok
+[cov] layers.opacity                           ok     ok
+[cov] layers.set_property                      soft   ok
+[cov] layers.order.list                        ok     ok
+[cov] layers.order                             ok     ok
+[cov] layers.group_create                      ok     ok
+[cov] layers.group_move_layer                  ok     ok
+[cov] layers.group_remove                      ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [30ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] layers.add_vector                        ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [5ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] layers.add_delimited                     ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [2ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] layers.add_web                           soft   ok
+[cov] layers.remove                            ok     ok
+[cov] features.get                             ok     ok
+[cov] features.update_geometry                 ok     ok
+[cov] features.spatial_query                   ok     ok
+[cov] features.nearest                         ok     ok
+[cov] features.selection_clear                 ok     ok
+[cov] features.cursors_list                    ok     ok
+[cov] features.delete                          ok     ok
+[cov] features.field_stats                     ok     ok
+[cov] expression.functions_search              ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\style.py:525: DeprecationWarning: QgsGraduatedSymbolRenderer.setMode() is deprecated: Since 3.10. Use classficationMethod() instead.
+  renderer.setMode(mode)
+[cov] style.classification_breaks              ok     ok
+[cov] style.labeling_set                       ok     ok
+[cov] style.labeling_get                       ok     ok
+[cov] style.symbol_set                         ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayerstyle.cpp(82) : (QgsMapLayerStyle::writeToLayer) [12ms] Failed to import style to layer: Cannot apply style with symbology to layer with a different geometry type
+[cov] style.copy                               ok     ok
+[cov] style.qml_save                           ok     ok
+[cov] style.qml_apply                          ok     ok
+[cov] session.edit_begin                       ok     ok
+[cov] features.update                          ok     ok
+[cov] session.edit_commit                      ok     ok
+[cov] session.undo                             ok     ok
+[cov] session.redo                             ok     ok
+[cov] session.edit_begin#2                     ok     ok
+[cov] session.edit_rollback                    ok     ok
+[cov] session.journal_list                     ok     ok
+[cov] session.journal_clear                    ok     ok
+[cov] session.checkpoint_create                ok     ok
+[cov] session.checkpoint_restore               soft   ok
+[cov] session.checkpoint_delete                soft   ok
+[cov] fixture.raster                           ok     ok
+[cov] layers.add_raster                        ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:46: DeprecationWarning: QgsRasterInterface.bandStatistics() is deprecated: Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument.
+  stats = provider.bandStatistics(band, _stats_enum(),
+[cov] raster.info                              soft   ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:70: DeprecationWarning: QgsRasterInterface.bandStatistics() is deprecated: Since 3.40. Use Qgis.RasterBandStatistic instead of int for ``stats`` argument.
+  stats = target.dataProvider().bandStatistics(band, _stats_enum(),
+[cov] raster.stats                             ok     ok
+ERROR 5: cov.tif, band 1: dfMax should be strictly greater than dfMin
+[cov] raster.histogram                         ok     ok
+[cov] raster.renderer_info                     ok     ok
+[cov] raster.minmax_set                        ok     ok
+[cov] raster.colormap_set                      soft   ok
+[cov] raster.colormap_get                      ok     ok
+[cov] raster.sample                            soft   ok
+[cov] raster.export                            ok     ok
+[cov] raster.export.exists                     ok     ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\handlers\raster.py:317: DeprecationWarning: QgsRasterCalculator constructor is deprecated: Since 3.8. Use the version with transformContext instead.
+  calculator = QgsRasterCalculator(str(expression), out_path, "GTiff",
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [8ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] raster.calculator                        soft   ok
+[cov] raster.zonal_stats                       soft   ok
+[cov] processing.algorithms_get                ok     ok
+[cov] processing.batch_execute                 ok     ok
+[cov] processing.models_list                   ok     ok
+[cov] processing.models_run                    ok     ok
+[cov] job.start.setup                          ok     ok
+[cov] job.get                                  ok     ok
+[cov] job.log                                  ok     ok
+[cov] job.cancel                               ok     ok
+[cov] job.clear                                ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [333ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] io.convert                               soft   ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [78ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] io.import_file                           soft   ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [146ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] io.fetch_url                             ok     ok
+[cov] io.fetch_url.content                     ok     ok
+[cov] layout.create                            ok     ok
+[cov] layout.list                              ok     ok
+[cov] layout.add_map                           ok     ok
+[cov] layout.add_legend                        ok     ok
+[cov] layout.add_scalebar                      ok     ok
+[cov] layout.add_label                         ok     ok
+[cov] layout.add_picture                       soft   ok
+[cov] layout.add_shape                         soft   ok
+[cov] layout.add_table                         soft   ok
+[cov] layout.info                              ok     ok
+[cov] layout.export                            ok     ok
+[cov] layout.export.exists                     ok     ok
+ERROR 6: The PNG driver does not support update access to existing datasets.
+[cov] layout.export.png                        soft   ok
+[cov] layout.export.png.exists                 soft   ok
+[cov] layout.atlas_configure                   soft   ok
+[cov] layout.atlas_export                      soft   ok
+[cov] layout.remove                            ok     ok
+[cov] project.metadata_get                     ok     ok
+[cov] project.metadata_set                     ok     ok
+[cov] project.bookmarks_add                    soft   ok
+[cov] project.bookmarks_list                   ok     ok
+[cov] project.bookmarks_zoom                   soft   FAIL: BridgeError: no map canvas available (headless session?)
+[cov] project.bookmarks_remove                 ok     ok
+[cov] project.themes_add                       soft   FAIL: BridgeError: saving map themes needs a GUI session in this QGIS build (QgsMapThemeCollection.insert(): argument 2 has unexpected type 'QgsLayerTree')
+[cov] project.themes_list                      ok     ok
+[cov] project.themes_apply                     soft   FAIL: BridgeError: could not apply theme 'cov_theme': QgsMapThemeCollection.applyTheme(): not enough arguments
+[cov] project.themes_remove                    ok     ok
+[cov] project.variables_list                   ok     ok
+[cov] project.variables_remove                 ok     ok
+[cov] project.set_crs                          soft   ok
+G:\AIato\pi\piterm-qgis-ai\plugin\piterm_qgis_ai\compat.py:249: DeprecationWarning: QgsCoordinateReferenceSystem.createFromId() is deprecated: Since 3.10. We encourage you to use EPSG code or WKT to describe CRSes in your code wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile, and Proj strings are a lossy format.
+  if not crs.createFromId(int(text)):
+[cov] project.save                             ok     ok
+[cov] project.new                              ok     ok
+[cov] project.new.cleared                      ok     ok
+[cov] project.open                             ok     ok
+[cov] project.open.loaded                      ok     ok
+[cov] python.exec                              ok     ok
+[cov] python.exec.result                       ok     ok
+[cov] python.exec.blocks_import                ok     ok
+[cov] python.exec.blocks_open                  ok     ok
+[cov] python.exec_full                         ok     ok
+[cov] db.connections_list                      ok     ok
+[cov] db.tables                                ok     ok
+[cov] db.sql                                   ok     ok
+[cov] db.add_layer                             ok     ok
+[cov] db.connection_remove                     soft   ok
+[cov] sandbox.interlock                        ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [503ms] [thread:0x1bc84c0ab90] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] sandbox.gpkg_fixture                     ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [81ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] sandbox.source_layer                     ok     ok
+[cov] sandbox.source_seed                      ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [7ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] sandbox.source_layer2                    ok     ok
+[cov] sandbox.source_seed2                     ok     ok
+[cov] db.connection_add                        ok     ok
+[cov] db.connection_add#pg                     ok     ok
+[cov] db.connection_add#invalid                ok     ok
+[cov] db.connections_list#added                ok     ok
+[cov] sandbox.settings_readback                ok     ok
+[cov] db.tables                                ok     ok
+[cov] db.import_layer                          ok     ok
+[cov] db.import_layer#exists                   ok     ok
+[cov] db.tables#imported                       ok     ok
+[cov] db.sql#read                              ok     ok
+[cov] db.import_layer#overwrite                ok     ok
+[cov] db.sql#read#overwrite                    ok     ok
+C:\src\osgeo4w\src\qgis-dev\qgis\src\core\qgsmaplayer.cpp(1649) : (QgsMapLayer::loadNamedProperty) [322ms] QgsMapLayer is not associated with QGIS project. Using current QGIS project as fallback. This will stop working in QGIS 5.0.
+[cov] db.add_layer                             ok     ok
+[cov] db.add_layer#count                       ok     ok
+[cov] db.connection_remove#gpkg                ok     ok
+[cov] db.connection_remove#pg                  ok     ok
+[cov] db.connections_list#cleaned              ok     ok
+[cov] sandbox.evidence                         ok     ok
+[cov] layers.remove#db                         ok     ok
+[cov] layers.remove#db-src                     ok     ok
+[cov] layers.remove#db-src2                    ok     ok
+[cov] sandbox.cleanup                          ok     ok
+[cov] plugins.list                             ok     ok
+[cov] plugins.info                             ok     ok
+[cov] plugins.enable                           soft   ok
+[cov] plugins.disable                          soft   ok
+[cov] plugins.reload                           soft   ok
+[cov] system.config_get                        ok     ok
+[cov] system.config_set                        ok     ok
+[cov] system.audit_tail                        soft   ok
+[cov] system.messages                          soft   ok
+[cov] system.events_poll                       ok     ok
+[cov] system.clients                           ok     ok
+[cov] system.clients_kick                      soft   ok
+C:/src/osgeo4w/src/qgis-dev/osgeo4w/build/python/core/build/_core/sip_corepart21.cpp(82688) : (meth_QgsMessageLog_logMessage) [71ms] 2026-10-09T00:30:58 Piterm QGIS AI[1] shutdown requested over the wire
+[cov] system.shutdown                          ok     ok
+COVERAGE OK | passed=177 failed=4 | exercised=133/194 | G:\AIato\pi\piterm-qgis-ai\verification\logs\coverage_4.3.0-Master_20261009-003059.json
+  SOFT layers.active_set: BridgeError: no GUI session; cannot set the active layer
+  SOFT project.bookmarks_zoom: BridgeError: no map canvas available (headless session?)
+  SOFT project.themes_add: BridgeError: saving map themes needs a GUI session in this QGIS build (QgsMapThemeCollection.insert(): argument 2 has unexpected type 'QgsLayerTree')
+  SOFT project.themes_apply: BridgeError: could not apply theme 'cov_theme': QgsMapThemeCollection.applyTheme(): not enough arguments
+
+=== live coverage / port 9877 ===
+[live:9877] ping                             ok 
+[live:9877] fixture.add_memory               ok 
+[live:9877] fixture.insert                   ok 
+[live:9877] canvas.center_set                ok 
+[live:9877] canvas.extent_get                ok 
+[live:9877] canvas.extent_set                ok 
+[live:9877] canvas.refresh                   ok 
+[live:9877] canvas.render                    ok 
+[live:9877] canvas.render_3d                 ok 
+[live:9877] canvas.rotation_set              ok 
+[live:9877] canvas.scale_get                 ok 
+[live:9877] canvas.scale_set                 ok 
+[live:9877] canvas.zoom_full                 ok 
+[live:9877] layers.zoom_to                   ok 
+[live:9877] canvas.zoom_features             ok 
+[live:9877] canvas.screenshot                ok 
+[live:9877] features.select                  ok 
+[live:9877] features.zoom_selection          ok 
+[live:9877] features.selection_clear         ok 
+[live:9877] features.identify                ok 
+[live:9877] ui.message                       ok 
+[live:9877] plugins.list                     ok 
+[live:9877] plugins.info                     ok 
+[live:9877] project.themes_add               ok 
+[live:9877] project.themes_list              ok 
+[live:9877] project.themes_apply             ok 
+[live:9877] project.themes_remove            ok 
+[live:9877] project.bookmarks_add            ok 
+[live:9877] project.bookmarks_list           ok 
+[live:9877] project.bookmarks_zoom           ok 
+[live:9877] project.bookmarks_remove         ok 
+[live:9877] ui.open_attribute_table          ok 
+[live:9877] cleanup.remove                   ok 
+LIVE COVERAGE port=9877 passed=33 failed=0 | G:\AIato\pi\piterm-qgis-ai\verification\logs\live_cov_9877_20261009-003100.json
+
+=== live coverage / port 9887 ===
+[live:9887] ping                             ok 
+[live:9887] fixture.add_memory               ok 
+[live:9887] fixture.insert                   ok 
+[live:9887] canvas.center_set                ok 
+[live:9887] canvas.extent_get                ok 
+[live:9887] canvas.extent_set                ok 
+[live:9887] canvas.refresh                   ok 
+[live:9887] canvas.render                    ok 
+[live:9887] canvas.render_3d                 ok 
+[live:9887] canvas.rotation_set              ok 
+[live:9887] canvas.scale_get                 ok 
+[live:9887] canvas.scale_set                 ok 
+[live:9887] canvas.zoom_full                 ok 
+[live:9887] layers.zoom_to                   ok 
+[live:9887] canvas.zoom_features             ok 
+[live:9887] canvas.screenshot                ok 
+[live:9887] features.select                  ok 
+[live:9887] features.zoom_selection          ok 
+[live:9887] features.selection_clear         ok 
+[live:9887] features.identify                ok 
+[live:9887] ui.message                       ok 
+[live:9887] plugins.list                     ok 
+[live:9887] plugins.info                     ok 
+[live:9887] project.themes_add               ok 
+[live:9887] project.themes_list              ok 
+[live:9887] project.themes_apply             ok 
+[live:9887] project.themes_remove            ok 
+[live:9887] project.bookmarks_add            ok 
+[live:9887] project.bookmarks_list           ok 
+[live:9887] project.bookmarks_zoom           ok 
+[live:9887] project.bookmarks_remove         ok 
+[live:9887] ui.open_attribute_table          ok 
+[live:9887] cleanup.remove                   ok 
+LIVE COVERAGE port=9887 passed=33 failed=0 | G:\AIato\pi\piterm-qgis-ai\verification\logs\live_cov_9887_20261009-003101.json
+
+verify_all  log: G:\AIato\pi\piterm-qgis-ai\verification\logs\verify_all_20261009-003025.log
+VERIFY ALL OK - every requested suite passed

@@ -152,7 +152,10 @@ def _assert(value, message="assertion failed"):
 
 
 def _norm_path(path):
-    return os.path.normcase(os.path.normpath(str(path or ""))).replace("\\", "/")
+    text = str(path or "")
+    if not text:
+        return ""
+    return os.path.normcase(os.path.normpath(text)).replace("\\", "/")
 
 
 def _inside_sandbox(settings_dir, env_root):
