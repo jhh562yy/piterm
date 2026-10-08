@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "piterm-qgis": {
+      "command": "python",
+      "args": [
+        "G:/AIato/pi/piterm-qgis-ai/mcp/piterm_qgis_mcp/minimal.py",
+        "--mcp-stdio"
+      ]
+    }
+  }
+}

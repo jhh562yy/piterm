@@ -1,0 +1,15 @@
+# Hermes desktop: put the launcher next to the config, then reference it here.
+# config.yaml (usually %APPDATA%\Hermes\config.yaml):
+mcpServers:
+  piterm-qgis:
+    command: "C:\\Users\\<you>\\AppData\\Roaming\\Hermes\\piterm-qgis-launch.bat"
+    args: []
+
+# piterm-qgis-launch.bat - clears Hermes's venv vars so the stdlib server runs
+# in a clean environment (avoids pydantic/venv contamination):
+#
+# @echo off
+# set VIRTUAL_ENV=
+# set PYTHONPATH=
+# set PYTHONHOME=
+# python "G:\AIato\pi\piterm-qgis-ai\mcp\piterm_qgis_mcp\minimal.py" --mcp-stdio

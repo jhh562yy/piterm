@@ -1,0 +1,17 @@
+# byte-compiled / cache
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+
+# local tooling / research checkouts (kept on disk, not part of the tree)
+_tools/
+_reference/
+
+# local evidence snapshots are kept, but not raw logs of every run
+verification/logs/*.tmp
+verification/*.bmp

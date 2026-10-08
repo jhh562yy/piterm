@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "piterm-qgis-mcp"
+version = "1.0.0"
+description = "Piterm QGIS AI - MCP server, bridge client and skill tooling for QGIS (zero-dependency core, optional FastMCP layer)"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "piterm" }]
+keywords = ["qgis", "mcp", "ai", "gis", "automation", "agent"]
+dependencies = []
+
+[project.optional-dependencies]
+full = ["mcp>=1.0"]
+dev = ["mcp>=1.0", "pytest>=7"]
+
+[project.scripts]
+piterm-qgis = "piterm_qgis_mcp.__main__:main"
+
+[tool.setuptools]
+package-dir = { "" = "mcp" }
+packages = ["piterm_qgis_mcp"]
+include-package-data = true
+
+[tool.setuptools.package-data]
+piterm_qgis_mcp = ["manifest.json"]

@@ -1,0 +1,6 @@
+{
+ "ok": false,
+ "qgis": "3.44.15-Solothurn",
+ "checks": [],
+ "fatal": "ImportError: cannot import name 'QgsRasterCalculator' from 'qgis.core' (C:\\PROGRA~1\\QGIS34~1.15\\apps\\qgis-ltr\\python\\qgis\\core\\__init__.py)\nTraceback (most recent call last):\n  File \"G:\\AIato\\pi\\piterm-qgis-ai\\scripts\\qgis_headless_smoke.py\", line 65, in main\n    from piterm_qgis_ai.handlers import build_hub\n  File \"G:\\AIato\\pi\\piterm-qgis-ai\\plugin\\piterm_qgis_ai\\handlers\\__init__.py\", line 15, in <module>\n    from .raster import RasterHandlers\n  File \"G:\\AIato\\pi\\piterm-qgis-ai\\plugin\\piterm_qgis_ai\\handlers\\raster.py\", line 10, in <module>\n    from qgis.core import (QgsColorRampShader, QgsContrastEnhancement, QgsPointXY,\nImportError: cannot import name 'QgsRasterCalculator' from 'qgis.core' (C:\\PROGRA~1\\QGIS34~1.15\\apps\\qgis-ltr\\python\\qgis\\core\\__init__.py)\n"
+}

@@ -1,0 +1,19 @@
+[general]
+name=Piterm QGIS AI
+description=Production-grade AI control bridge for QGIS: TCP/NDJSON/HTTP transports, 160+ commands, background jobs, checkpoints, journal replay, workflow runner and a full security policy layer (token, scopes, read-only mode, path allow-lists, audit trail). Works with any MCP client and with piterm's terminal agents.
+about=Created for the piterm ecosystem.<br><br>Architecture: QGIS plugin (this) runs a zero-thread bridge on the Qt event loop; an optional MCP server exposes the same commands as MCP tools; a stdlib-only client/skill drives it directly.<br><br>Transports: length-prefixed JSON frames (default port 9877), newline-delimited JSON for curl/netcat, HTTP JSON-RPC (port 9879).<br><br>Use the dock widget to start/stop the bridge, watch clients, run commands from the console and copy ready-made client configs.
+version=1.0.0
+qgisMinimumVersion=3.28
+qgisMaximumVersion=4.99
+author=piterm
+email=piterm@local
+homepage=https://github.com/piterm/piterm-qgis-ai
+repository=https://github.com/piterm/piterm-qgis-ai
+tracker=https://github.com/piterm/piterm-qgis-ai/issues
+category=Plugins
+icon=icons/icon.png
+experimental=False
+deprecated=False
+supportsQt6=True
+hasProcessingProvider=no
+tags=ai,mcp,automation,bridge,agent,llm,api

@@ -1,0 +1,15 @@
+{
+  "mcpServers": {
+    "piterm-qgis": {
+      "command": "python",
+      "args": [
+        "G:/AIato/pi/piterm-qgis-ai/mcp/piterm_qgis_mcp/minimal.py",
+        "--mcp-stdio"
+      ],
+      "env": {
+        "PITERM_QGIS_HOST": "127.0.0.1",
+        "PITERM_QGIS_PORT": "9877"
+      }
+    }
+  }
+}

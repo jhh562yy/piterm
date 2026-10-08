@@ -1,0 +1,5275 @@
+{
+ "generated": "2026-10-08 23:39:08",
+ "qgis": "3.44.15-Solothurn",
+ "plugin_version": "1.0.0",
+ "count": 194,
+ "commands": [
+  {
+   "name": "canvas.center_set",
+   "summary": "Center the canvas on a point (optional scale)",
+   "risk": "write",
+   "tags": [
+    "canvas"
+   ],
+   "params": [
+    {
+     "name": "x",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "y",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "scale",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "canvas.extent_get",
+   "summary": "Current canvas extent and CRS",
+   "risk": "read",
+   "tags": [
+    "canvas"
+   ],
+   "params": []
+  },
+  {
+   "name": "canvas.extent_set",
+   "summary": "Set the canvas extent (optional bbox CRS, optional margin)",
+   "risk": "write",
+   "tags": [
+    "canvas"
+   ],
+   "params": [
+    {
+     "name": "bbox",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "margin",
+     "required": false,
+     "type": "float",
+     "default": 0.0
+    }
+   ]
+  },
+  {
+   "name": "canvas.refresh",
+   "summary": "Repaint the canvas",
+   "risk": "write",
+   "tags": [
+    "canvas"
+   ],
+   "params": []
+  },
+  {
+   "name": "canvas.render",
+   "summary": "Server-side map render (bbox/size/dpi control, never blocks the canvas)",
+   "risk": "read",
+   "tags": [
+    "canvas"
+   ],
+   "params": [
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "int",
+     "default": 1200
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "int",
+     "default": 800
+    },
+    {
+     "name": "dpi",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "format",
+     "required": false,
+     "type": "str",
+     "default": "png"
+    },
+    {
+     "name": "transparent",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "int",
+     "default": 55
+    },
+    {
+     "name": "max_size",
+     "required": false,
+     "type": "int",
+     "default": 0
+    }
+   ]
+  },
+  {
+   "name": "canvas.render_3d",
+   "summary": "Grab an open 3D map view (best effort)",
+   "risk": "read",
+   "tags": [
+    "canvas",
+    "3d"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "view_index",
+     "required": false,
+     "type": "int",
+     "default": 0
+    },
+    {
+     "name": "max_size",
+     "required": false,
+     "type": "int",
+     "default": 1600
+    }
+   ]
+  },
+  {
+   "name": "canvas.rotation_set",
+   "summary": "Rotate the canvas (degrees)",
+   "risk": "write",
+   "tags": [
+    "canvas"
+   ],
+   "params": [
+    {
+     "name": "degrees",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "canvas.scale_get",
+   "summary": "Canvas scale, rotation and magnification",
+   "risk": "read",
+   "tags": [
+    "canvas"
+   ],
+   "params": []
+  },
+  {
+   "name": "canvas.scale_set",
+   "summary": "Set scale (denominator) and/or rotation (degrees)",
+   "risk": "write",
+   "tags": [
+    "canvas"
+   ],
+   "params": [
+    {
+     "name": "scale",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "rotation",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "canvas.screenshot",
+   "summary": "Grab the canvas widget as PNG (inline base64 or file)",
+   "risk": "read",
+   "tags": [
+    "canvas"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "max_size",
+     "required": false,
+     "type": "int",
+     "default": 2000
+    },
+    {
+     "name": "format",
+     "required": false,
+     "type": "str",
+     "default": "png"
+    }
+   ]
+  },
+  {
+   "name": "canvas.zoom_features",
+   "summary": "Zoom to specific feature ids",
+   "risk": "read",
+   "tags": [
+    "canvas"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "fids",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "margin",
+     "required": false,
+     "type": "float",
+     "default": 0.1
+    }
+   ]
+  },
+  {
+   "name": "canvas.zoom_full",
+   "summary": "Zoom to the full project extent",
+   "risk": "read",
+   "tags": [
+    "canvas"
+   ],
+   "params": []
+  },
+  {
+   "name": "db.add_layer",
+   "summary": "Load a table or SQL query as a layer",
+   "risk": "write",
+   "tags": [
+    "db"
+   ],
+   "params": [
+    {
+     "name": "connection",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "postgres"
+    },
+    {
+     "name": "table",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "sql",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "geometry_column",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "schema",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "key",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "db.connection_add",
+   "summary": "Save a connection (no password stored; use authcfg for credentials)",
+   "risk": "write",
+   "tags": [
+    "db"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "postgres"
+    },
+    {
+     "name": "host",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "port",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "database",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "username",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "sslmode",
+     "required": false,
+     "type": "str",
+     "default": "prefer"
+    },
+    {
+     "name": "authcfg",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "save_username",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "db.connection_remove",
+   "summary": "Remove a saved connection",
+   "risk": "destructive",
+   "tags": [
+    "db"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "postgres"
+    }
+   ]
+  },
+  {
+   "name": "db.connections_list",
+   "summary": "Saved Browser connections (passwords never read)",
+   "risk": "read",
+   "tags": [
+    "db"
+   ],
+   "params": []
+  },
+  {
+   "name": "db.import_layer",
+   "summary": "Write a vector layer into a connection as a new table",
+   "risk": "destructive",
+   "tags": [
+    "db"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "connection",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "table",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "postgres"
+    },
+    {
+     "name": "schema",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "overwrite",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "geometry_column",
+     "required": false,
+     "type": "str",
+     "default": "geom"
+    }
+   ]
+  },
+  {
+   "name": "db.sql",
+   "summary": "Run SQL on a connection (read-only unless allow_write=true and the layer is not protected)",
+   "risk": "destructive",
+   "tags": [
+    "db"
+   ],
+   "params": [
+    {
+     "name": "connection",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "sql",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "postgres"
+    },
+    {
+     "name": "allow_write",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 1000
+    }
+   ]
+  },
+  {
+   "name": "db.tables",
+   "summary": "Tables of a connection (schemas, geometry column, CRS when available)",
+   "risk": "read",
+   "tags": [
+    "db"
+   ],
+   "params": [
+    {
+     "name": "connection",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "postgres"
+    },
+    {
+     "name": "schema",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "expression.evaluate",
+   "summary": "Evaluate an expression to a scalar (project scope, or a feature context)",
+   "risk": "read",
+   "tags": [
+    "expression"
+   ],
+   "params": [
+    {
+     "name": "expression",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "layer",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "fid",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "values",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "expression.functions_search",
+   "summary": "Search built-in expression functions",
+   "risk": "read",
+   "tags": [
+    "expression"
+   ],
+   "params": [
+    {
+     "name": "query",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 40
+    }
+   ]
+  },
+  {
+   "name": "expression.validate",
+   "summary": "Parse/validate a QGIS expression and list referenced columns",
+   "risk": "read",
+   "tags": [
+    "expression"
+   ],
+   "params": [
+    {
+     "name": "expression",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "layer",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "sample",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.cursor_close",
+   "summary": "Close a cursor",
+   "risk": "read",
+   "tags": [
+    "features",
+    "cursor"
+   ],
+   "params": [
+    {
+     "name": "cursor",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "features.cursor_fetch",
+   "summary": "Fetch the next chunk from a cursor",
+   "risk": "read",
+   "tags": [
+    "features",
+    "cursor"
+   ],
+   "params": [
+    {
+     "name": "cursor",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "n",
+     "required": false,
+     "type": "int",
+     "default": 500
+    }
+   ]
+  },
+  {
+   "name": "features.cursor_open",
+   "summary": "Open a cursor over a feature query for chunked reads",
+   "risk": "read",
+   "tags": [
+    "features",
+    "cursor"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "filter",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "fields",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "geometry",
+     "required": false,
+     "type": "str",
+     "default": "wkt"
+    },
+    {
+     "name": "precision",
+     "required": false,
+     "type": "int",
+     "default": 6
+    },
+    {
+     "name": "selected_only",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.cursors_list",
+   "summary": "Open cursors",
+   "risk": "read",
+   "tags": [
+    "features",
+    "cursor"
+   ],
+   "params": []
+  },
+  {
+   "name": "features.delete",
+   "summary": "Delete features by fids or an expression filter",
+   "risk": "destructive",
+   "tags": [
+    "features"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "fids",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "filter",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "max_delete",
+     "required": false,
+     "type": "int",
+     "default": 200000
+    }
+   ]
+  },
+  {
+   "name": "features.field_calculator",
+   "summary": "Populate (or create and populate) a field from a QGIS expression",
+   "risk": "write",
+   "tags": [
+    "features",
+    "fields"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "expression",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "field",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "new_field",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "type",
+     "required": false,
+     "type": "str",
+     "default": "double"
+    },
+    {
+     "name": "selected_only",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.field_stats",
+   "summary": "Aggregate statistics for a field (count/min/max/mean/sum/stdev/median...)",
+   "risk": "read",
+   "tags": [
+    "features",
+    "stats"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "field",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "stats",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "features.geometry_info",
+   "summary": "Geometry metrics: area, length, centroid, bbox, validity (planar or ellipsoidal)",
+   "risk": "read",
+   "tags": [
+    "features",
+    "geometry"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "fid",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "geometry",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "ellipsoidal",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.get",
+   "summary": "Fetch one feature by fid",
+   "risk": "read",
+   "tags": [
+    "features"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "fid",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "geometry",
+     "required": false,
+     "type": "str",
+     "default": "wkt"
+    },
+    {
+     "name": "precision",
+     "required": false,
+     "type": "int",
+     "default": 6
+    }
+   ]
+  },
+  {
+   "name": "features.identify",
+   "summary": "Features at a map point across layers (map-click analogue)",
+   "risk": "read",
+   "tags": [
+    "features"
+   ],
+   "params": [
+    {
+     "name": "x",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "y",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "layers",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "tolerance",
+     "required": false,
+     "type": "float",
+     "default": 0.0
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit_per_layer",
+     "required": false,
+     "type": "int",
+     "default": 5
+    },
+    {
+     "name": "max_hits",
+     "required": false,
+     "type": "int",
+     "default": 20
+    },
+    {
+     "name": "with_attributes",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "features.insert",
+   "summary": "Insert features (WKT/WKB/GeoJSON geometry, optional source CRS)",
+   "risk": "write",
+   "tags": [
+    "features"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "features",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "strict",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.nearest",
+   "summary": "K nearest features to a point (brute force; use filters on huge layers)",
+   "risk": "read",
+   "tags": [
+    "features",
+    "spatial"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "y",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "k",
+     "required": false,
+     "type": "int",
+     "default": 1
+    },
+    {
+     "name": "max_distance",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "max_scan",
+     "required": false,
+     "type": "int",
+     "default": 300000
+    },
+    {
+     "name": "geometry_format",
+     "required": false,
+     "type": "str",
+     "default": "wkt"
+    }
+   ]
+  },
+  {
+   "name": "features.query",
+   "summary": "Query features with expression / bbox / ids filters, pagination, ordering and geometry format control",
+   "risk": "read",
+   "tags": [
+    "features"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "filter",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "ids",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 100
+    },
+    {
+     "name": "offset",
+     "required": false,
+     "type": "int",
+     "default": 0
+    },
+    {
+     "name": "order_by",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "fields",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "geometry",
+     "required": false,
+     "type": "str",
+     "default": "wkt"
+    },
+    {
+     "name": "precision",
+     "required": false,
+     "type": "int",
+     "default": 6
+    },
+    {
+     "name": "selected_only",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.select",
+   "summary": "Select features by expression, fids or bbox (mode: set/add/remove/intersect)",
+   "risk": "write",
+   "tags": [
+    "features",
+    "selection"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "filter",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "fids",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "mode",
+     "required": false,
+     "type": "str",
+     "default": "set"
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 200000
+    }
+   ]
+  },
+  {
+   "name": "features.selection_clear",
+   "summary": "Clear the layer selection",
+   "risk": "write",
+   "tags": [
+    "features",
+    "selection"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "features.selection_get",
+   "summary": "Selected feature ids (optionally with attributes)",
+   "risk": "read",
+   "tags": [
+    "features",
+    "selection"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "with_attributes",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 100
+    }
+   ]
+  },
+  {
+   "name": "features.spatial_query",
+   "summary": "Features whose geometry satisfies a predicate against a query geometry (intersects, within, contains, ...)",
+   "risk": "read",
+   "tags": [
+    "features",
+    "spatial"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "geometry",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "predicate",
+     "required": false,
+     "type": "str",
+     "default": "intersects"
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 100
+    },
+    {
+     "name": "bbox_prefilter",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "geometry_format",
+     "required": false,
+     "type": "str",
+     "default": "wkt"
+    },
+    {
+     "name": "precision",
+     "required": false,
+     "type": "int",
+     "default": 6
+    }
+   ]
+  },
+  {
+   "name": "features.transform_coordinates",
+   "summary": "Transform points or a bbox between CRS (read-only helper)",
+   "risk": "read",
+   "tags": [
+    "features",
+    "crs"
+   ],
+   "params": [
+    {
+     "name": "from_crs",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "to_crs",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "points",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "features.update",
+   "summary": "Update attributes by fid",
+   "risk": "write",
+   "tags": [
+    "features"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "updates",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "strict",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.update_geometry",
+   "summary": "Replace geometries by fid",
+   "risk": "write",
+   "tags": [
+    "features"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "updates",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "strict",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "features.zoom_selection",
+   "summary": "Zoom the canvas to selected features",
+   "risk": "read",
+   "tags": [
+    "features",
+    "selection"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "margin",
+     "required": false,
+     "type": "float",
+     "default": 1.1
+    }
+   ]
+  },
+  {
+   "name": "io.convert",
+   "summary": "Convert a file's format via GDAL (vector: gdal:convertformat, raster: gdal:translate)",
+   "risk": "write",
+   "tags": [
+    "io"
+   ],
+   "params": [
+    {
+     "name": "path_in",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path_out",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "auto"
+    }
+   ]
+  },
+  {
+   "name": "io.export_layer",
+   "summary": "Export a layer to disk (shared logic with layers.export / raster.export)",
+   "risk": "write",
+   "tags": [
+    "io"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "driver",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "filter",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "selected_only",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "overwrite",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "resampling",
+     "required": false,
+     "type": "str",
+     "default": "near"
+    }
+   ]
+  },
+  {
+   "name": "io.fetch_url",
+   "summary": "Download a URL to disk (size-capped) and optionally load it as a layer",
+   "risk": "write",
+   "tags": [
+    "io",
+    "web"
+   ],
+   "params": [
+    {
+     "name": "url",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "add_as_layer",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "max_bytes",
+     "required": false,
+     "type": "int",
+     "default": 200000000
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "int",
+     "default": 120
+    },
+    {
+     "name": "headers",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "io.import_file",
+   "summary": "Import a file as a vector or raster layer (auto-detected)",
+   "risk": "write",
+   "tags": [
+    "io"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "auto"
+    },
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "provider",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "io.read_text",
+   "summary": "Read a text file (size-capped) for inspection",
+   "risk": "read",
+   "tags": [
+    "io"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "max_bytes",
+     "required": false,
+     "type": "int",
+     "default": 200000
+    },
+    {
+     "name": "encoding",
+     "required": false,
+     "type": "str",
+     "default": "utf-8"
+    }
+   ]
+  },
+  {
+   "name": "io.write_text",
+   "summary": "Write/append a text file (inside the allow-list)",
+   "risk": "write",
+   "tags": [
+    "io"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "text",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "append",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "encoding",
+     "required": false,
+     "type": "str",
+     "default": "utf-8"
+    }
+   ]
+  },
+  {
+   "name": "job.cancel",
+   "summary": "Ask a running job to stop",
+   "risk": "write",
+   "tags": [
+    "jobs"
+   ],
+   "params": [
+    {
+     "name": "id",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "job.clear",
+   "summary": "Drop finished jobs from the list",
+   "risk": "write",
+   "tags": [
+    "jobs"
+   ],
+   "params": []
+  },
+  {
+   "name": "job.get",
+   "summary": "Job state, progress, result or error",
+   "risk": "read",
+   "tags": [
+    "jobs"
+   ],
+   "params": [
+    {
+     "name": "id",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "with_log",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "log_limit",
+     "required": false,
+     "type": "int",
+     "default": 50
+    }
+   ]
+  },
+  {
+   "name": "job.list",
+   "summary": "List background jobs (processing, renders)",
+   "risk": "read",
+   "tags": [
+    "jobs"
+   ],
+   "params": [
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "state",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 100
+    }
+   ]
+  },
+  {
+   "name": "job.log",
+   "summary": "Job log lines",
+   "risk": "read",
+   "tags": [
+    "jobs"
+   ],
+   "params": [
+    {
+     "name": "id",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 100
+    }
+   ]
+  },
+  {
+   "name": "layers.active_get",
+   "summary": "Currently active layer in the layer panel",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": []
+  },
+  {
+   "name": "layers.active_set",
+   "summary": "Set the active layer by id or name",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.add_delimited",
+   "summary": "Add a delimited text layer (CSV/TXT) from x/y columns",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x_field",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "y_field",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "delimiter",
+     "required": false,
+     "type": "str",
+     "default": ","
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": "EPSG:4326"
+    },
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.add_memory",
+   "summary": "Create an in-memory vector layer (fields optional)",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "geometry_type",
+     "required": false,
+     "type": "str",
+     "default": "point"
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": "EPSG:4326"
+    },
+    {
+     "name": "fields",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.add_raster",
+   "summary": "Add a raster layer from a path",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "provider",
+     "required": false,
+     "type": "str",
+     "default": "gdal"
+    }
+   ]
+  },
+  {
+   "name": "layers.add_vector",
+   "summary": "Add a vector layer from a path or datasource URI",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "provider",
+     "required": false,
+     "type": "str",
+     "default": "ogr"
+    }
+   ]
+  },
+  {
+   "name": "layers.add_web",
+   "summary": "Add an XYZ / WMS / WMTS tile layer or a WFS layer",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "web"
+   ],
+   "params": [
+    {
+     "name": "url",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "xyz"
+    },
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "zmin",
+     "required": false,
+     "type": "int",
+     "default": 0
+    },
+    {
+     "name": "zmax",
+     "required": false,
+     "type": "int",
+     "default": 19
+    }
+   ]
+  },
+  {
+   "name": "layers.count",
+   "summary": "Feature count (optionally with an expression filter)",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "expression",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.crs_get",
+   "summary": "Layer CRS details",
+   "risk": "read",
+   "tags": [
+    "layers",
+    "crs"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.crs_set",
+   "summary": "Reinterpret a layer's CRS (does NOT reproject geometry)",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "crs"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "crs",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.duplicate",
+   "summary": "Duplicate a layer (shares the data source)",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "new_name",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.export",
+   "summary": "Export a layer to disk (vector or raster; optional reprojection/filter)",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "io"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "driver",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "filter",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "selected_only",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "overwrite",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "layers.extent",
+   "summary": "Layer extent (optionally in project CRS)",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "project_crs",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "layers.fields_add",
+   "summary": "Add a field (string, int, double, bool, date, datetime, time, binary, json)",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "fields"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "type",
+     "required": false,
+     "type": "str",
+     "default": "string"
+    },
+    {
+     "name": "length",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "precision",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "alias",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "comment",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.fields_delete",
+   "summary": "Delete a field (and its data)",
+   "risk": "destructive",
+   "tags": [
+    "layers",
+    "fields"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.fields_list",
+   "summary": "Field schema of a vector layer",
+   "risk": "read",
+   "tags": [
+    "layers",
+    "fields"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.fields_rename",
+   "summary": "Rename a field",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "fields"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "new_name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.find",
+   "summary": "Find layers by name pattern (substring or fnmatch)",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "pattern",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 50
+    }
+   ]
+  },
+  {
+   "name": "layers.group_create",
+   "summary": "Create a layer group (optionally inside another group)",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "groups"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "parent_group",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "index",
+     "required": false,
+     "type": "int",
+     "default": 0
+    }
+   ]
+  },
+  {
+   "name": "layers.group_move_layer",
+   "summary": "Move a layer into a group",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "groups"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "group",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "index",
+     "required": false,
+     "type": "int",
+     "default": 0
+    }
+   ]
+  },
+  {
+   "name": "layers.group_remove",
+   "summary": "Remove a layer group (optionally its layers too)",
+   "risk": "destructive",
+   "tags": [
+    "layers",
+    "groups"
+   ],
+   "params": [
+    {
+     "name": "group",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "also_remove_layers",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "layers.info",
+   "summary": "Detailed info for one layer (fields, editing, styles, joins)",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "with_fields",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "layers.joins_add",
+   "summary": "Join another layer's attributes onto a vector layer",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "joins"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "join_layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "join_field",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "target_field",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "prefix",
+     "required": false,
+     "type": "str",
+     "default": ""
+    },
+    {
+     "name": "memory_cache",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "layers.joins_list",
+   "summary": "Attribute joins on a layer",
+   "risk": "read",
+   "tags": [
+    "layers",
+    "joins"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.joins_remove",
+   "summary": "Remove a join by join-layer id",
+   "risk": "write",
+   "tags": [
+    "layers",
+    "joins"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "join_layer_id",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "join_layer",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.list",
+   "summary": "List layers with summary info",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "with_extent",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "with_counts",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "layers.opacity",
+   "summary": "Set layer opacity (0..1)",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "opacity",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.order",
+   "summary": "Set layer draw order (list of layer ids, top to bottom)",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer_ids",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.remove",
+   "summary": "Remove a layer from the project",
+   "risk": "destructive",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.rename",
+   "summary": "Rename a layer in the project",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.set_property",
+   "summary": "Set name/opacity/scale range on a layer in one call",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "opacity",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "min_scale",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "max_scale",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.set_source",
+   "summary": "Swap a layer's datasource (changeDataSource)",
+   "risk": "destructive",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "source",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.source",
+   "summary": "Layer datasource URI / public source",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.subset_filter_clear",
+   "summary": "Clear the subset filter",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "layers.subset_filter_set",
+   "summary": "Apply a subset (filter) string to a vector layer",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "filter",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "expression",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layers.tree",
+   "summary": "Layer tree (groups + layers, recursive)",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": []
+  },
+  {
+   "name": "layers.unique_values",
+   "summary": "Distinct values of a field",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "field",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 100
+    }
+   ]
+  },
+  {
+   "name": "layers.visibility",
+   "summary": "Show/hide a layer in the layer tree",
+   "risk": "write",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "visible",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "layers.zoom_to",
+   "summary": "Zoom the canvas to a layer extent",
+   "risk": "read",
+   "tags": [
+    "layers"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "margin",
+     "required": false,
+     "type": "float",
+     "default": 0.02
+    }
+   ]
+  },
+  {
+   "name": "layout.add_label",
+   "summary": "Add a text label ([% expr %] supported)",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "text",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "font_size",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "label_id",
+     "required": false,
+     "type": "str",
+     "default": ""
+    }
+   ]
+  },
+  {
+   "name": "layout.add_legend",
+   "summary": "Add a legend linked to a map item",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "int",
+     "default": 140
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "int",
+     "default": 60
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "int",
+     "default": 60
+    },
+    {
+     "name": "map_id",
+     "required": false,
+     "type": "str",
+     "default": "main_map"
+    },
+    {
+     "name": "title",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "legend_id",
+     "required": false,
+     "type": "str",
+     "default": ""
+    }
+   ]
+  },
+  {
+   "name": "layout.add_map",
+   "summary": "Add a map item (position/size in mm, extent optional)",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "int",
+     "default": 180
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "int",
+     "default": 120
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "map_id",
+     "required": false,
+     "type": "str",
+     "default": "main_map"
+    }
+   ]
+  },
+  {
+   "name": "layout.add_picture",
+   "summary": "Add a picture/SVG (logo, north arrow)",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "int",
+     "default": 20
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "int",
+     "default": 20
+    },
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "north_arrow"
+    },
+    {
+     "name": "picture_id",
+     "required": false,
+     "type": "str",
+     "default": ""
+    }
+   ]
+  },
+  {
+   "name": "layout.add_scalebar",
+   "summary": "Add a scale bar linked to a map item",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "int",
+     "default": 270
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "int",
+     "default": 60
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "int",
+     "default": 12
+    },
+    {
+     "name": "map_id",
+     "required": false,
+     "type": "str",
+     "default": "main_map"
+    },
+    {
+     "name": "style",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "scalebar_id",
+     "required": false,
+     "type": "str",
+     "default": ""
+    }
+   ]
+  },
+  {
+   "name": "layout.add_shape",
+   "summary": "Add a rectangle/ellipse/triangle shape",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "kind",
+     "required": false,
+     "type": "str",
+     "default": "rectangle"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "int",
+     "default": 50
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "int",
+     "default": 30
+    },
+    {
+     "name": "shape_id",
+     "required": false,
+     "type": "str",
+     "default": ""
+    }
+   ]
+  },
+  {
+   "name": "layout.add_table",
+   "summary": "Add an attribute table for a layer",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "int",
+     "default": 10
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "int",
+     "default": 100
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "int",
+     "default": 100
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "int",
+     "default": 80
+    },
+    {
+     "name": "max_features",
+     "required": false,
+     "type": "int",
+     "default": 100
+    },
+    {
+     "name": "table_id",
+     "required": false,
+     "type": "str",
+     "default": ""
+    }
+   ]
+  },
+  {
+   "name": "layout.atlas_configure",
+   "summary": "Configure an atlas (coverage layer, page name, sort/filter)",
+   "risk": "write",
+   "tags": [
+    "layout",
+    "atlas"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "coverage_layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "enabled",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "page_name_field",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "sort_expression",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "filter_expression",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "filter_features",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "layout.atlas_export",
+   "summary": "Export an atlas (multi-page PDF or one image per feature)",
+   "risk": "write",
+   "tags": [
+    "layout",
+    "atlas",
+    "io"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "format",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "dpi",
+     "required": false,
+     "type": "int",
+     "default": 300
+    }
+   ]
+  },
+  {
+   "name": "layout.create",
+   "summary": "Create a print layout (page preset or custom mm size)",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "page",
+     "required": false,
+     "type": "str",
+     "default": "A4"
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "orientation",
+     "required": false,
+     "type": "str",
+     "default": "portrait"
+    }
+   ]
+  },
+  {
+   "name": "layout.export",
+   "summary": "Export a layout to PDF/PNG/SVG",
+   "risk": "write",
+   "tags": [
+    "layout",
+    "io"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "format",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "dpi",
+     "required": false,
+     "type": "int",
+     "default": 300
+    }
+   ]
+  },
+  {
+   "name": "layout.info",
+   "summary": "Layout items (type, id, position, size)",
+   "risk": "read",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layout.item_move_resize",
+   "summary": "Move/resize a layout item (mm)",
+   "risk": "write",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "item_id",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "x",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "y",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "layout.list",
+   "summary": "Print layouts in the project",
+   "risk": "read",
+   "tags": [
+    "layout"
+   ],
+   "params": []
+  },
+  {
+   "name": "layout.remove",
+   "summary": "Remove a print layout",
+   "risk": "destructive",
+   "tags": [
+    "layout"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "plugins.disable",
+   "summary": "Disable (stop) a plugin by folder name",
+   "risk": "write",
+   "tags": [
+    "plugins"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "plugins.enable",
+   "summary": "Enable (start) a plugin by folder name",
+   "risk": "write",
+   "tags": [
+    "plugins"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "plugins.info",
+   "summary": "Plugin details (version, author, path)",
+   "risk": "read",
+   "tags": [
+    "plugins"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "plugins.list",
+   "summary": "Installed QGIS plugins and their enabled state",
+   "risk": "read",
+   "tags": [
+    "plugins"
+   ],
+   "params": []
+  },
+  {
+   "name": "plugins.reload",
+   "summary": "Reload a plugin's code",
+   "risk": "destructive",
+   "tags": [
+    "plugins"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "processing.algorithms_get",
+   "summary": "Algorithm parameters, outputs and help",
+   "risk": "read",
+   "tags": [
+    "processing"
+   ],
+   "params": [
+    {
+     "name": "algorithm",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "processing.algorithms_search",
+   "summary": "Search algorithms by keyword (id, name, group)",
+   "risk": "read",
+   "tags": [
+    "processing"
+   ],
+   "params": [
+    {
+     "name": "query",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "provider",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 50
+    },
+    {
+     "name": "include_deprecated",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "processing.batch_execute",
+   "summary": "Run one algorithm over many parameter sets (per-run status)",
+   "risk": "execute",
+   "tags": [
+    "processing"
+   ],
+   "params": [
+    {
+     "name": "algorithm",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "parameter_sets",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "int",
+     "default": 55
+    },
+    {
+     "name": "stop_on_error",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "load_results",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "processing.execute",
+   "summary": "Run a processing algorithm synchronously (plugin-side timeout, results optionally loaded)",
+   "risk": "execute",
+   "tags": [
+    "processing"
+   ],
+   "params": [
+    {
+     "name": "algorithm",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "parameters",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "float",
+     "default": 55.0
+    },
+    {
+     "name": "load_results",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "processing.models_list",
+   "summary": "Registered Processing models (.model3)",
+   "risk": "read",
+   "tags": [
+    "processing",
+    "models"
+   ],
+   "params": []
+  },
+  {
+   "name": "processing.models_run",
+   "summary": "Run a Processing model by id",
+   "risk": "execute",
+   "tags": [
+    "processing",
+    "models"
+   ],
+   "params": [
+    {
+     "name": "model",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "parameters",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "float",
+     "default": 55.0
+    },
+    {
+     "name": "load_results",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "processing.providers",
+   "summary": "Processing providers with algorithm counts",
+   "risk": "read",
+   "tags": [
+    "processing"
+   ],
+   "params": []
+  },
+  {
+   "name": "processing.start",
+   "summary": "Run a processing algorithm as a background job (no time limit, progress via job.*)",
+   "risk": "execute",
+   "tags": [
+    "processing"
+   ],
+   "params": [
+    {
+     "name": "algorithm",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "parameters",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "load_results",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "project.bookmarks_add",
+   "summary": "Add a spatial bookmark (defaults to the current canvas extent)",
+   "risk": "write",
+   "tags": [
+    "project",
+    "bookmarks"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "group",
+     "required": false,
+     "type": "str",
+     "default": ""
+    }
+   ]
+  },
+  {
+   "name": "project.bookmarks_list",
+   "summary": "Spatial bookmarks",
+   "risk": "read",
+   "tags": [
+    "project",
+    "bookmarks"
+   ],
+   "params": []
+  },
+  {
+   "name": "project.bookmarks_remove",
+   "summary": "Remove a bookmark by id",
+   "risk": "destructive",
+   "tags": [
+    "project",
+    "bookmarks"
+   ],
+   "params": [
+    {
+     "name": "id",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.bookmarks_zoom",
+   "summary": "Zoom the canvas to a bookmark",
+   "risk": "read",
+   "tags": [
+    "project",
+    "bookmarks"
+   ],
+   "params": [
+    {
+     "name": "id",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.info",
+   "summary": "Current project metadata, CRS, extent, dirty flag",
+   "risk": "read",
+   "tags": [
+    "project"
+   ],
+   "params": [
+    {
+     "name": "with_extent",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "with_variables",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "project.metadata_get",
+   "summary": "Project metadata (title, abstract, keywords)",
+   "risk": "read",
+   "tags": [
+    "project"
+   ],
+   "params": []
+  },
+  {
+   "name": "project.metadata_set",
+   "summary": "Update project metadata",
+   "risk": "write",
+   "tags": [
+    "project"
+   ],
+   "params": [
+    {
+     "name": "title",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "abstract",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "keywords",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "project.new",
+   "summary": "Discard the current project (optionally save it first)",
+   "risk": "destructive",
+   "tags": [
+    "project"
+   ],
+   "params": [
+    {
+     "name": "save_path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "title",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "project.open",
+   "summary": "Load a .qgs/.qgz project from disk",
+   "risk": "destructive",
+   "tags": [
+    "project"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.save",
+   "summary": "Save to the current file or a new path",
+   "risk": "write",
+   "tags": [
+    "project"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "project.set_crs",
+   "summary": "Set the project CRS (canvas projection)",
+   "risk": "write",
+   "tags": [
+    "project"
+   ],
+   "params": [
+    {
+     "name": "crs",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.themes_add",
+   "summary": "Save current layer visibility as a theme (updates same name)",
+   "risk": "write",
+   "tags": [
+    "project",
+    "themes"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.themes_apply",
+   "summary": "Restore layer visibility saved in a theme",
+   "risk": "write",
+   "tags": [
+    "project",
+    "themes"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.themes_list",
+   "summary": "Map themes (layer visibility presets)",
+   "risk": "read",
+   "tags": [
+    "project",
+    "themes"
+   ],
+   "params": []
+  },
+  {
+   "name": "project.themes_remove",
+   "summary": "Remove a map theme",
+   "risk": "destructive",
+   "tags": [
+    "project",
+    "themes"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.variables_list",
+   "summary": "Project expression variables (@key)",
+   "risk": "read",
+   "tags": [
+    "project",
+    "variables"
+   ],
+   "params": []
+  },
+  {
+   "name": "project.variables_remove",
+   "summary": "Remove one project variable",
+   "risk": "write",
+   "tags": [
+    "project",
+    "variables"
+   ],
+   "params": [
+    {
+     "name": "key",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "project.variables_set",
+   "summary": "Set one project variable",
+   "risk": "write",
+   "tags": [
+    "project",
+    "variables"
+   ],
+   "params": [
+    {
+     "name": "key",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "value",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "python.exec",
+   "summary": "Run sandboxed Python (qgis/math imports only, no file/desktop escape hatches)",
+   "risk": "execute",
+   "tags": [
+    "python",
+    "sandbox"
+   ],
+   "params": [
+    {
+     "name": "code",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "int",
+     "default": 30
+    },
+    {
+     "name": "capture_variables",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "python.exec_full",
+   "summary": "Run arbitrary Python with full builtins (requires dangerous.allow_full_python)",
+   "risk": "execute",
+   "tags": [
+    "python",
+    "dangerous"
+   ],
+   "params": [
+    {
+     "name": "code",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "timeout",
+     "required": false,
+     "type": "int",
+     "default": 30
+    },
+    {
+     "name": "capture_variables",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "raster.calculator",
+   "summary": "Raster algebra via QgsRasterCalculator ('A@1 - B@1')",
+   "risk": "write",
+   "tags": [
+    "raster",
+    "analysis"
+   ],
+   "params": [
+    {
+     "name": "expression",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "layers",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "output",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "band",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "load_result",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "raster.colormap_get",
+   "summary": "Pseudocolor entries of the current renderer",
+   "risk": "read",
+   "tags": [
+    "raster",
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "raster.colormap_set",
+   "summary": "Apply a pseudocolor renderer from explicit entries",
+   "risk": "write",
+   "tags": [
+    "raster",
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "entries",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "band",
+     "required": false,
+     "type": "int",
+     "default": 1
+    },
+    {
+     "name": "classification",
+     "required": false,
+     "type": "str",
+     "default": "interpolated"
+    },
+    {
+     "name": "min_value",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "max_value",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "raster.export",
+   "summary": "Export a raster to disk (optional reprojection/extent)",
+   "risk": "write",
+   "tags": [
+    "raster",
+    "io"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "bbox",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "height",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "resampling",
+     "required": false,
+     "type": "str",
+     "default": "near"
+    },
+    {
+     "name": "overwrite",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "raster.histogram",
+   "summary": "Band histogram",
+   "risk": "read",
+   "tags": [
+    "raster",
+    "stats"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "band",
+     "required": false,
+     "type": "int",
+     "default": 1
+    },
+    {
+     "name": "bins",
+     "required": false,
+     "type": "int",
+     "default": 64
+    }
+   ]
+  },
+  {
+   "name": "raster.info",
+   "summary": "Raster size, bands, data types, nodata (optional stats)",
+   "risk": "read",
+   "tags": [
+    "raster"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "with_stats",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "sample_size",
+     "required": false,
+     "type": "int",
+     "default": 0
+    }
+   ]
+  },
+  {
+   "name": "raster.minmax_set",
+   "summary": "Set band min/max (gray contrast or pseudocolor range)",
+   "risk": "write",
+   "tags": [
+    "raster",
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "band",
+     "required": false,
+     "type": "int",
+     "default": 1
+    },
+    {
+     "name": "min",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "max",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "raster.renderer_info",
+   "summary": "Current raster renderer summary",
+   "risk": "read",
+   "tags": [
+    "raster",
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "raster.sample",
+   "summary": "Sample pixel values at points",
+   "risk": "read",
+   "tags": [
+    "raster"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "points",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "band",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "crs",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "raster.stats",
+   "summary": "Band statistics (min/max/mean/stdev)",
+   "risk": "read",
+   "tags": [
+    "raster",
+    "stats"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "band",
+     "required": false,
+     "type": "int",
+     "default": 1
+    },
+    {
+     "name": "sample_size",
+     "required": false,
+     "type": "int",
+     "default": 0
+    }
+   ]
+  },
+  {
+   "name": "raster.zonal_stats",
+   "summary": "Zonal statistics: raster stats per polygon (native:zonalstatisticsfb)",
+   "risk": "write",
+   "tags": [
+    "raster",
+    "analysis"
+   ],
+   "params": [
+    {
+     "name": "zones",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "raster",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "band",
+     "required": false,
+     "type": "int",
+     "default": 1
+    },
+    {
+     "name": "statistics",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "prefix",
+     "required": false,
+     "type": "str",
+     "default": ""
+    },
+    {
+     "name": "output",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "load_result",
+     "required": false,
+     "type": "bool",
+     "default": true
+    }
+   ]
+  },
+  {
+   "name": "session.checkpoint_create",
+   "summary": "Snapshot the whole project (including memory layers) for rollback",
+   "risk": "write",
+   "tags": [
+    "session",
+    "checkpoint"
+   ],
+   "params": [
+    {
+     "name": "name",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "note",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "session.checkpoint_delete",
+   "summary": "Delete a checkpoint",
+   "risk": "destructive",
+   "tags": [
+    "session",
+    "checkpoint"
+   ],
+   "params": [
+    {
+     "name": "checkpoint",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "session.checkpoint_list",
+   "summary": "List checkpoints",
+   "risk": "read",
+   "tags": [
+    "session",
+    "checkpoint"
+   ],
+   "params": []
+  },
+  {
+   "name": "session.checkpoint_restore",
+   "summary": "Restore the project to a checkpoint",
+   "risk": "destructive",
+   "tags": [
+    "session",
+    "checkpoint"
+   ],
+   "params": [
+    {
+     "name": "checkpoint",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "session.edit_begin",
+   "summary": "Open an undoable edit session on a layer (subsequent writes are buffered)",
+   "risk": "write",
+   "tags": [
+    "session",
+    "editing"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "session.edit_commit",
+   "summary": "Commit the edit buffer",
+   "risk": "write",
+   "tags": [
+    "session",
+    "editing"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "session.edit_rollback",
+   "summary": "Discard every uncommitted change",
+   "risk": "destructive",
+   "tags": [
+    "session",
+    "editing"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "session.edit_status",
+   "summary": "Editing state and undo/redo availability",
+   "risk": "read",
+   "tags": [
+    "session",
+    "editing"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "session.journal_clear",
+   "summary": "Clear the journal",
+   "risk": "write",
+   "tags": [
+    "session",
+    "journal"
+   ],
+   "params": []
+  },
+  {
+   "name": "session.journal_export",
+   "summary": "Export the session as a replay script (.py) or JSONL",
+   "risk": "write",
+   "tags": [
+    "session",
+    "journal"
+   ],
+   "params": [
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "format",
+     "required": false,
+     "type": "str",
+     "default": "python"
+    },
+    {
+     "name": "only_ok",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "session.journal_list",
+   "summary": "Recorded session commands (mutations)",
+   "risk": "read",
+   "tags": [
+    "session",
+    "journal"
+   ],
+   "params": [
+    {
+     "name": "since_seq",
+     "required": false,
+     "type": "int",
+     "default": 0
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 500
+    }
+   ]
+  },
+  {
+   "name": "session.redo",
+   "summary": "Redo N steps on the layer's undo stack",
+   "risk": "write",
+   "tags": [
+    "session",
+    "editing"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "steps",
+     "required": false,
+     "type": "int",
+     "default": 1
+    }
+   ]
+  },
+  {
+   "name": "session.undo",
+   "summary": "Undo N steps on the layer's own undo stack",
+   "risk": "write",
+   "tags": [
+    "session",
+    "editing"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "steps",
+     "required": false,
+     "type": "int",
+     "default": 1
+    }
+   ]
+  },
+  {
+   "name": "session.workflow_run",
+   "summary": "Run a multi-step command workflow with $N.field references, dry-run and stop-on-error",
+   "risk": "read",
+   "tags": [
+    "session",
+    "workflow"
+   ],
+   "params": [
+    {
+     "name": "steps",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "stop_on_error",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "dry_run",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "max_steps",
+     "required": false,
+     "type": "int",
+     "default": 200
+    }
+   ]
+  },
+  {
+   "name": "style.classification_breaks",
+   "summary": "Compute class breaks for a field",
+   "risk": "read",
+   "tags": [
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "field",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "classes",
+     "required": false,
+     "type": "int",
+     "default": 5
+    },
+    {
+     "name": "classification",
+     "required": false,
+     "type": "str",
+     "default": "equal_interval"
+    }
+   ]
+  },
+  {
+   "name": "style.copy",
+   "summary": "Copy the style from one layer to another",
+   "risk": "write",
+   "tags": [
+    "style"
+   ],
+   "params": [
+    {
+     "name": "source_layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "target_layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "style.labeling_get",
+   "summary": "Label configuration",
+   "risk": "read",
+   "tags": [
+    "style",
+    "labels"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "style.labeling_set",
+   "summary": "Configure labels (field, size, color, halo, placement)",
+   "risk": "write",
+   "tags": [
+    "style",
+    "labels"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "enabled",
+     "required": false,
+     "type": "bool",
+     "default": true
+    },
+    {
+     "name": "field",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "font_size",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "color",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "buffer_color",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "buffer_size",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "placement",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "is_expression",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "style.qml_apply",
+   "summary": "Apply a QML style from a file or inline string",
+   "risk": "write",
+   "tags": [
+    "style",
+    "qml"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "qml",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "style.qml_save",
+   "summary": "Save a layer style as QML",
+   "risk": "write",
+   "tags": [
+    "style",
+    "qml"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "path",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "style.ramps_list",
+   "summary": "Available color ramps",
+   "risk": "read",
+   "tags": [
+    "style"
+   ],
+   "params": [
+    {
+     "name": "search",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 80
+    }
+   ]
+  },
+  {
+   "name": "style.renderer_get",
+   "summary": "Renderer type and a summary of categories/classes",
+   "risk": "read",
+   "tags": [
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "style.renderer_set",
+   "summary": "Apply single / categorized / graduated symbology",
+   "risk": "write",
+   "tags": [
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "mode",
+     "required": false,
+     "type": "str",
+     "default": "single"
+    },
+    {
+     "name": "field",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "classes",
+     "required": false,
+     "type": "int",
+     "default": 5
+    },
+    {
+     "name": "classification",
+     "required": false,
+     "type": "str",
+     "default": "equal_interval"
+    },
+    {
+     "name": "ramp",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "color",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "size",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "categories",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "category_limit",
+     "required": false,
+     "type": "int",
+     "default": 25
+    }
+   ]
+  },
+  {
+   "name": "style.symbol_set",
+   "summary": "Tweak symbol color/size/width/opacity (single & categorized renderers)",
+   "risk": "write",
+   "tags": [
+    "style"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "color",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "size",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "width",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "outline_color",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "opacity",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "system.audit_tail",
+   "summary": "Tail of the audit log",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 200
+    }
+   ]
+  },
+  {
+   "name": "system.batch",
+   "summary": "Run several commands in one round-trip (per-item results)",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "commands",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "stop_on_error",
+     "required": false,
+     "type": "bool",
+     "default": false
+    }
+   ]
+  },
+  {
+   "name": "system.capabilities",
+   "summary": "Full command catalog with parameters (for agents)",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "tag",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "risk",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "system.clients",
+   "summary": "List connected clients",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": []
+  },
+  {
+   "name": "system.clients_kick",
+   "summary": "Disconnect one client",
+   "risk": "write",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "id",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "system.config_get",
+   "summary": "Read bridge configuration",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": []
+  },
+  {
+   "name": "system.config_set",
+   "summary": "Update a bridge setting (auth, ports, policy, paths)",
+   "risk": "write",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "key",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "value",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  },
+  {
+   "name": "system.diagnose",
+   "summary": "Full-stack health check: plugin/server/QGIS, policy, jobs",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": []
+  },
+  {
+   "name": "system.events_poll",
+   "summary": "Poll push events (job progress, log lines) since a sequence",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "since",
+     "required": false,
+     "type": "int",
+     "default": 0
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 200
+    }
+   ]
+  },
+  {
+   "name": "system.hello",
+   "summary": "Handshake: protocol, capabilities, command list, security posture",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "echo",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "system.help",
+   "summary": "Search commands by name/summary; with_params adds signatures",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "query",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "tag",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "risk",
+     "required": false,
+     "type": "str",
+     "default": null
+    },
+    {
+     "name": "with_params",
+     "required": false,
+     "type": "bool",
+     "default": false
+    },
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 120
+    }
+   ]
+  },
+  {
+   "name": "system.info",
+   "summary": "QGIS / runtime installation info",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": []
+  },
+  {
+   "name": "system.messages",
+   "summary": "Tail of the QGIS message log captured by the bridge",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "limit",
+     "required": false,
+     "type": "int",
+     "default": 200
+    },
+    {
+     "name": "level",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ]
+  },
+  {
+   "name": "system.metrics",
+   "summary": "Command counters, timings and per-command stats",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": []
+  },
+  {
+   "name": "system.ping",
+   "summary": "Connectivity check",
+   "risk": "read",
+   "tags": [
+    "system"
+   ],
+   "params": [
+    {
+     "name": "echo",
+     "required": false,
+     "type": "str",
+     "default": null
+    }
+   ],
+   "returns": "{pong: true}"
+  },
+  {
+   "name": "system.shutdown",
+   "summary": "Stop the bridge server (plugin stays loaded)",
+   "risk": "write",
+   "tags": [
+    "system"
+   ],
+   "params": []
+  },
+  {
+   "name": "ui.message",
+   "summary": "Show a message bar banner in QGIS",
+   "risk": "read",
+   "tags": [
+    "ui"
+   ],
+   "params": [
+    {
+     "name": "text",
+     "required": true,
+     "type": "str"
+    },
+    {
+     "name": "level",
+     "required": false,
+     "type": "str",
+     "default": "info"
+    },
+    {
+     "name": "duration",
+     "required": false,
+     "type": "int",
+     "default": 5
+    }
+   ]
+  },
+  {
+   "name": "ui.open_attribute_table",
+   "summary": "Open the attribute table window for a layer",
+   "risk": "write",
+   "tags": [
+    "ui"
+   ],
+   "params": [
+    {
+     "name": "layer",
+     "required": true,
+     "type": "str"
+    }
+   ]
+  }
+ ]
+}
