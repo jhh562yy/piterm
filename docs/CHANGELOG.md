@@ -3,14 +3,27 @@
 ## Unreleased — command-coverage sweep (2026-10-09)
 
 * New `scripts/qgis_command_coverage.py` (headless) + live-GUI sweep: the union
-  of smoke + coverage exercises **192 of 194 commands** (2 skipped by design:
-  `db.connection_add` / `db.import_layer`); 149/0 headless on 3.44.15 and
-  4.2.3, 33/33 live on both GUIs.
+  of smoke + coverage exercises **192 of 194 commands** at that point (the two
+  db-writers were skipped by design — lifted to 194/194 below); 149/0 headless
+  on 3.44.15 and 4.2.3, 33/33 live on both GUIs.
 * 17 defects across 21 commands fixed (layer-tree reorder/group moves no longer
   delete layers; delimited-text URI; multi-frame layout tables; bookmark
   add/zoom API changes; map-theme 3.44 signatures; `setDataSource`/`setScale`/
   `rollBack`/`colorRampType` binding fallbacks; deferred `system.shutdown`
   reply; plugin enable/disable fallbacks; zero-area selection zoom).
+* Sandbox completion: `scripts/qgis_command_coverage.py --sandbox-db`
+  exercises `db.connection_add` / `db.import_layer` for real against a
+  redirected settings root (`QGIS_CUSTOM_CONFIG_PATH` inside
+  `_scratch/cov_sandbox`, run-time interlock, operator-profile hash diff) — the
+  union now reaches **194/194** on 3.44.15, 4.2.3 and 4.3.0-dev (177 passed /
+  0 hard failures each, `skipped_by_design` empty).
+* Defect #18: `db.import_layer` was broken on all verified builds (removed
+  `createVectorLayer` / missing `VectorLayerOptions`) — file kinds now use
+  `QgsVectorFileWriter.CreateOrOverwriteLayer` (siblings preserved; overwrite
+  verified 5→2 rows), server kinds keep an exporter fallback.
+* Coverage-script hygiene: QGIS-native GeoPackage fixture, per-run port
+  overrides (`PITERM_COV_PORT`…), failure `detail` in logs, zero
+  ResourceWarnings under `-X dev`.
 
 ## 1.0.0 — 2026-10-08
 

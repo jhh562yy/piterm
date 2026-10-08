@@ -16,7 +16,15 @@ Checks are graded:
 Writes ``verification/logs/coverage_<qgis>_<stamp>.json`` and exits non-zero
 when any hard check fails.
 
-    "C:\\Program Files\\QGIS 3.44.15\\bin\\python-qgis-ltr.bat" scripts/qgis_command_coverage.py
+By default the two connection-writing commands (db.connection_add,
+db.import_layer) are skipped: they would rewrite the saved-connections
+settings. ``--sandbox-db`` runs them for real against a throwaway settings
+root - the flag refuses to execute unless QGIS_CUSTOM_CONFIG_PATH redirects
+QgsApplication.qgisSettingsDirPath() inside ``_scratch/cov_sandbox``. The
+same run gives db.tables / db.sql / db.add_layer their first positive
+exercise, against a generated GeoPackage.
+
+    "C:\\Program Files\\QGIS 3.44.15\\bin\\python-qgis-ltr.bat" scripts/qgis_command_coverage.py [--sandbox-db]
 """
 
 from __future__ import annotations
@@ -35,9 +43,10 @@ import time
 faulthandler.enable()
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-FRAME_PORT = 19887
-HTTP_PORT = 19889
-FETCH_PORT = 19881
+# overridable so several instances can be swept in parallel when needed
+FRAME_PORT = int(os.environ.get("PITERM_COV_PORT", "19887"))
+HTTP_PORT = int(os.environ.get("PITERM_COV_HTTP_PORT", "19889"))
+FETCH_PORT = int(os.environ.get("PITERM_COV_FETCH_PORT", "19881"))
 
 # commands deliberately exercised by the live-GUI sweep instead (no canvas /
 # no UI / real plugin-folder state in a headless throwaway session)
@@ -49,9 +58,13 @@ LIVE_ONLY = [
     "features.identify", "features.zoom_selection", "layers.zoom_to",
     "ui.message", "ui.open_attribute_table",
 ]
-# never executed anywhere (by design): they would rewrite the user's saved
-# database connections; their read paths are exercised instead
+# skipped by default (by design): they would rewrite the user's saved
+# database connections; their read paths are exercised instead. With
+# --sandbox-db they run for real against a throwaway settings root and drop
+# out of this list.
 SKIPPED_BY_DESIGN = ["db.connection_add", "db.import_layer"]
+# throwaway QGIS settings root used by --sandbox-db (outside the repo)
+SANDBOX_DIR = os.path.join(os.path.dirname(ROOT), "_scratch", "cov_sandbox")
 
 
 class Report:
@@ -94,6 +107,9 @@ class Report:
             entry = {"name": name, "ok": False,
                      "ms": round((time.perf_counter() - started) * 1000, 1),
                      "error": "%s: %s" % (type(exc).__name__, exc)}
+            detail = getattr(exc, "detail", None)
+            if detail:
+                entry["detail"] = _short(detail, 500)
             if soft:
                 entry["soft"] = True
                 self._record(name, False, entry)
@@ -135,6 +151,107 @@ def _assert(value, message="assertion failed"):
     return value
 
 
+def _norm_path(path):
+    return os.path.normcase(os.path.normpath(str(path or ""))).replace("\\", "/")
+
+
+def _inside_sandbox(settings_dir, env_root):
+    """True only when QGIS_CUSTOM_CONFIG_PATH redirected the settings root
+    into the throwaway _scratch/cov_sandbox area."""
+    if not env_root:
+        return False
+    settings = _norm_path(settings_dir)
+    return (settings.startswith(_norm_path(SANDBOX_DIR) + "/")
+            and settings.startswith(_norm_path(env_root) + "/"))
+
+
+def _make_empty_gpkg(path):
+    """(Re)create an empty GeoPackage through QGIS itself.
+
+    Raw osgeo calls proved unreliable inside a QGIS process (created files fail
+    to re-open through the bundled GDAL python bindings), so the file is made
+    with QgsVectorFileWriter from a scratch layer, then that scratch layer is
+    dropped through the OGR provider connection."""
+    from qgis.core import (QgsProject, QgsProviderRegistry,
+                           QgsVectorFileWriter, QgsVectorLayer)
+    for sibling in (path, path + "-wal", path + "-journal", path + "-shm"):
+        if os.path.exists(sibling):
+            try:
+                os.remove(sibling)
+            except OSError:
+                pass
+    scratch = QgsVectorLayer("Point?crs=EPSG:4326&field=tmp:int",
+                             "piterm_scratch", "memory")
+    options = QgsVectorFileWriter.SaveVectorOptions()
+    options.driverName = "GPKG"
+    options.layerName = "piterm_scratch"
+    options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteFile
+    err, message, _out, _layer = QgsVectorFileWriter.writeAsVectorFormatV3(
+        scratch, path, QgsProject.instance().transformContext(), options)
+    if err != QgsVectorFileWriter.NoError:
+        raise AssertionError("could not create gpkg (rc=%s): %s" % (err, message))
+    connection = QgsProviderRegistry.instance().providerMetadata(
+        "ogr").createConnection(path, {})
+    connection.dropVectorTable("", "piterm_scratch")
+    layers = [t.tableName() for t in connection.tables("")]
+    if layers:
+        raise AssertionError("fresh gpkg still has %s" % layers)
+    return {"gpkg": path, "layers": 0, "bytes": os.path.getsize(path)}
+
+
+def _archive_gpkg(path):
+    """Copy the populated sandbox GeoPackage into verification/logs."""
+    from qgis.core import Qgis
+    if not os.path.exists(path):
+        return None
+    dest = os.path.join(ROOT, "verification", "logs",
+                        "cov_sandbox_import_%d.gpkg" % Qgis.QGIS_VERSION_INT)
+    shutil.copy2(path, dest)
+    return dest
+
+
+def _sandbox_setting_path():
+    from qgis.core import QgsSettings
+    return QgsSettings().value("GeoPackage/connections/piterm_cov_gpkg/path",
+                               None)
+
+
+def _sandbox_evidence(gpkg):
+    """Durable readback: settings file used, file state, archived copy."""
+    from qgis.core import QgsSettings
+    settings = QgsSettings()
+    try:
+        settings_file = settings.fileName()
+    except Exception:  # noqa: BLE001
+        settings_file = None
+    return {
+        "settings_file": settings_file,
+        "gpkg_path_setting_after_remove": _sandbox_setting_path(),
+        "gpkg_exists": os.path.exists(gpkg),
+        "gpkg_bytes": os.path.getsize(gpkg) if os.path.exists(gpkg) else 0,
+        "archive": _archive_gpkg(gpkg),
+    }
+
+
+def _cleanup_gpkg(path):
+    removed = []
+    deadline = time.time() + 5
+    while True:
+        for sibling in (path, path + "-journal", path + "-wal", path + "-shm"):
+            if os.path.exists(sibling):
+                try:
+                    os.remove(sibling)
+                    removed.append(os.path.basename(sibling))
+                except OSError:
+                    pass
+        if not os.path.exists(path) or time.time() > deadline:
+            break
+        time.sleep(0.2)
+    if os.path.exists(path):
+        raise AssertionError("gpkg still present after cleanup: %s" % removed)
+    return {"removed": removed}
+
+
 def main():
     sys.path.insert(0, os.path.join(ROOT, "plugin"))
     sys.path.insert(0, os.path.join(ROOT, "mcp"))
@@ -150,6 +267,12 @@ def main():
     app = QgsApplication([], False)
     app.setApplicationName(app_name)
     app.initQgis()
+
+    sandbox = {
+        "requested": "--sandbox-db" in sys.argv[1:],
+        "active": _inside_sandbox(QgsApplication.qgisSettingsDirPath(),
+                                  os.environ.get("QGIS_CUSTOM_CONFIG_PATH", "")),
+    }
 
     report = Report()
     report_data = {"ok": True, "qgis": Qgis.QGIS_VERSION, "checks": []}
@@ -202,7 +325,7 @@ def main():
 
         def run_checks():
             try:
-                run_coverage(report, client, client_long, tmp, app)
+                run_coverage(report, client, client_long, tmp, app, sandbox)
             except Exception as exc:  # noqa: BLE001
                 report.ok = False
                 import traceback
@@ -238,6 +361,7 @@ def main():
         try:
             if fetch_httpd is not None:
                 fetch_httpd.shutdown()
+                fetch_httpd.server_close()
         except Exception:  # noqa: BLE001
             pass
         try:
@@ -255,8 +379,9 @@ def main():
 
     # coverage accounting against the manifest
     try:
-        manifest = json.load(open(os.path.join(ROOT, "mcp", "piterm_qgis_mcp",
-                                               "manifest.json"), encoding="utf-8"))
+        with open(os.path.join(ROOT, "mcp", "piterm_qgis_mcp", "manifest.json"),
+                  encoding="utf-8") as fh:
+            manifest = json.load(fh)
         names = [c["name"] for c in manifest["commands"]]
     except Exception:  # noqa: BLE001
         names = []
@@ -268,7 +393,11 @@ def main():
         "soft_failures": sorted({c["name"] for c in report.checks
                                  if c.get("soft") and not c.get("ok")}),
         "not_exercised_headless": not_exercised,
-        "live_only": LIVE_ONLY, "skipped_by_design": SKIPPED_BY_DESIGN,
+        "live_only": LIVE_ONLY,
+        "sandbox_db": sandbox,
+        # commands really executed in sandbox mode drop out of this list
+        "skipped_by_design": [n for n in SKIPPED_BY_DESIGN
+                              if n not in report.executed],
     }
 
     logs_dir = os.path.join(ROOT, "verification", "logs")
@@ -290,8 +419,9 @@ def main():
     return 0 if report_data["ok"] else 1
 
 
-def run_coverage(report, C, CL, tmp, app):
+def run_coverage(report, C, CL, tmp, app, sandbox=None):
     """Execute the coverage matrix. ``C`` = normal client, ``CL`` = long-timeout."""
+    sandbox = sandbox or {}
     from piterm_qgis_mcp.minimal import BridgeClient
 
     # ---------------------------------------------------------------- fixtures
@@ -565,9 +695,12 @@ def run_coverage(report, C, CL, tmp, app):
     report.check("io.fetch_url", lambda: C.call("io.fetch_url", {
         "url": "http://127.0.0.1:%d/cov.csv" % FETCH_PORT,
         "path": os.path.join(tmp, "cov_fetched.csv"), "timeout": 10}))
-    report.check("io.fetch_url.content", lambda: _assert(
-        open(os.path.join(tmp, "cov_fetched.csv"), encoding="utf-8").read()
-        == "name,x,y\na,1,1\nb,2,2\n", "fetched content differs"))
+    def fetched_ok():
+        with open(os.path.join(tmp, "cov_fetched.csv"), encoding="utf-8") as fh:
+            text = fh.read()
+        return _assert(text == "name,x,y\na,1,1\nb,2,2\n",
+                       "fetched content differs")
+    report.check("io.fetch_url.content", fetched_ok)
 
     # ---------------------------------------------------------------- layout
     report.check("layout.create", lambda: C.call("layout.create", {"name": "cov_layout"}))
@@ -677,6 +810,108 @@ def run_coverage(report, C, CL, tmp, app):
         "db.add_layer", {"connection": "nope", "table": "t"}))
     report.check("db.connection_remove", lambda: C.call(
         "db.connection_remove", {"name": "nope"}), soft=True)
+
+    # --------------------------------------- db sandbox (opt-in, --sandbox-db)
+    # db.connection_add / db.import_layer would rewrite saved connections, so
+    # they only run when QGIS_CUSTOM_CONFIG_PATH redirects the settings root
+    # into _scratch/cov_sandbox. The same run gives db.tables / db.sql /
+    # db.add_layer their first positive exercise on a generated GeoPackage.
+    if sandbox.get("requested"):
+        report.check("sandbox.interlock", lambda: _assert(
+            sandbox.get("active"),
+            "--sandbox-db needs QGIS_CUSTOM_CONFIG_PATH inside %s" % SANDBOX_DIR))
+    if sandbox.get("requested") and sandbox.get("active"):
+        db_dir = os.path.join(SANDBOX_DIR, "files")
+        os.makedirs(db_dir, exist_ok=True)
+        gpkg = os.path.join(db_dir, "cov_import.gpkg")
+        report.check("sandbox.gpkg_fixture", lambda: _make_empty_gpkg(gpkg))
+        # fresh source layers: memory layers reloaded from the saved project
+        # come back empty (verified), so seed deterministic fixtures right here
+        report.check("sandbox.source_layer", lambda: C.call("layers.add_memory", {
+            "name": "cov_db_src", "geometry_type": "point", "crs": "EPSG:4326",
+            "fields": [{"name": "name", "type": "string"},
+                       {"name": "value", "type": "double"}]}))
+        report.check("sandbox.source_seed", lambda: C.call("features.insert", {
+            "layer": "cov_db_src",
+            "features": [{"attributes": {"name": "s%d" % i, "value": float(i)},
+                          "geometry": {"wkt": "POINT (%d %d)" % (i, i)}}
+                         for i in range(5)]}))
+        report.check("sandbox.source_layer2", lambda: C.call("layers.add_memory", {
+            "name": "cov_db_src2", "geometry_type": "point", "crs": "EPSG:4326",
+            "fields": [{"name": "name", "type": "string"}]}))
+        report.check("sandbox.source_seed2", lambda: C.call("features.insert", {
+            "layer": "cov_db_src2",
+            "features": [{"attributes": {"name": "t%d" % i},
+                          "geometry": {"wkt": "POINT (%d 0)" % i}}
+                         for i in range(2)]}))
+        report.check("db.connection_add", lambda: C.call("db.connection_add", {
+            "name": "piterm_cov_gpkg", "kind": "gpkg", "path": gpkg}))
+        report.check("db.connection_add#pg", lambda: C.call("db.connection_add", {
+            "name": "piterm_cov_pg", "kind": "postgres", "host": "127.0.0.1",
+            "port": 5432, "database": "piterm_cov"}))
+        report.refusal("db.connection_add#invalid", lambda: C.call(
+            "db.connection_add", {"name": "piterm_cov_bad", "kind": "postgres"}))
+        report.check("db.connections_list#added", lambda: _assert(
+            {"piterm_cov_gpkg", "piterm_cov_pg"} <= {c["name"] for c in
+             C.call("db.connections_list")["connections"]},
+            "sandbox connections missing from db.connections_list"))
+        report.check("sandbox.settings_readback", lambda: _assert(
+            _norm_path(_sandbox_setting_path()) == _norm_path(gpkg),
+            "connection path not stored in the sandbox settings"))
+        report.check("db.tables", lambda: C.call("db.tables", {
+            "connection": "piterm_cov_gpkg", "kind": "gpkg"}))
+
+        def imported_rows(expected):
+            rows = C.call("db.sql", {
+                "connection": "piterm_cov_gpkg", "kind": "gpkg",
+                "sql": "select count(*) as n from cov_import"})["rows"]
+            got = int(rows[0]["n"])
+            return _assert(got == expected,
+                           "imported row count != %d (got %s)"
+                           % (expected, got))
+
+        report.check("db.import_layer", lambda: C.call("db.import_layer", {
+            "layer": "cov_db_src", "connection": "piterm_cov_gpkg",
+            "table": "cov_import", "kind": "gpkg"}))
+        report.refusal("db.import_layer#exists", lambda: C.call(
+            "db.import_layer", {"layer": "cov_db_src",
+                                "connection": "piterm_cov_gpkg",
+                                "table": "cov_import", "kind": "gpkg"}))
+        report.check("db.tables#imported", lambda: _assert(
+            "cov_import" in [t["name"] for t in C.call(
+                "db.tables", {"connection": "piterm_cov_gpkg",
+                              "kind": "gpkg"})["tables"]],
+            "cov_import not listed by db.tables"))
+        report.check("db.sql#read", lambda: imported_rows(5))
+        report.check("db.import_layer#overwrite", lambda: C.call(
+            "db.import_layer", {"layer": "cov_db_src2",
+                                "connection": "piterm_cov_gpkg",
+                                "table": "cov_import", "kind": "gpkg",
+                                "overwrite": True}))
+        report.check("db.sql#read#overwrite", lambda: imported_rows(2))
+        report.check("db.add_layer", lambda: C.call("db.add_layer", {
+            "connection": "piterm_cov_gpkg", "kind": "gpkg",
+            "table": "cov_import", "name": "cov_db_layer"}))
+        report.check("db.add_layer#count", lambda: _assert(
+            C.call("layers.count", {"layer": "cov_db_layer"})["count"] == 2,
+            "db.add_layer feature count != 2"))
+        report.check("db.connection_remove#gpkg", lambda: C.call(
+            "db.connection_remove", {"name": "piterm_cov_gpkg", "kind": "gpkg"}))
+        report.check("db.connection_remove#pg", lambda: C.call(
+            "db.connection_remove", {"name": "piterm_cov_pg"}))
+        report.check("db.connections_list#cleaned", lambda: _assert(
+            not [c for c in C.call("db.connections_list")["connections"]
+                 if str(c["name"]).startswith("piterm_cov")],
+            "sandbox connections left behind"))
+        report.check("sandbox.evidence", lambda: _sandbox_evidence(gpkg))
+        # release the gpkg before deleting it: a loaded layer holds the file
+        report.check("layers.remove#db", lambda: C.call(
+            "layers.remove", {"layer": "cov_db_layer"}))
+        report.check("layers.remove#db-src", lambda: C.call(
+            "layers.remove", {"layer": "cov_db_src"}))
+        report.check("layers.remove#db-src2", lambda: C.call(
+            "layers.remove", {"layer": "cov_db_src2"}))
+        report.check("sandbox.cleanup", lambda: _cleanup_gpkg(gpkg))
 
     # -------------------------------------------------------------- plugins
     import qgis.utils as qu

@@ -4,13 +4,16 @@
 
 | QGIS | Qt | Python | Status |
 |---|---|---|---|
-| **3.44.15 LTR** | 5.15.13 | 3.12.14 | headless smoke suite + deploy verified |
-| **4.2.3** | Qt 6 | 3.12 | headless smoke suite verified |
-| 4.2.0 | Qt 6 | 3.12 | same code path as 4.2.3 |
+| **3.44.15 LTR** | 5.15.13 | 3.12.14 | smoke 63/63 + coverage sweep incl. sandboxed db (177 pass / 0 hard fail) + deploy verified |
+| **4.2.3** | Qt 6 | 3.12 | smoke 63/63 + coverage sweep incl. sandboxed db (177 pass / 0 hard fail) verified |
+| **4.3.0-dev** | Qt 6 | 3.12 | smoke 63/63 + coverage sweep incl. sandboxed db (177 pass / 0 hard fail) verified |
+| 4.2.0 | Qt 6 | — | not a runnable build: uninstall leftover (`bin\setup.bat` + `etc\preremove-conf.bat` only) — excluded from the matrix |
 | 3.28–3.40 | 5.15 | 3.9–3.11 | declared supported; compat layer written for these (see below) |
 
 Declared in `metadata.txt`: `qgisMinimumVersion=3.28`, `qgisMaximumVersion=4.99`,
-`supportsQt6=True`.
+`supportsQt6=True`. Coverage evidence: `verification/report.md` §9–§10; the
+sandbox runs write zero bytes to operator profiles (hash diff in
+`verification/logs/user_profile_hash_*.json`).
 
 ## 2. The compat layer (`plugin/piterm_qgis_ai/compat.py`)
 

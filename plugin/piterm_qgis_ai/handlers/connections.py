@@ -153,27 +153,44 @@ class ConnectionHandlers(HandlerBase):
     def db_import_layer(self, layer, connection, table, kind="postgres",
                         schema=None, overwrite=False, geometry_column="geom"):
         target = self.resolve_vector({"layer": layer})
-        provider, _uri = _open_connection(self, connection, kind, schema)
+        provider, uri_text = _open_connection(self, connection, kind, schema)
         if not overwrite and _table_exists(provider, table, schema):
             raise invalid("table %r already exists; pass overwrite=true to replace"
                           % table)
-        options = _vector_layer_options(table, schema, overwrite, geometry_column)
+        provider_key = _PROVIDER_GROUPS.get(str(kind).lower(),
+                                            ("", "postgres"))[1]
         attempts = []
-        if options is not None:
-            attempts.append(lambda: provider.createVectorLayer(target, options))
-        attempts.append(lambda: provider.createVectorLayer(
-            target, {"tableName": table, "schema": schema or "",
-                     "overwrite": bool(overwrite),
-                     "geometryColumnName": geometry_column}))
+        legacy = _vector_layer_options(table, schema, overwrite, geometry_column)
+        if legacy is not None and hasattr(provider, "createVectorLayer"):
+            attempts.append(("connection", lambda: provider.createVectorLayer(
+                target, legacy)))
+        if hasattr(provider, "createVectorLayer"):
+            attempts.append(("connection-dict", lambda: provider.createVectorLayer(
+                target, {"tableName": table, "schema": schema or "",
+                         "overwrite": bool(overwrite),
+                         "geometryColumnName": geometry_column})))
+        if provider_key in ("ogr", "spatialite"):
+            # File-based targets: QgsVectorFileWriter creates / replaces the one
+            # target layer inside the existing dataset and leaves sibling tables
+            # alone. The connection exporter is NOT used here: its "overwrite"
+            # recreates the whole file (probed: sibling layers are lost).
+            attempts.append(("writer", lambda: _writer_import(
+                target, uri_text, table, geometry_column, kind)))
+        elif hasattr(provider, "createVectorLayerExporterDestinationUri"):
+            # Server providers on builds where createVectorLayer() was removed.
+            attempts.append(("exporter", lambda: _exporter_import(
+                provider, provider_key, target, table, schema, overwrite,
+                geometry_column)))
         errors = []
-        for attempt in attempts:
+        for label, attempt in attempts:
             try:
                 attempt()
                 return {"imported": target.id(), "table": table,
-                        "connection": connection}
+                        "connection": connection, "via": label}
             except Exception as exc:  # noqa: BLE001
-                errors.append(str(exc)[:200])
-        raise io_error("import failed", detail={"errors": errors})
+                errors.append("%s: %s" % (label, str(exc)[:200]))
+        raise io_error("import failed", detail={"kind": kind, "table": table,
+                                                "errors": errors})
 
     @command(name="db.sql", summary="Run SQL on a connection (read-only unless "
              "allow_write=true and the layer is not protected)",
@@ -298,6 +315,8 @@ def _table_exists(connection_obj, table, schema):
 
 
 def _vector_layer_options(table, schema, overwrite, geometry_column):
+    """Legacy (QGIS < 3.40) connection createVectorLayer options; None when the
+    class is unavailable, which is the case on 3.44 / 4.x builds."""
     try:
         from qgis.core import QgsAbstractDatabaseProviderConnection as Conn
         options = Conn.VectorLayerOptions(str(table))
@@ -311,6 +330,74 @@ def _vector_layer_options(table, schema, overwrite, geometry_column):
         return options
     except Exception:  # noqa: BLE001
         return None
+
+
+def _writer_import(target, path, table, geometry_column, kind):
+    """Add or replace a single layer inside an existing file dataset.
+
+    Uses QgsVectorFileWriter with CreateOrOverwriteLayer: creates the layer when
+    missing, replaces only that layer when present, and keeps sibling layers in
+    the same GeoPackage/SpatiaLite file untouched (probed on 3.44 / 4.2.3 /
+    4.3.0-dev - the connection exporter would rewrite the whole file)."""
+    from qgis.core import QgsProject, QgsVectorFileWriter
+    options = QgsVectorFileWriter.SaveVectorOptions()
+    options.driverName = ("SQLite" if str(kind).lower().startswith("spatialite")
+                          else "GPKG")
+    if options.driverName == "SQLite":
+        options.datasourceOptions = ["SPATIALITE=YES"]
+    options.layerName = str(table)
+    options.actionOnExistingFile = QgsVectorFileWriter.CreateOrOverwriteLayer
+    if geometry_column:
+        try:
+            options.layerOptions = ["GEOMETRY_NAME=%s" % geometry_column]
+        except Exception:  # noqa: BLE001
+            pass
+    err, message, _out_path, _out_layer = QgsVectorFileWriter.writeAsVectorFormatV3(
+        target, path, QgsProject.instance().transformContext(), options)
+    if err != QgsVectorFileWriter.NoError:
+        raise RuntimeError("writer failed (rc=%s): %s" % (err, message))
+
+
+def _exporter_import(provider, provider_key, target, table, schema, overwrite,
+                     geometry_column):
+    """Server-provider fallback (QGIS >= 3.40): exporter destination URI plus
+    QgsVectorLayerExporter. Kept for providers whose createVectorLayer() was
+    removed; file kinds use _writer_import instead."""
+    from qgis.core import QgsAbstractDatabaseProviderConnection as Conn
+    from qgis.core import QgsVectorLayerExporter
+    options = Conn.VectorLayerExporterOptions()
+    options.layerName = str(table)
+    if schema:
+        try:
+            options.schema = str(schema)
+        except Exception:  # noqa: BLE001
+            pass
+    if geometry_column:
+        try:
+            options.geometryColumn = str(geometry_column)
+        except Exception:  # noqa: BLE001
+            pass
+    result = provider.createVectorLayerExporterDestinationUri(options)
+    if isinstance(result, tuple):
+        result = list(result) + [None, None]
+        uri, provider_options = result[0], result[1]
+    else:
+        uri, provider_options = result, None
+    if not uri:
+        raise RuntimeError("no exporter destination for table %r" % table)
+    call_options = dict(provider_options or {})
+    call_options["layerName"] = str(table)
+    call_options["overwrite"] = bool(overwrite)
+    outcome = QgsVectorLayerExporter.exportLayer(
+        target, str(uri), provider_key, target.crs(), False, call_options)
+    if isinstance(outcome, tuple):
+        outcome = list(outcome) + [None, None]
+        code, message = outcome[0], outcome[1]
+    else:
+        code, message = outcome, ""
+    if code != 0:
+        raise RuntimeError("exporter failed (rc=%s): %s"
+                           % (code, str(message)[:200]))
 
 
 def _sqlite_read(handler, connection, sql, limit):

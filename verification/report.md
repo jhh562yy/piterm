@@ -143,10 +143,11 @@ layers, layout + atlas, csv/gpkg/geojson, a loopback file server):
   family against the running GUIs: **33/33 on both instances**
   (`logs/live_cov_9877_20261009.json`, `logs/live_cov_9887_20261009.json`);
   `layers.active_set` was additionally verified by hand on both.
-* Union of smoke + both suites reaches **192 of 194 commands**. The two
-  deliberately not executed are `db.connection_add` / `db.import_layer` (they
-  would rewrite the operator's saved database connections — their read paths
-  and refusal paths are covered instead).
+* Union of smoke + both suites reaches **192 of 194 commands** at this point.
+  The two deliberately not executed are `db.connection_add` / `db.import_layer`
+  (they would rewrite the operator's saved database connections — their read
+  paths and refusal paths are covered instead). **§10 lifts this to 194/194**
+  with a sandboxed sweep.
 * The headless soft-limits (`layers.active_set`, `bookmarks_zoom`,
   `themes_add/apply` — all GUI-session features) are verified in the live
   suite instead.
@@ -172,3 +173,61 @@ layers, layout + atlas, csv/gpkg/geojson, a loopback file server):
 | 15 | `plugins.enable/disable` | `startPlugin`/`stopPlugin` missing on some builds | `loadPlugin`/`unloadPlugin` fallbacks |
 | 16 | `canvas.scale_set`, `canvas.center_set` | `QgsMapCanvas.setScale` not exposed | `zoomScale` fallback |
 | 17 | `features.zoom_selection` | single-point selections have zero-area bounds → "nothing selected" | `selectedFeatureCount()` truth test + zero-area padding |
+
+## 10. Sandbox completion — 194/194 exercised on every runnable build (2026-10-09 00:14–00:25)
+
+The last two commands that were skipped by design (`db.connection_add`,
+`db.import_layer`) are now exercised for real, without touching operator data:
+
+* `scripts/qgis_command_coverage.py --sandbox-db` refuses to run the two
+  commands unless `QGIS_CUSTOM_CONFIG_PATH` redirects
+  `QgsApplication.qgisSettingsDirPath()` into `_scratch/cov_sandbox` (run-time
+  interlock checked against the live settings directory).
+* The redirect is proven inside the run: `sandbox.settings_readback` (the saved
+  connection path equals the sandbox GeoPackage) and `sandbox.evidence`
+  (`settings_file = …/cov_sandbox/cfg_344/profiles/default/QGIS/QGIS3-piterm-cov.ini`).
+* Operator profiles stay byte-identical: all six `*.ini` files under
+  `%APPDATA%\QGIS\QGIS3|QGIS4` hashed before/after — **0 diffs, 0 `piterm_cov`
+  strings** (`logs/user_profile_hash_baseline.json` vs `…_after.json`).
+* Results per build: **177 passed / 0 hard failures / 4 known GUI-session soft
+  items**; `exercised_headless` 133/194 with `skipped_by_design` now empty; the
+  union with the smoke + live sweeps is the full **194/194**.
+  Logs: `logs/coverage_3.44.15-Solothurn_20261009-002212.json`,
+  `logs/coverage_4.2.3-Belém_do_Pará_20261009-002339.json`,
+  `logs/coverage_4.3.0-Master_20261009-002310.json`.
+* Extra depth on the db surface (first positive exercise of `db.tables` /
+  `db.sql` / `db.add_layer`): import → SQL count 5; overwrite with a different
+  layer → count 2 (real replace, siblings intact); refusal when the table
+  exists without `overwrite=true`; connection add/list/remove round-trip for
+  gpkg + postgres, cleanup verified. Archive:
+  `logs/cov_sandbox_import_34415.gpkg` (the surviving 2-row table; siblings
+  `cov_sandbox_import_40203.gpkg` / `…_40300.gpkg` from the other builds).
+
+* Redeploy regression on the fixed code (deployed copies hash-equal to the
+  repo): smoke **63/63** on 3.44.15 & 4.2.3
+  (`logs/smoke_3.44.15-Solothurn_20261009-002443.json`,
+  `logs/smoke_4.2.3-Belém_do_Pará_20261009-002500.json`) and live **33/33** on
+  both instances (`logs/live_cov_9877_20261009-0030.json`,
+  `logs/live_cov_9887_20261009-0030.json`).
+
+### Defect #18 — `db.import_layer` was broken on every verified build
+
+`QgsAbstractDatabaseProviderConnection.VectorLayerOptions` does not exist and
+`createVectorLayer()` was removed from the connection class on 3.44 / 4.2.3 /
+4.3.0-dev, so every import attempt failed. The modern exporter alternative was
+probed and rejected for file targets: its `overwrite` flag recreates the whole
+file and silently drops sibling layers. Fix: file kinds (gpkg/spatialite) write
+via `QgsVectorFileWriter.CreateOrOverwriteLayer`; server kinds keep an
+`QgsVectorLayerExporter` fallback for builds without `createVectorLayer`.
+
+### Housekeeping
+
+* Coverage script: QGIS-native GeoPackage fixture (raw `osgeo` calls are
+  unreliable inside a QGIS process), per-run port overrides (`PITERM_COV_PORT`
+  / `PITERM_COV_HTTP_PORT` / `PITERM_COV_FETCH_PORT`), failure `detail`
+  propagation, and zero `ResourceWarning`s under `-X dev` (the manifest handle
+  and the HTTP socket were previously left unclosed).
+* QGIS 4.2.0 (`C:\Program Files\QGIS 4.2.0`) is an uninstall leftover — only
+  `bin\setup.bat` + `etc\preremove-conf.bat`, no executables — so it is not a
+  runnable build and is excluded; the verified matrix is 3.44.15 / 4.2.3 /
+  4.3.0-dev.
