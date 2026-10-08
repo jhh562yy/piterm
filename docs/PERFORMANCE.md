@@ -64,3 +64,21 @@
   requested.
 * **No polling loops in the plugin**: all I/O is signal-driven; the only timer
   is a 5 s heartbeat that expires cursors and reaps dead sockets.
+
+## 6. Measured on this machine (live GUI, QGIS 3.44.15, 2026-10-08)
+
+Loopback TCP, single client, Python `BridgeClient` (method script:
+`_scratch/bench.py`, 1 000-feature grid, HTTP/TCP defaults):
+
+| Operation | Result |
+|---|---|
+| `system.ping` ×300 | **0.96 ms** avg round-trip |
+| `layers.add_memory` (new layer) | 214 ms one-off |
+| `features.insert` ×1000 in one call | **44.8 ms** (~22 k features/s) |
+| `layers.count` on 1 000 features | 23.8 ms |
+| `features.query` limit 500 | 16.8 ms |
+| `layers.zoom_to` | 3.1 ms |
+| `canvas.render` 1600×1000 | 223 ms |
+| `system.batch` ×50 pings | 11.5 ms (0.23 ms/item) |
+
+Render artifact: `verification/bench_render.png`.

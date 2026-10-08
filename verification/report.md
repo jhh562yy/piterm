@@ -35,10 +35,10 @@ Key artifacts: `docs/TOOLS.md` (23 KB), `mcp/piterm_qgis_mcp/manifest.json`
 | # | Criterion | Evidence | Result |
 |---|---|---|---|
 | R1 | Source-level benchmark study | `docs/RESEARCH.md` — architecture, mechanisms, pitfalls of all three references + design-decision table | ✅ |
-| R2 | Plugin loads headless on QGIS 3.44 **and** 4.2 | `scripts/qgis_headless_smoke.py` → **63/63 checks** each: `verification/logs/smoke_3.44.15-Solothurn_20261008-234023.json`, `smoke_4.2.3-Belém_do_Pará_20261008-234106.json` | ✅ |
+| R2 | Plugin loads headless on QGIS 3.44 **and** 4.2 | `scripts/qgis_headless_smoke.py` → **63/63 checks** on **3.44.15, 4.2.3 and 4.3.0-dev**: `logs/smoke_3.44.15-Solothurn_20261008-234944.json`, `smoke_4.2.3-Belém_do_Pará_20261008-235005.json`, `smoke_4.3.0-Master_20261008-235219.json` | ✅ |
 | R3 | MCP server handshake + tool calls | minimal stdio: `tests/test_min_roundtrip.py`; official SDK probe: `scripts/mcp_fastmcp_probe.py` against live QGIS → `initialize ok (protocol 2025-11-25)`, **196 tools**, `system_ping`/`layers_list`/`piterm_status` all answered; streamable-http transport verified end-to-end too (loopback 18990, see `logs/mcp_streamable_http_probe_20261008.md`) | ✅ |
 | R4 | Skill/CLI performs real operations | live QGIS 3.44 via CLI: `layers.add_memory`, `features.insert` (5), `layers.zoom_to`, `canvas.render`, `canvas.screenshot`, `processing.execute native:buffer`, `session.checkpoint_create`; HTTP `/rpc` ping; both GUI instances answering (9877 / 9887) | ✅ |
-| R5 | Deploy scripts with backup/uninstall | `scripts/install.ps1` deployed to both profiles (39 files each), ini enable + backups (`...plugins\piterm_qgis_ai.bak-20261008-233919`, `QGIS3.ini.bak-piterm-*`), autostart configured for both | ✅ |
+| R5 | Deploy scripts with backup/uninstall | `scripts/install.ps1` deployed to both profiles (39 files each), ini enable + backups (`...plugins\piterm_qgis_ai.bak-20261008-233919`, `QGIS3.ini.bak-piterm-*`), autostart configured for both; **uninstall → reinstall cycle executed live (23:51)** — dirs removed, ini false→true with backups, live bridges unaffected, redeploy 39 files with matching hashes | ✅ |
 | R6 | Security & control chain | read-only blocks writes (`E_FORBIDDEN`), token reject/accept (`E_AUTH` / ok), path allow/deny (`E_PATH_DENIED`), audit + journal + checkpoint + undo verified in smoke; sandbox rules unit-tested | ✅ |
 | R7 | Docs complete + generated TOOLS ≥120 | `docs/TOOLS.md` generated with **194 commands**; README/ARCHITECTURE/PROTOCOL/SECURITY/PERFORMANCE/INSTALL/COMPAT/CHANGELOG/RESEARCH present | ✅ |
 
@@ -72,15 +72,19 @@ powershell -ExecutionPolicy Bypass -File scripts\install.ps1          # or -All 
   `verification/live_desktop.png` (full desktop with QGIS + dock).
 * Audit/journal/backups exist on disk under the two profiles.
 
-**Final-state re-verification (23:49–23:50 local, post-settlement):** fresh
-headless smokes re-ran green — **63/63** on both generations
-(`logs/smoke_3.44.15-Solothurn_20261008-234944.json`,
-`logs/smoke_4.2.3-Belém_do_Pará_20261008-235005.json`); MCP
-**streamable-http** end-to-end probe passed on loopback
-(`logs/mcp_streamable_http_probe_20261008.md`); live E2E redone on both
-instances (add layer → insert 5 → zoom → render → remove; `final_344.png` /
-`final_42.png`; layer count back to 0); skill CLI `piterm_qgis.py ping/hello`
-answered.
+**Final-state re-verification (23:49–23:56 local, post-settlement):** fresh
+headless smokes re-ran green — **63/63** on 3.44.15, 4.2.3 *and* the 4.3.0-dev
+build (`logs/smoke_3.44.15-Solothurn_20261008-234944.json`,
+`smoke_4.2.3-Belém_do_Pará_20261008-235005.json`,
+`smoke_4.3.0-Master_20261008-235219.json`); MCP **streamable-http** probe passed
+on loopback (`logs/mcp_streamable_http_probe_20261008.md`); live E2E redone on
+both instances (`final_344.png` / `final_42.png`, layer count back to 0);
+**uninstall → reinstall cycle** executed live with backups and matching hashes
+(bridges unaffected); **measured performance** added to `docs/PERFORMANCE.md`
+(`bench_render.png`); the dock console was **driven in the live GUI** — the
+"Run command" button clicked through the Qt widget layer, `layers.list`
+answered into the console output (`dock_console_run.png`); skill CLI
+`ping/hello` answered.
 
 ## 6. Real defects found & fixed during verification
 
@@ -96,15 +100,18 @@ answered.
 
 ## 7. Known limits / not machine-verified
 
-* QGIS 3.28–3.40 declared supported via the compat layer; only 3.44.15 and
-  4.2.3 were executed here (the `C:\Program Files\QGIS 4.2.0` directory on this
-  machine is an incomplete OSGeo4W stub — `bin\setup.bat` only, no interpreter —
-  so the 4.2 line is covered by 4.2.3).
+* QGIS 3.28–3.40 declared supported via the compat layer; executed here:
+  3.44.15, 4.2.3 and the 4.3.0-dev build (`D:\qgis\4.3.0`) — all 63/63. The
+  `C:\Program Files\QGIS 4.2.0` directory is an incomplete OSGeo4W stub
+  (`bin\setup.bat` only, no interpreter), so the 4.2 line is covered by 4.2.3.
 * macOS/Linux paths in `install.py` are untested on this machine.
 * `streamable-http` transport of the full MCP server: verified end-to-end on
   loopback (127.0.0.1:18990, 2026-10-08 23:49) in addition to the stdio path.
 * GUI screenshots were taken from the desktop; the dock's interactive console
-  was exercised headlessly (`system.help`/capabilities) rather than by UI clicks.
+  was additionally exercised in the live GUI (2026-10-08 23:56) — the "Run
+  command" button was clicked through the Qt widget layer and the response
+  rendered into the console output (`dock_console_run.png`); the remaining
+  manual UI surfaces (menus, dialogs) are still covered headlessly.
 
 ## 8. Notes for the operator
 
