@@ -87,7 +87,9 @@ powershell -ExecutionPolicy Bypass -File scripts\install.ps1          # or -All 
 ## 7. Known limits / not machine-verified
 
 * QGIS 3.28–3.40 declared supported via the compat layer; only 3.44.15 and
-  4.2.3 were executed here (no other installs on this machine).
+  4.2.3 were executed here (the `C:\Program Files\QGIS 4.2.0` directory on this
+  machine is an incomplete OSGeo4W stub — `bin\setup.bat` only, no interpreter —
+  so the 4.2 line is covered by 4.2.3).
 * macOS/Linux paths in `install.py` are untested on this machine.
 * `streamable-http` transport of the full MCP server is implemented but the
   end-to-end probe used stdio (the transport clients use by default).
@@ -98,9 +100,9 @@ powershell -ExecutionPolicy Bypass -File scripts\install.ps1          # or -All 
 
 * Both QGIS instances are **left running and bridge-enabled** (autostart=true).
   Ports: QGIS 3.44 → 9877/9879, QGIS 4.2.3 → 9887/9889.
-* Default posture is secure: no token on loopback, `allow_execute=false` until
-  flipped in the dock (it was enabled during the live demo via
-  `system.config_set` and persisted as a demo; flip it back in the dock if you
-  prefer the stricter default).
+* Default posture is secure and was restored after the demo: both instances are
+  back on `allow_execute=false` (it was temporarily enabled during the live demo
+  via `system.config_set`; flip it in the dock to re-enable
+  Processing/`python.exec`).
 * Diagnostics for any future session: `system.diagnose`, `system.metrics`,
   `system.audit_tail`, `session.journal_list`.
