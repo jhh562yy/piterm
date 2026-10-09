@@ -4,7 +4,7 @@
 > nkarasiak/qgis-mcp（125 工具），最早的经典是 jjsantos01/qgis_mcp（15 工具），
 > 工具质量最高的是 opengeos/GeoAgent（29 个 QGIS 工具 + 确认钩子 + AST 沙箱）。
 > Piterm QGIS AI 在它们的基础上做了「全都要 + 全部补强」：架构借鉴、坑位规避、
-> 能力面直接超过 125（当前 160+ 命令且由注册表自证）。
+> 能力面直接超过 125（当前 195 命令且由注册表自证）。
 
 ## 0. 生态扫描（本机可复算）
 
@@ -112,7 +112,7 @@ Salah MCP / WAI QGIS MCP / SIGMAI / ClaudIA / AtQuery …），功能高度重�
 
 | 维度 | 生态现状 | Piterm QGIS AI 的选择 |
 |---|---|---|
-| 工具数 | 15 / 125 | **160+**，注册表自证数量，AST 测试防漂移 |
+| 工具数 | 15 / 125 | **195**，注册表自证数量，AST 测试防漂移 |
 | 传输 | 帧（多数）/ 仅 socket | **帧 + NDJSON + HTTP JSON-RPC** 三入口，同一 dispatcher |
 | MCP 依赖 | 必需 FastMCP | **双模式**：FastMCP 全功能 / stdlib 零依赖 minimal |
 | 线程模型 | QTimer 零线程（A-1）| 同样零线程，但用 **QTcpServer + 信号**，代码量更小、无自旋 |

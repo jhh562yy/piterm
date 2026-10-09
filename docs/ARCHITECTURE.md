@@ -10,7 +10,7 @@
 │  Copilot, LM Studio, Hermes, │◄──────►│  │  QTcpServer (frame) :9877       │  │
 │  opencode, piterm terminal   │  TCP/  │  │  QTcpServer (http)  :9879       │  │
 └──────────┬───────────────────┘  HTTP  │  │  Dispatcher ─→ HandlerHub       │  │
-           │                            │  │   160+ @command methods         │  │
+           │                            │  │   195 @command methods         │  │
            │ stdio / streamable-http    │  │  SecurityManager · Journal      │  │
 ┌──────────▼───────────────────┐        │  │  Checkpoints · JobManager       │  │
 │ mcp/piterm_qgis_mcp          │        │  │  CursorManager · AuditLog       │  │
@@ -83,7 +83,7 @@ makes both sides unit-testable.
 | `checkpoints.py` | project snapshots + guarded restore |
 | `jobs.py` | job state machine (QGIS-free), progress/events |
 | `cursors.py` | chunked-read cursors with TTL |
-| `handlers/*` | 16 domain modules, 160+ commands |
+| `handlers/*` | 16 domain modules, 195 commands |
 | `ui/dock.py` | status/log/console/metrics/clients, live settings |
 | `ui/configurator.py` | 15+ ready-made client config snippets |
 | `compat.py` | QGIS 3/4 + Qt5/6 resolution (`resolve()` over scoped enums) |

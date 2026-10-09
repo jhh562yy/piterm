@@ -1,5 +1,33 @@
 # Changelog
 
+## Unreleased — operating manual + client-setup fixes (2026-10-09)
+
+* **`docs/USAGE.md` + `docs/USAGE.zh-CN.md`** (new): the full operating manual —
+  install → start → connect (MCP stdio / HTTP / raw TCP / CLI) → call, with runnable
+  recipes, the security switch table, the error-code cheat sheet, verification and
+  troubleshooting. README and INSTALL now point at it.
+* **New command `system.client_setup`** (195 total): ask the bridge for ready-to-paste
+  MCP client configs and the resolved client entry point, from a shell or from an
+  agent (`{"client": "cursor"}` returns one). Exercised in the headless sweep.
+* **Defect #19 — Client-setup handed clients a dead path.** `ui/configurator.py`
+  generated `…/mcp/piterm_qgis_mcp/min.py` (the file is `minimal.py`) and derived the
+  repo root by counting `dirname` levels, which resolved to `<profile>/python` once the
+  plugin was installed. Resolution now lives in the QGIS-free
+  `plugin/piterm_qgis_ai/client_paths.py` (configured root → walk up → bundled copy),
+  `scripts/install.ps1` bundles `minimal.py` next to the plugin and records
+  `meta.repo_root` in the profile ini, and the dialog shows the resolution status
+  (red when nothing is found) instead of silently emitting a bad path.
+* **Defect #20 — policy switches could not be turned off.** QgsSettings round-trips
+  Python `False` as the *string* `"false"`, and `bool("false")` is `True`; a stored
+  `mode.allow_execute=false` therefore read back as enabled (same for `read_only` /
+  `confirm_destructive`). All settings I/O now goes through `security.coerce_value`
+  (single source of truth for reload, `system.config_get`, `system.config_set`), and
+  `system.config_set` rejects non-boolean text instead of guessing.
+* Tests: **36 → 79** unit tests (`tests/test_client_paths.py`,
+  `tests/test_settings_coercion.py`) pinning both defects; `install.ps1`'s ini upsert
+  exercised by a scratch harness; matrix re-run green with the new command
+  (178 passed / 4 soft, exercised 134/195 headless; live 33/33 per instance).
+
 ## Unreleased — command-coverage sweep (2026-10-09)
 
 * New `scripts/qgis_command_coverage.py` (headless) + live-GUI sweep: the union

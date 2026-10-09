@@ -6,9 +6,10 @@
   Runs the full verification matrix from a single entry point:
 
     1) pytest                      - wire / security / manifest / round-trip +
-                                     sandbox-interlock unit tests (no QGIS)
+                                     sandbox-interlock + client-path + settings-
+                                     coercion unit tests (no QGIS)
     2) qgis_headless_smoke.py      - 63-check baseline per installed QGIS build
-    3) qgis_command_coverage.py    - full 194-command sweep per build;
+    3) qgis_command_coverage.py    - full 195-command sweep per build;
                                      with -Sandbox it also exercises
                                      db.connection_add / db.import_layer against
                                      a throwaway settings root
@@ -16,7 +17,10 @@
                                      _scratch\cov_sandbox - operator profiles
                                      are hash-verified untouched)
     4) qgis_live_coverage.py       - 33 live-GUI checks against running bridge
-                                     instances (canvas / ui / themes / ...)
+                                     instances (canvas / ui / themes / ...);
+                                     per-instance tokens via
+                                     -LiveTokens 9887=<secret> (or the
+                                     PITERM_QGIS_TOKEN_<port> env vars)
 
   Every suite writes its own JSON evidence under verification\logs\; the full
   console output of every suite is additionally captured (Tee-Object) into
@@ -31,6 +35,9 @@
 
 .EXAMPLE
   scripts\verify_all.ps1 -Versions 4.2.3,4.3.0-dev -Sandbox
+
+.EXAMPLE
+  scripts\verify_all.ps1 -LivePorts 9877 -AllowMissing   # one GUI, no 4.3.0-dev
 #>
 param(
   [string[]]$Versions = @('3.44.15', '4.2.3', '4.3.0-dev'),
@@ -39,7 +46,9 @@ param(
   [switch]$SkipSmoke,
   [switch]$SkipCoverage,
   [switch]$SkipLive,
-  [int[]]$LivePorts = @(9877, 9887)
+  [string[]]$LivePorts = @('9877', '9887'),
+  [string[]]$LiveTokens = @(),
+  [switch]$AllowMissing
 )
 
 $ErrorActionPreference = 'Continue'
@@ -49,6 +58,30 @@ New-Item -ItemType Directory -Force -Path $logs | Out-Null
 $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
 $script:logPath = Join-Path $logs "verify_all_$stamp.log"
 $failures = New-Object System.Collections.Generic.List[string]
+
+# `powershell -File script.ps1 -Versions 4.2.3,4.3.0` hands over ONE string
+# ("4.2.3,4.3.0") - splitting it here also avoids the numeric-parse trap where
+# "9877,9887" becomes the single integer 98779887.
+function Split-List([string[]]$items) {
+  $out = @()
+  foreach ($item in $items) {
+    foreach ($chunk in ([string]$item -split '[,\s;]+')) {
+      if ($chunk) { $out += $chunk.Trim() }
+    }
+  }
+  return $out
+}
+
+$Versions = Split-List $Versions
+$livePorts = @(Split-List $LivePorts | ForEach-Object { [int]$_ })
+
+# Per-instance tokens, e.g. -LiveTokens 9887=<secret>,9877=<secret>: instances
+# are separate QGIS profiles, so one may enforce a token while another does not.
+$liveTokenMap = @{}
+foreach ($item in (Split-List $LiveTokens)) {
+  $pair = [string]$item -split '=', 2
+  if ($pair.Count -eq 2) { $liveTokenMap[$pair[0].Trim()] = $pair[1].Trim() }
+}
 
 function Write-Log([string]$text) {
   Write-Host $text
@@ -78,7 +111,12 @@ try {
   foreach ($version in $Versions) {
     $py = $interpreters[$version]
     if (-not $py -or -not (Test-Path $py)) {
-      Write-Log "`n=== ${version}: interpreter not found - skipped ==="
+      if ($AllowMissing) {
+        Write-Log "`n=== ${version}: interpreter not found - skipped (-AllowMissing) ==="
+        continue
+      }
+      Write-Log "`n=== ${version}: interpreter not found - FAILED (use -AllowMissing to skip) ==="
+      $failures.Add("missing:$version")
       continue
     }
     if (-not $SkipSmoke) {
@@ -105,11 +143,18 @@ try {
   }
 
   if (-not $SkipLive) {
-    foreach ($port in $LivePorts) {
+    foreach ($port in $livePorts) {
       Write-Log "`n=== live coverage / port $port ==="
+      $tokenVar = "PITERM_QGIS_TOKEN_$port"
+      $hadToken = $false
+      if ($liveTokenMap.ContainsKey([string]$port)) {
+        [Environment]::SetEnvironmentVariable($tokenVar, $liveTokenMap[[string]$port])
+        $hadToken = $true
+      }
       python (Join-Path $root 'scripts\qgis_live_coverage.py') $port 2>&1 |
         Tee-Object -FilePath $script:logPath -Append
       if ($LASTEXITCODE -ne 0) { $failures.Add("live:$port") }
+      if ($hadToken) { [Environment]::SetEnvironmentVariable($tokenVar, $null) }
     }
   }
 } finally {

@@ -11,12 +11,12 @@ source/docs (excluding `_reference/` research checkouts and `.venv`).
 
 | Component | Path | Notes |
 |---|---|---|
-| QGIS plugin | `plugin/piterm_qgis_ai/` | 0-thread bridge on the Qt event loop; **194 commands** (generated catalog), 16 domain handler modules, dock UI, client configurator |
+| QGIS plugin | `plugin/piterm_qgis_ai/` | 0-thread bridge on the Qt event loop; **195 commands** (generated catalog), 16 domain handler modules, dock UI, client configurator (`client_paths.py` resolves the client entry in both checkout & installed layouts) |
 | MCP server | `mcp/piterm_qgis_mcp/` | `minimal.py` (stdlib-only client + MCP stdio server + CLI, sha16 `A365F2500C8B98AC`), `server.py` (FastMCP for mcp 1.x / MCPServer for mcp 2.x), dynamic tools from the live catalog |
 | Skill | `skill/piterm-qgis-ai/` | `SKILL.md` + `piterm_qgis.py`; **installed into this environment** as `skill://piterm-qgis-ai` |
 | Installers | `scripts/install.ps1`, `install.py` | multi-profile deploy, backups, ini enable, uninstall |
-| Docs | `docs/` | RESEARCH / ARCHITECTURE / PROTOCOL / TOOLS (generated, 194 commands) / SECURITY / PERFORMANCE / INSTALL / COMPAT / CHANGELOG |
-| Tests | `tests/` | 26 unit tests (wire, security, manifest AST, fake-bridge round-trip) |
+| Docs | `docs/` | USAGE (+ zh-CN) / RESEARCH / ARCHITECTURE / PROTOCOL / TOOLS (generated, 195 commands) / SECURITY / PERFORMANCE / INSTALL / COMPAT / CHANGELOG |
+| Tests | `tests/` | 79 unit tests (wire, security, manifest AST, fake-bridge round-trip, sandbox interlock, client-path resolution, settings coercion) |
 
 Key artifacts: `docs/TOOLS.md` (23 KB), `mcp/piterm_qgis_mcp/manifest.json`
 (94 KB, sha16 `DF9909370C3D2C8C`), plugin `server.py` sha16 `5F96CB548E3338F8`.
@@ -40,7 +40,7 @@ Key artifacts: `docs/TOOLS.md` (23 KB), `mcp/piterm_qgis_mcp/manifest.json`
 | R4 | Skill/CLI performs real operations | live QGIS 3.44 via CLI: `layers.add_memory`, `features.insert` (5), `layers.zoom_to`, `canvas.render`, `canvas.screenshot`, `processing.execute native:buffer`, `session.checkpoint_create`; HTTP `/rpc` ping; both GUI instances answering (9877 / 9887) | ✅ |
 | R5 | Deploy scripts with backup/uninstall | `scripts/install.ps1` deployed to both profiles (39 files each), ini enable + backups (`...plugins\piterm_qgis_ai.bak-20261008-233919`, `QGIS3.ini.bak-piterm-*`), autostart configured for both; **uninstall → reinstall cycle executed live (23:51)** — dirs removed, ini false→true with backups, live bridges unaffected, redeploy 39 files with matching hashes | ✅ |
 | R6 | Security & control chain | read-only blocks writes (`E_FORBIDDEN`), token reject/accept (`E_AUTH` / ok), path allow/deny (`E_PATH_DENIED`), audit + journal + checkpoint + undo verified in smoke; sandbox rules unit-tested | ✅ |
-| R7 | Docs complete + generated TOOLS ≥120 | `docs/TOOLS.md` generated with **194 commands**; README/ARCHITECTURE/PROTOCOL/SECURITY/PERFORMANCE/INSTALL/COMPAT/CHANGELOG/RESEARCH present | ✅ |
+| R7 | Docs complete + generated TOOLS ≥120 | `docs/TOOLS.md` generated with **195 commands**; USAGE (+ zh-CN)/README/ARCHITECTURE/PROTOCOL/SECURITY/PERFORMANCE/INSTALL/COMPAT/CHANGELOG/RESEARCH present | ✅ |
 
 ## 4. Exact commands (reproducible)
 
@@ -249,6 +249,11 @@ powershell -ExecutionPolicy Bypass -File scripts\verify_all.ps1 -Sandbox
   next to the usual per-suite JSONs; exit code 0 only when everything passed;
 * switches: `-Versions`, `-LivePorts`,
   `-SkipUnit / -SkipSmoke / -SkipCoverage / -SkipLive`.
+* per-instance tokens: `-LiveTokens 9887=<secret>` (a profile with `auth.enabled`
+  would otherwise answer the sweep with `E_AUTH`); list values survive the
+  `powershell -File` argument passing (comma/space/semicolon), and a requested
+  version whose interpreter is missing now **fails** the run instead of being
+  silently skipped (`-AllowMissing` opts back into the old behaviour).
 
 Reference run — whole matrix in ≈36 s (`logs/verify_all_20261009-003025.log`):
 
@@ -264,3 +269,78 @@ The sandbox-interlock units (`tests/test_coverage_sandbox.py`) guard the
 `_scratch/cov_sandbox` (prefix tricks and mismatched env roots are rejected),
 so this command can never write to operator profiles. Suite runtimes measured
 by the run: pytest ≈2.5 s, smoke ≈5 s, coverage ≈6 s, live ≈2 s per instance.
+
+---
+
+## 12. Operating manual + two defects found *by writing it* (2026-10-09 23:2x–23:5x)
+
+Writing the "how do I actually use this" manual turned into a real test of the
+client-setup path and of the policy read path. Both had defects; both are fixed,
+unit-pinned and re-verified live.
+
+### 12.1 Delivered
+
+* **`docs/USAGE.md` + `docs/USAGE.zh-CN.md`** — install → start → connect
+  (MCP stdio / HTTP / raw TCP / CLI) → call (recipes) → security switches →
+  verification → troubleshooting → FAQ, plus README/INSTALL/SKILL cross-links.
+* **`system.client_setup`** (new command, catalog **194 → 195**): returns the
+  resolved client entry point and ready-to-paste configs for 16 clients, from a
+  shell or from an agent — `{"client": "cursor"}` selects one. Exercised by the
+  headless sweep (see `_client_setup()` in `scripts/qgis_command_coverage.py`).
+
+### 12.2 Defect #19 — the client configurator handed out a dead path
+
+`ui/configurator.py` built the snippet path as
+`<repo>/mcp/piterm_qgis_mcp/min.py` (the file is `minimal.py`) and derived the
+repo root by counting `dirname()` levels — which, for a plugin installed under
+`…\profiles\default\python\plugins\`, resolves to `…\profiles\default\python`.
+Every copied config was therefore broken, silently.
+
+Fix: resolution moved into QGIS-free `plugin/piterm_qgis_ai/client_paths.py`
+(`configured root → walk up → bundled copy`, with `source` /
+`full_available` / a human `note`); `scripts/install.ps1` now bundles
+`minimal.py` next to the plugin and records `meta.repo_root` in the profile ini;
+the dialog shows the resolution status (red when nothing is found) instead of
+emitting a path; the FastMCP variant is only offered when a real checkout exists.
+Pinned by `tests/test_client_paths.py` (11 tests) and by the coverage sweep.
+
+### 12.3 Defect #20 — policy switches could not be turned off
+
+QgsSettings round-trips Python `False` as the **string** `"false"`, and
+`bool("false")` is `True`. `SecurityConfig.reload()` used bare `bool(...)`, so a
+stored `mode.allow_execute=false` read back as *enabled* (same for
+`mode.read_only` and `mode.confirm_destructive`). Observed live: after reloading
+the fixed plugin the same stored `"false"` immediately reported
+`allow_execute: false`.
+
+Fix: `security.coerce_value()` is now the single coercion point for
+`SecurityConfig.reload`, `system.config_get` and `system.config_set`
+(QgsSettings strings, ini edits and JSON payloads all agree); `limits.rate_per_sec`
+default became a float so it coerces numerically; `config_set` rejects
+non-boolean text instead of guessing. Pinned by `tests/test_settings_coercion.py`
+(30 cases incl. the exact `"false"` round-trip and end-to-end policy checks).
+
+### 12.4 Verification — reference run, whole matrix in ≈30 s
+
+`logs/verify_all_20261009-233739.log` (126 KB, full console transcript),
+`VERIFY ALL OK - every requested suite passed` (exit 0):
+
+| suite | 3.44.15 | 4.2.3 | 4.3.0-dev |
+|---|---|---|---|
+| pytest (**79 tests**) | `79 passed in 2.5s` | — | — |
+| smoke 63 | ok `…233746` | ok `…233754` | ok `…233803` |
+| coverage (sandboxed db) — 182 checks, **178 pass / 4 soft / 0 hard**, `exercised 134/195`, `sandbox_db.active=true` | `…233750` | `…233800` | `…233807` |
+| live 33 (9877 no token, 9887 per-port token) | ok `…233807` | ok `…233808` | — |
+
+Both QGIS instances were running the freshly installed plugin (3.44.15 →
+9877/9879, 4.2.3 → 9887/9889). The four soft failures are the GUI-only items
+headless cannot do (`layers.active_set`, `project.bookmarks_zoom`,
+`project.themes_add`, `project.themes_apply`) — all four pass in the live sweep.
+
+Three earlier runs in the same window failed and are kept as evidence of the
+tooling/environment issues they exposed: `verify_all_20261009-233000.log`
+(second QGIS not yet started → `live:9887`), `…233239.log` (the
+`-LivePorts 9877,9887` parsing bug — PowerShell read the pair as the integer
+98779887 → `live:98779887`), `…233338.log` (the 9877-carrying QGIS window was
+closed mid-run → `live:9877`) and `…233554.log` (9887 answered `E_AUTH` because
+that profile enforces a token → hence `-LiveTokens`).

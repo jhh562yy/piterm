@@ -1,5 +1,9 @@
 # Install & operate
 
+> Day-to-day operation (connect a client, call commands, recipes, security
+> switches, troubleshooting) lives in **[USAGE.md](USAGE.md)**
+> ([中文版](USAGE.zh-CN.md)); this file is the install/deploy half.
+
 ## 0. TL;DR (this machine)
 
 ```powershell
@@ -30,9 +34,11 @@ then for each:
 
 1. backs up an existing `piterm_qgis_ai` folder to `.bak-<timestamp>`;
 2. copies the plugin, strips `__pycache__`;
-3. copies `manifest.json` (tool catalog for offline MCP use) when present;
-4. adds `piterm_qgis_ai=true` to `[PythonPlugins]` in the profile ini
-   (backing the ini up first);
+3. copies `manifest.json` (tool catalog for offline MCP use) when present and
+   bundles the zero-dependency client to `<plugin>\mcp\piterm_qgis_mcp\minimal.py`,
+   so **Client setup…** works even when the checkout is not next to the plugin;
+4. records the checkout in the profile ini ([`piterm_qgis_ai`] `meta.repo_root=…`,
+   backing the ini up first) and adds `piterm_qgis_ai=true` to `[PythonPlugins]`;
 5. prints file counts.
 
 Options: `-All` (all profiles, not just `default`), `-Profile default,custom`,
@@ -131,6 +137,8 @@ echo '{"type":"layers.list"}' | ncat 127.0.0.1 9877
 | Everything `E_FORBIDDEN` | read-only mode is on, or execute disabled — see dock toggles |
 | Client can't see tools | check the client spawns `python` on PATH; use absolute paths in configs |
 | Hermes-style agent breaks with pydantic errors | use the “Hermes” snippet (clears venv env vars in a .bat) |
+| *Client setup…* shows "No MCP client script found" | the checkout moved: re-run `install.ps1` (bundles a client copy) or set `meta.repo_root` to the checkout |
+| A policy switch will not turn **off** | fixed in 1.0.0 (settings coercion); if you run an older copy, re-run `install.ps1` |
 | QGIS log full of “listening failed” | another bridge instance is already bound; stop duplicates |
 
 ## 8. Verifying the installation
@@ -149,6 +157,6 @@ output of every suite is teed into `verification\logs\verify_all_<stamp>.log`.
 (`db.connection_add` / `db.import_layer`) against a throwaway settings root —
 operator profiles are never touched (hash-diff evidence included). Individual
 suites: `scripts\qgis_headless_smoke.py` (63 checks),
-`scripts\qgis_command_coverage.py` (194-command sweep),
+`scripts\qgis_command_coverage.py` (195-command sweep),
 `scripts\qgis_live_coverage.py <port>` (33 live checks). See
 `verification/report.md` §9–§11 for the current matrix.

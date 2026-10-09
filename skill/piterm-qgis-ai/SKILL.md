@@ -1,6 +1,6 @@
 ---
 name: piterm-qgis-ai
-description: 通过 Piterm QGIS AI 桥直接操控本机 QGIS（TCP 帧/NDJSON/HTTP 三种入口，160+ 命令）。当任务涉及 QGIS 工程、图层、要素编辑、Processing 算法、渲染截图、布局出图、检查点回滚或批量制图工作流时使用。也提供 piterm-qgis CLI 与 MCP stdio 服务器两种接入方式。
+description: 通过 Piterm QGIS AI 桥直接操控本机 QGIS（TCP 帧/NDJSON/HTTP 三种入口，195 命令）。当任务涉及 QGIS 工程、图层、要素编辑、Processing 算法、渲染截图、布局出图、检查点回滚或批量制图工作流时使用。也提供 piterm-qgis CLI 与 MCP stdio 服务器两种接入方式。完整操作手册见 docs/USAGE.md（中文版 docs/USAGE.zh-CN.md）。
 ---
 
 # Piterm QGIS AI · 技能
@@ -121,6 +121,20 @@ QGIS 里「Piterm QGIS AI → Client setup…」可一键复制 15 种客户端�
 
 ## 5. 参考
 
+- `docs/USAGE.md`（中文版 `docs/USAGE.zh-CN.md`）：完整操作手册（安装→启动→接入→调用→安全→验证→排错）。
 - `docs/TOOLS.md`：全部命令速查（自动生成）。
 - `docs/PROTOCOL.md`：帧/NDJSON/HTTP 协议与事件。
 - `docs/SECURITY.md`：策略矩阵与建议配置。
+
+## 6. 连不上客户端配置时
+
+问桥自己拿配置，不用手写路径：
+
+```bash
+python piterm_qgis.py call system.client_setup '{}'                  # 全部客户端片段
+python piterm_qgis.py call system.client_setup '{"client":"cursor"}' # 只要一个
+```
+
+返回 `entry`（解析出的 `min_script` / `repo_root` / `source` / `full_available`）
+与可直接粘贴的配置；`source:"missing"` 说明客户端脚本没找到——重跑 `install.ps1`
+（会内置一份零依赖客户端）或在 QGIS 里设置 `meta.repo_root`。

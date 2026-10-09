@@ -144,11 +144,11 @@ class SystemHandlers(HandlerBase):
     @command(name="system.config_get", summary="Read bridge configuration",
              risk="read", tags=("system",))
     def system_config_get(self):
-        from ..security import DEFAULTS
+        from ..security import DEFAULTS, coerce_value
         provider = self.srv.security.provider
         values = {}
         for key, default in DEFAULTS.items():
-            value = provider.get(key, default)
+            value = coerce_value(key, provider.get(key, default))
             if key == "auth.token":
                 values[key] = "<set>" if value else ""
             else:
@@ -160,37 +160,67 @@ class SystemHandlers(HandlerBase):
              summary="Update a bridge setting (auth, ports, policy, paths)",
              risk="write", tags=("system",))
     def system_config_set(self, key, value):
-        from ..security import DEFAULTS
+        from ..security import DEFAULTS, _FALSE_WORDS, _TRUE_WORDS, coerce_value
         if key not in DEFAULTS:
             raise not_found("unknown setting %r" % key,
                             detail={"known": sorted(DEFAULTS.keys())})
-        parsed = value
         default = DEFAULTS[key]
-        if isinstance(default, bool):
-            if isinstance(value, str):
-                parsed = value.strip().lower() in ("1", "true", "yes", "on")
-            else:
-                parsed = bool(value)
-        elif isinstance(default, float) and not isinstance(default, bool):
-            parsed = float(value)
-        elif isinstance(default, int) and not isinstance(default, bool):
-            parsed = int(value)
-        elif isinstance(default, list):
-            if isinstance(value, str):
-                parsed = [part.strip() for part in value.split(";") if part.strip()]
-            elif isinstance(value, (list, tuple)):
-                parsed = [str(v) for v in value]
-            else:
-                raise bad_request("setting %s expects a list" % key)
-        if key in ("mode.frame_port", "mode.http_port") and parsed is not None:
-            port = int(parsed)
-            if not (1024 <= port <= 65535):
+        if isinstance(default, bool) and isinstance(value, str) \
+                and value.strip().lower() not in (_TRUE_WORDS | _FALSE_WORDS):
+            raise bad_request("setting %s expects a boolean" % key)
+        if key in ("mode.frame_port", "mode.http_port"):
+            try:
+                port = None if value in (None, "") else int(value)
+            except (TypeError, ValueError):
+                raise invalid("port must be an integer within 1024..65535")
+            if port is not None and not (1024 <= port <= 65535):
                 raise invalid("port must be within 1024..65535")
             parsed = port
+        else:
+            parsed = coerce_value(key, value)
         self.srv.security.provider.set(key, parsed)
         self.srv.security.refresh()
         return {"key": key, "value": "<set>" if key == "auth.token" else parsed,
                 "security": self.srv.security.config.to_dict()}
+
+    @command(name="system.client_setup",
+             summary="Ready-to-paste MCP client configs and the resolved client "
+                     "entry point (ask the bridge how to connect to itself)",
+             risk="read", tags=("system", "mcp"), returns="{clients: {...}}")
+    def system_client_setup(self, client=None):
+        from ..ui.configurator import _paths, build_snippets
+        paths = _paths()
+        snippets = build_snippets(paths)
+        clients = {}
+        for key, (label, content, target) in snippets.items():
+            clients[key] = {"label": label, "content": content, "target": target}
+        status = self.srv.status()
+        security = self.srv.security.config
+        payload = {
+            "entry": {
+                "min_script": paths.get("min_script"),
+                "repo_root": paths.get("repo_root"),
+                "source": paths.get("source"),
+                "full_available": bool(paths.get("full_available")),
+                "note": paths.get("note"),
+            },
+            "bridge": {
+                "host": status.get("host"),
+                "frame_port": status.get("frame_port"),
+                "http_port": status.get("http_port"),
+                "auth_enabled": bool(security.auth_enabled),
+                "env": {"PITERM_QGIS_HOST": status.get("host"),
+                        "PITERM_QGIS_PORT": status.get("frame_port")},
+            },
+            "clients": clients,
+        }
+        if client:
+            chosen = clients.get(str(client))
+            if chosen is None:
+                raise not_found("unknown client %r" % client,
+                                detail={"known": sorted(clients.keys())})
+            payload["selected"] = dict(chosen, key=str(client))
+        return payload
 
     @command(name="system.metrics",
              summary="Command counters, timings and per-command stats", risk="read",

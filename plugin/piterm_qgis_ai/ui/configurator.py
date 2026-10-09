@@ -16,25 +16,31 @@ from qgis.core import QgsSettings
 from qgis.PyQt.QtWidgets import (QComboBox, QDialog, QHBoxLayout, QLabel,
                                  QPlainTextEdit, QPushButton, QVBoxLayout)
 
+from ..client_paths import describe, resolve_entry
 from ..constants import (DEFAULT_FRAME_PORT, DEFAULT_HTTP_PORT, PLUGIN_ID,
                          SETTINGS_PREFIX)
 
 
-def _repo_root():
+def _paths(settings=None):
+    """Resolve the client entry points for the current installation.
+
+    The plugin may run from a checkout *or* from a profile; ``client_paths``
+    handles both (plus the stdlib copy the installer bundles next to the plugin
+    and the ``meta.repo_root`` setting).
+    """
+    configured = ""
     try:
-        return os.path.dirname(os.path.dirname(os.path.dirname(
-            os.path.dirname(os.path.abspath(__file__)))))
+        settings = settings or QgsSettings()
+        configured = str(settings.value("%s/meta.repo_root" % SETTINGS_PREFIX, "")
+                         or "")
     except Exception:  # noqa: BLE001
-        return ""
-
-
-def _paths():
-    root = _repo_root()
-    return {
-        "repo": root,
-        "min_script": os.path.join(root, "mcp", "piterm_qgis_mcp", "min.py"),
-        "server_module": "piterm_qgis_mcp",
-    }
+        configured = ""
+    entry = resolve_entry(__file__, configured_root=configured,
+                          extra_roots=(os.getcwd(),))
+    entry = dict(entry)
+    entry["server_module"] = "piterm_qgis_mcp"
+    entry["note"] = describe(entry)
+    return entry
 
 
 def bridge_settings():
@@ -54,9 +60,10 @@ def bridge_settings():
     }
 
 
-def build_snippets():
+def build_snippets(entry=None):
     bridge = bridge_settings()
-    paths = _paths()
+    paths = entry or _paths()
+    min_script = paths["min_script"] or "<PATH-TO-REPO>/mcp/piterm_qgis_mcp/minimal.py"
     env = {}
     if bridge["auth_enabled"] and bridge["token"]:
         env["PITERM_QGIS_TOKEN"] = bridge["token"]
@@ -68,7 +75,7 @@ def build_snippets():
     def minimal_block(command_key="command"):
         payload = {
             "command": "python",
-            "args": [paths["min_script"], "--mcp-stdio"],
+            "args": [min_script, "--mcp-stdio"],
         }
         if env:
             payload["env"] = env
@@ -77,7 +84,7 @@ def build_snippets():
     def full_block():
         payload = {
             "command": "uv",
-            "args": ["--directory", paths["repo"], "run", "--no-sync",
+            "args": ["--directory", paths["repo_root"], "run", "--no-sync",
                      "python", "-m", paths["server_module"]],
         }
         if env:
@@ -91,7 +98,7 @@ def build_snippets():
     codex_toml = "\n".join([
         "[mcp_servers.piterm-qgis]",
         'command = "python"',
-        'args = [%s, "--mcp-stdio"]' % json.dumps(paths["min_script"]),
+        'args = [%s, "--mcp-stdio"]' % json.dumps(min_script),
     ] + (["", "[mcp_servers.piterm-qgis.env]"] +
          ['%s = %s' % (k, json.dumps(v)) for k, v in env.items()]
          if env else []))
@@ -102,7 +109,7 @@ def build_snippets():
         "set VIRTUAL_ENV=",
         "set PYTHONPATH=",
         "set PYTHONHOME=",
-        "python \"%s\" --mcp-stdio" % paths["min_script"],
+        "python \"%s\" --mcp-stdio" % min_script,
     ])
 
     hermes_yaml = "\n".join([
@@ -118,7 +125,7 @@ def build_snippets():
         "The bridge exposes the same three surfaces piterm already speaks:",
         "",
         "1. **MCP stdio** (full or minimal):",
-        "   `python \"%s\" --mcp-stdio`" % paths["min_script"],
+        "   `python \"%s\" --mcp-stdio`" % min_script,
         "2. **HTTP JSON-RPC** (when enabled):",
         "   `POST http://%s:%s/rpc` with `{\"type\": \"system.ping\"}`" %
         (bridge["host"], bridge["http_port"]),
@@ -138,13 +145,13 @@ def build_snippets():
         "Local bridge: %s:%s (TCP, NDJSON or framed)" % (bridge["host"],
                                                          bridge["frame_port"]),
         "",
-        "python \"%s\" call layers.list '{}'" % paths["min_script"],
-        "python \"%s\" ping" % paths["min_script"],
-        "python \"%s\" screenshot out.png" % paths["min_script"],
+        "python \"%s\" call layers.list '{}'" % min_script,
+        "python \"%s\" ping" % min_script,
+        "python \"%s\" screenshot out.png" % min_script,
     ])
 
-    return {
-        "claude_desktop": ("Claude Desktop (JSON)", json_mcp(full_block()),
+    snippets = {
+        "claude_desktop": ("Claude Desktop (JSON, minimal)", json_mcp(minimal_block()),
                            os.path.join(os.environ.get("APPDATA", ""),
                                         "Claude", "claude_desktop_config.json")),
         "cursor": ("Cursor (JSON)",
@@ -187,10 +194,19 @@ def build_snippets():
                    + hermes_yaml, ""),
         "claude_code": ("Claude Code (command)", (
             "claude mcp add -s user piterm-qgis -- python \"%s\" --mcp-stdio"
-            % paths["min_script"]), ""),
+            % min_script), ""),
         "piterm": ("piterm terminal", piterm_md, ""),
         "direct": ("Direct / skill usage", direct_md, ""),
     }
+    if paths["full_available"]:
+        # Only offered when a real checkout exists: the full server needs `uv`
+        # plus the `mcp` package, while the minimal block needs nothing at all.
+        snippets["claude_desktop_full"] = (
+            "Claude Desktop (JSON, full FastMCP: uv + mcp)",
+            json_mcp(full_block()),
+            os.path.join(os.environ.get("APPDATA", ""), "Claude",
+                         "claude_desktop_config.json"))
+    return snippets
 
 
 class ConfiguratorDialog(QDialog):
@@ -200,8 +216,14 @@ class ConfiguratorDialog(QDialog):
         self.plugin = plugin
         self.setWindowTitle("Piterm QGIS AI · Client setup")
         self.resize(760, 560)
-        self.snippets = build_snippets()
+        self.entry = _paths()
+        self.snippets = build_snippets(self.entry)
         layout = QVBoxLayout(self)
+        status = QLabel(self.entry.get("note") or "")
+        status.setWordWrap(True)
+        if self.entry.get("source") == "missing":
+            status.setStyleSheet("color: #dc2626; font-weight: bold;")
+        layout.addWidget(status)
         row = QHBoxLayout()
         row.addWidget(QLabel("Client"))
         self.client_combo = QComboBox()

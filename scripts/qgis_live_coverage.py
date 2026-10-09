@@ -12,6 +12,10 @@ Usage::
     python scripts/qgis_live_coverage.py 9877
     python scripts/qgis_live_coverage.py 9887 verification/logs/live_9887.json
 
+Tokens (each instance is a separate QGIS profile and may enforce its own):
+``PITERM_QGIS_TOKEN_<port>`` wins over ``PITERM_QGIS_TOKEN``, so a matrix run
+can authenticate against several profiles with different secrets.
+
 The output JSON (default ``verification/logs/live_cov_<port>_<stamp>.json``)
 records every check with its detail; renders land in
 ``verification/live_cov_<port>.png``. Exit code 0 only when every hard check
@@ -43,7 +47,12 @@ OUT = (sys.argv[2] if len(sys.argv) > 2 else
 SHOT = os.path.join(tempfile.gettempdir(), "live_cov_%s.png" % PORT)
 PNG = os.path.join(ROOT, "verification", "live_cov_%s.png" % PORT)
 
-C = BridgeClient(host="127.0.0.1", port=PORT, timeout=60)
+# Instances are separate QGIS profiles and may carry separate tokens: allow a
+# per-port override (PITERM_QGIS_TOKEN_<port>) before the generic env var.
+TOKEN = (os.environ.get("PITERM_QGIS_TOKEN_%s" % PORT)
+         or os.environ.get("PITERM_QGIS_TOKEN") or "")
+
+C = BridgeClient(host="127.0.0.1", port=PORT, timeout=60, token=TOKEN)
 
 results = []
 

@@ -21,7 +21,7 @@ AI agent / skill / curl
 │  QTcpServer on the Qt event loop (0 threads)│
 │  dispatcher: auth → policy → validate →     │
 │              handler → audit/journal        │
-│  194 commands · jobs · checkpoints ·        │
+│  195 commands · jobs · checkpoints ·        │
 │  journal replay · workflow runner · cursors │
 └────────────────────────────────────────────┘
 ```
@@ -42,7 +42,7 @@ Four goals, each with concrete mechanisms (not slogans):
 ```
 piterm-qgis-ai/
 ├─ plugin/piterm_qgis_ai/     QGIS plugin (GPL-2.0-or-later)
-│  ├─ handlers/               16 modules, 194 @command methods
+│  ├─ handlers/               16 modules, 195 @command methods
 │  ├─ server.py               QTcpServer frame+HTTP listeners, reentrancy guard
 │  ├─ dispatcher.py           auth → policy → validate → execute → audit
 │  ├─ security.py             tokens, scopes, paths, rate limit, audit log
@@ -59,7 +59,7 @@ piterm-qgis-ai/
 ├─ skill/piterm-qgis-ai/      SKILL.md + piterm_qgis.py (same minimal core)
 ├─ scripts/                   installer, manifest/doc gen, headless smoke +
 │                             command-coverage + live-coverage, verify_all.ps1
-├─ docs/                      RESEARCH · ARCHITECTURE · PROTOCOL · TOOLS · SECURITY · PERFORMANCE · INSTALL · COMPAT
+├─ docs/                      USAGE · RESEARCH · ARCHITECTURE · PROTOCOL · TOOLS · SECURITY · PERFORMANCE · INSTALL · COMPAT
 └─ tests/                     wire/security/manifest/round-trip + sandbox units
 ```
 
@@ -78,13 +78,18 @@ python mcp\piterm_qgis_mcp\minimal.py call layers.list '{}'
 ```
 
 MCP clients: open **Piterm QGIS AI → Client setup…** in QGIS and copy the
-pre-filled block for your client. Minimal (stdlib) example:
+pre-filled block for your client — or ask the bridge itself:
+`system.client_setup {"client": "cursor"}`. Minimal (stdlib) example:
 
 ```json
 { "mcpServers": { "piterm-qgis": {
     "command": "python",
     "args": ["<repo>/mcp/piterm_qgis_mcp/minimal.py", "--mcp-stdio"] } } }
 ```
+
+**Full operating manual:** [docs/USAGE.md](docs/USAGE.md) ·
+[中文手册](docs/USAGE.zh-CN.md) — install → start → connect → call → secure → verify,
+with runnable recipes and a troubleshooting table.
 
 Full FastMCP mode (richer schemas, resources, prompts) — works with both
 `mcp` 1.x (`FastMCP`) and 2.x (`MCPServer`); the server imports whichever is
@@ -96,7 +101,7 @@ uv run --directory <repo> python -m piterm_qgis_mcp serve
 
 ## Command surface
 
-194 commands across `system` · `project` · `layers` · `features` · `raster` ·
+195 commands across `system` · `project` · `layers` · `features` · `raster` ·
 `processing` · `job` · `canvas` · `style` · `layout` · `session` · `io` ·
 `db` · `plugins` · `expression` · `python` · `ui` ·
 see **[docs/TOOLS.md](docs/TOOLS.md)** (generated from the live registry) or ask

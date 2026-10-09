@@ -67,6 +67,28 @@ SKIPPED_BY_DESIGN = ["db.connection_add", "db.import_layer"]
 SANDBOX_DIR = os.path.join(os.path.dirname(ROOT), "_scratch", "cov_sandbox")
 
 
+def _client_setup(bridge):
+    """Exercise system.client_setup and assert the resolved entry is usable.
+
+    Catches the class of defect where the Client-setup dialog hands a client a
+    path that does not exist (wrong file name / wrong root).
+    """
+    payload = bridge.call("system.client_setup", {"client": "vscode"})
+    entry = payload.get("entry") or {}
+    clients = payload.get("clients") or {}
+    assert clients, "no client snippets returned"
+    assert "vscode" in clients, "requested client missing from the catalog"
+    assert payload.get("selected", {}).get("content"), "selected snippet empty"
+    script = entry.get("min_script") or ""
+    assert entry.get("source") != "missing", "client entry point was not resolved"
+    assert script.lower().endswith("minimal.py"), (
+        "client entry should be the stdlib client (minimal.py), got %r" % script)
+    assert os.path.isfile(script), "resolved client script does not exist: %r" % script
+    return {"source": entry.get("source"), "clients": len(clients),
+            "full_available": bool(entry.get("full_available")),
+            "min_script": script}
+
+
 class Report:
     def __init__(self):
         self.ok = True
@@ -964,6 +986,7 @@ def run_coverage(report, C, CL, tmp, app, sandbox=None):
     report.check("system.config_get", lambda: C.call("system.config_get"))
     report.check("system.config_set", lambda: C.call("system.config_set", {
         "key": "limits.max_clients", "value": 16}))
+    report.check("system.client_setup", lambda: _client_setup(C))
     report.check("system.audit_tail", lambda: C.call(
         "system.audit_tail", {"limit": 5}), soft=True)
     report.check("system.messages", lambda: C.call(

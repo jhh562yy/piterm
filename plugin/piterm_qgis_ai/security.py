@@ -89,9 +89,12 @@ DEFAULTS = {
     "paths.allow": ["~", ":TEMP:", ":PROJECT:"],
     "paths.deny": [],
     "limits.max_clients": MAX_CLIENTS,
-    "limits.rate_per_sec": 0,
+    "limits.rate_per_sec": 0.0,
     "audit.enabled": True,
     "audit.path": "",
+    # Where the source checkout lives; used by the Client-setup dialog to build
+    # MCP snippets. The installer records it, operators can set it by hand.
+    "meta.repo_root": "",
 }
 
 
@@ -102,28 +105,28 @@ class SecurityConfig:
 
     def reload(self):
         p = self.provider
-        self.auth_enabled = bool(p.get("auth.enabled", DEFAULTS["auth.enabled"]))
-        self.token = str(p.get("auth.token", DEFAULTS["auth.token"]) or "")
-        self.read_only = bool(p.get("mode.read_only", DEFAULTS["mode.read_only"]))
-        self.allow_execute = bool(p.get("mode.allow_execute", DEFAULTS["mode.allow_execute"]))
-        self.confirm_destructive = bool(
-            p.get("mode.confirm_destructive", DEFAULTS["mode.confirm_destructive"]))
-        self.allow_full_python = bool(
-            p.get("dangerous.allow_full_python", DEFAULTS["dangerous.allow_full_python"]))
-        allow = p.get("paths.allow", DEFAULTS["paths.allow"])
-        deny = p.get("paths.deny", DEFAULTS["paths.deny"])
-        self.paths_allow = _as_list(allow)
-        self.paths_deny = _as_list(deny)
-        try:
-            self.max_clients = int(p.get("limits.max_clients", DEFAULTS["limits.max_clients"]) or MAX_CLIENTS)
-        except Exception:  # noqa: BLE001
-            self.max_clients = MAX_CLIENTS
-        try:
-            self.rate_per_sec = float(p.get("limits.rate_per_sec", DEFAULTS["limits.rate_per_sec"]) or 0)
-        except Exception:  # noqa: BLE001
-            self.rate_per_sec = 0.0
-        self.audit_enabled = bool(p.get("audit.enabled", DEFAULTS["audit.enabled"]))
-        self.audit_path = str(p.get("audit.path", DEFAULTS["audit.path"]) or "")
+        # Every read goes through ``coerce_value``: QgsSettings hands Python
+        # booleans back as the *strings* "true"/"false", and ``bool("false")`` is
+        # True — which silently disabled the ability to switch a policy off.
+        cfg = {}
+        for key, default in DEFAULTS.items():
+            try:
+                raw = p.get(key, default)
+            except Exception:  # noqa: BLE001
+                raw = default
+            cfg[key] = coerce_value(key, raw)
+        self.auth_enabled = cfg["auth.enabled"]
+        self.token = cfg["auth.token"]
+        self.read_only = cfg["mode.read_only"]
+        self.allow_execute = cfg["mode.allow_execute"]
+        self.confirm_destructive = cfg["mode.confirm_destructive"]
+        self.allow_full_python = cfg["dangerous.allow_full_python"]
+        self.paths_allow = cfg["paths.allow"]
+        self.paths_deny = cfg["paths.deny"]
+        self.max_clients = cfg["limits.max_clients"] or MAX_CLIENTS
+        self.rate_per_sec = cfg["limits.rate_per_sec"]
+        self.audit_enabled = cfg["audit.enabled"]
+        self.audit_path = cfg["audit.path"]
 
     def to_dict(self, redact_token=True):
         d = {
@@ -162,6 +165,69 @@ def _as_list(value):
         except ValueError:
             pass
     return [part.strip() for part in text.split(";") if part.strip()]
+
+
+_TRUE_WORDS = frozenset({"1", "true", "yes", "on", "y", "t", "enabled"})
+_FALSE_WORDS = frozenset({"", "0", "false", "no", "off", "n", "f", "disabled", "none", "null"})
+
+
+def _as_bool(value):
+    """Parse a settings boolean without the ``bool('false') is True`` trap.
+
+    QgsSettings round-trips Python ``False`` as the string ``"false"``; PowerShell
+    ini edits and JSON payloads arrive as strings too. Anything unrecognised but
+    non-empty counts as True (matching QgsSettings' ``"2"``-style values).
+    """
+    if isinstance(value, bool):
+        return value
+    if value is None:
+        return False
+    if isinstance(value, (int, float)):
+        return bool(value)
+    text = str(value).strip().lower()
+    if text in _TRUE_WORDS:
+        return True
+    if text in _FALSE_WORDS:
+        return False
+    return True
+
+
+def coerce_value(key, value):
+    """Coerce a raw settings value to the type declared in :data:`DEFAULTS`.
+
+    Single source of truth for settings reads (``SecurityConfig.reload``,
+    ``system.config_get``) and writes (``system.config_set``). Unknown keys are
+    returned untouched so callers can stay generic.
+    """
+    if key not in DEFAULTS:
+        return value
+    default = DEFAULTS[key]
+    if isinstance(default, bool):
+        return _as_bool(value)
+    if isinstance(default, list):
+        return _as_list(value)
+    if isinstance(default, str):
+        return "" if value is None else str(value)
+    if isinstance(default, float):
+        try:
+            return float(value)
+        except (TypeError, ValueError):
+            return float(default)
+    if isinstance(default, int):
+        if value is None or value == "":
+            return int(default)
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return int(default)
+    if default is None:  # mode.frame_port / mode.http_port: optional ports
+        if value is None or value == "":
+            return None
+        try:
+            return int(value)
+        except (TypeError, ValueError):
+            return None
+    return value
 
 
 # ---------------------------------------------------------------------------
