@@ -65,6 +65,28 @@ function Backup-File([string]$Path) {
     return $null
 }
 
+function Read-IniText([string]$Path) {
+    # QGIS writes its ini files as UTF-8 (Qt QSettings). Reading them with
+    # Get-Content's default (ANSI) code page re-encoded every non-ASCII value into
+    # mojibake on each install — e.g. a processing model named "天地图矢量流域提取"
+    # decayed a little further on every run. Decode explicitly as UTF-8; if the
+    # bytes are not valid UTF-8, fall back to the legacy code page rather than
+    # replacing the characters with '?'.
+    $bytes = [System.IO.File]::ReadAllBytes($Path)
+    $offset = 0
+    if ($bytes.Length -ge 3 -and $bytes[0] -eq 0xEF -and $bytes[1] -eq 0xBB -and
+        $bytes[2] -eq 0xBF) {
+        $offset = 3
+    }
+    try {
+        $strict = New-Object System.Text.UTF8Encoding($false, $true)
+        return $strict.GetString($bytes, $offset, $bytes.Length - $offset)
+    }
+    catch {
+        return [System.Text.Encoding]::Default.GetString($bytes)
+    }
+}
+
 function Set-NoBom([string]$Path, [string]$Content) {
     [System.IO.File]::WriteAllText($Path, $Content,
         (New-Object System.Text.UTF8Encoding($false)))
@@ -95,7 +117,13 @@ function Install-Profile($profile) {
     $target = Join-Path $profile.Plugins 'piterm_qgis_ai'
     if (Test-Path $target) {
         $stamp = Get-Date -Format 'yyyyMMdd-HHmmss'
-        $backup = "$target.bak-$stamp"
+        # Keep the backup OUT of python\plugins: QGIS enumerates every directory
+        # there as a plugin, so "piterm_qgis_ai.bak-<stamp>" folders showed up in
+        # the Plugin Manager as broken duplicates (they even landed in
+        # [plugin-manager] seen-plugins). <profile>\_piterm_backups is never scanned.
+        $backupDir = Join-Path $profile.Path '_piterm_backups'
+        New-Item -ItemType Directory -Force -Path $backupDir | Out-Null
+        $backup = Join-Path $backupDir "piterm_qgis_ai.bak-$stamp"
         Move-Item $target $backup -Force
         Write-Host "   backup:  $backup"
     }
@@ -125,10 +153,10 @@ function Install-Profile($profile) {
         if (Test-Path $ini) {
             $backup = Backup-File $ini
             if ($backup) { Write-Host "   ini backup: $backup" }
-            $content = Get-Content $ini -Raw
+            $content = Read-IniText $ini
             if ($content -match '(?ms)^\[PythonPlugins\]\s*\r?\n') {
                 if ($content -match '(?m)^piterm_qgis_ai\s*=') {
-                    $content = $content -replace '(?m)^piterm_qgis_ai\s*=.*$', 'piterm_qgis_ai=true'
+                    $content = $content -replace '(?m)^piterm_qgis_ai\s*=[^\r\n]*', 'piterm_qgis_ai=true'
                 }
                 else {
                     $content = $content -replace '(?ms)(^\[PythonPlugins\]\s*\r?\n)', "`$1piterm_qgis_ai=true`r`n"
@@ -163,8 +191,8 @@ function Uninstall-Profile($profile) {
     if ((Test-Path $ini) -and -not $NoEnable) {
         $backup = Backup-File $ini
         if ($backup) { Write-Host "   ini backup: $backup" }
-        $content = Get-Content $ini -Raw
-        $content = $content -replace '(?m)^piterm_qgis_ai\s*=.*$', 'piterm_qgis_ai=false'
+        $content = Read-IniText $ini
+        $content = $content -replace '(?m)^piterm_qgis_ai\s*=[^\r\n]*', 'piterm_qgis_ai=false'
         $content = Set-IniKey $content 'piterm_qgis_ai' 'meta.repo_root' ''
         Set-NoBom $ini $content
         Write-Host "   disabled in ini"

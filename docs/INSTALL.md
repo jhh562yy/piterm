@@ -32,7 +32,10 @@ python mcp\piterm_qgis_mcp\minimal.py ping
 `%APPDATA%\QGIS\QGIS3\profiles` / `QGIS4` (and `QGIS3\profiles`-style layouts),
 then for each:
 
-1. backs up an existing `piterm_qgis_ai` folder to `.bak-<timestamp>`;
+1. backs up an existing `piterm_qgis_ai` folder to
+   `<profile>\_piterm_backups\piterm_qgis_ai.bak-<timestamp>` — deliberately
+   *outside* `python\plugins`, since QGIS enumerates every directory there as a
+   plugin and would list the backup as a broken duplicate;
 2. copies the plugin, strips `__pycache__`;
 3. copies `manifest.json` (tool catalog for offline MCP use) when present and
    bundles the zero-dependency client to `<plugin>\mcp\piterm_qgis_mcp\minimal.py`,
@@ -119,7 +122,8 @@ echo '{"type":"layers.list"}' | ncat 127.0.0.1 9877
 
 ## 6. Updating / uninstalling
 
-* Update: re-run the installer (old version kept as `.bak-*`).
+* Update: re-run the installer (the previous copy is kept under
+  `<profile>\_piterm_backups\`).
 * Reload without restarting QGIS: *Plugins → Piterm QGIS AI → Reload plugin*.
 * Uninstall: `install.ps1 -Uninstall` (or `python install.py --uninstall`) —
   removes the plugin folder, sets the ini key to `false`, keeps backups.

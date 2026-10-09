@@ -1,5 +1,27 @@
 # Changelog
 
+## Fixed — reinstall corrupted non-ASCII QGIS settings (2026-10-10)
+
+* **Every reinstall re-encoded the non-ASCII values in the profile ini.**
+  `scripts/install.ps1` read `QGIS3.ini` / `QGIS4.ini` with `Get-Content -Raw`,
+  whose default is the system ANSI code page, while Qt writes those files as
+  UTF-8. Writing the mis-decoded text back as UTF-8 produced mojibake, and since
+  each run re-read the previous output the damage compounded: after 13 installs a
+  processing model named `天地图矢量流域提取` had decayed into several hundred
+  bytes of garbage (`QGIS4.ini` had grown 108 005 → 110 908 bytes). `install.py`
+  had the mirror-image problem — a universal-newline read rewrote every line of
+  the file from CRLF to LF. Both installers now decode the ini explicitly, write
+  it back with its original line endings, and are byte-for-byte no-ops when the
+  install is already current. Regression pins: `tests/test_installer.py`.
+* **Backups no longer look like plugins.** The installers moved the previous
+  plugin to `piterm_qgis_ai.bak-<stamp>` *inside* `python/plugins`, which QGIS
+  enumerates as a plugin directory — 16 such folders had accumulated and appeared
+  in the Plugin Manager (and in `[plugin-manager] seen-plugins`) as broken
+  duplicates. They now go to `<profile>/_piterm_backups/`, outside every scan path.
+* **`install.py` reached parity with `install.ps1`.** It bundled no client script
+  and never recorded `meta.repo_root`, so on Linux/macOS *Client setup…* could not
+  find the client entry point at all.
+
 ## Fixed — cross-platform CI (2026-10-09)
 
 * **Linux unit failure fixed.** The first push turned CI red on `ubuntu-latest`

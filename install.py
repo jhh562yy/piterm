@@ -23,6 +23,7 @@ import time
 ROOT = os.path.dirname(os.path.abspath(__file__))
 PLUGIN_SOURCE = os.path.join(ROOT, "plugin", "piterm_qgis_ai")
 MANIFEST_SOURCE = os.path.join(ROOT, "mcp", "piterm_qgis_mcp", "manifest.json")
+MINIMAL_SOURCE = os.path.join(ROOT, "mcp", "piterm_qgis_mcp", "minimal.py")
 PLUGIN_ID = "piterm_qgis_ai"
 
 
@@ -64,11 +65,18 @@ def find_profiles(names, all_profiles):
     return found
 
 
-def backup(path):
+def backup(path, dest_dir=None):
     if os.path.exists(path):
         stamp = time.strftime("%Y%m%d-%H%M%S")
-        target = "%s.bak-piterm-%s" % (path, stamp)
+        if dest_dir:
+            target = os.path.join(dest_dir,
+                                  "%s.bak-piterm-%s"
+                                  % (os.path.basename(path), stamp))
+        else:
+            target = "%s.bak-piterm-%s" % (path, stamp)
         if os.path.isdir(path):
+            if os.path.isdir(target):
+                shutil.rmtree(target)
             shutil.copytree(path, target)
         else:
             shutil.copy2(path, target)
@@ -81,15 +89,25 @@ def install_profile(profile, no_enable=False):
     target = os.path.join(profile["plugins"], PLUGIN_ID)
     os.makedirs(profile["plugins"], exist_ok=True)
     if os.path.exists(target):
-        moved = backup(target)
+        # Keep backups out of python/plugins: QGIS enumerates every directory
+        # there as a plugin, so .bak folders showed up as broken duplicates.
+        backup_dir = os.path.join(profile["path"], "_piterm_backups")
+        os.makedirs(backup_dir, exist_ok=True)
+        moved = backup(target, backup_dir)
         shutil.rmtree(target)
         print("   backup: %s" % moved)
     shutil.copytree(PLUGIN_SOURCE, target,
                     ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
     if os.path.exists(MANIFEST_SOURCE):
         shutil.copy2(MANIFEST_SOURCE, os.path.join(target, "manifest.json"))
+    # Bundle the zero-dependency client so "Client setup…" works even when the
+    # checkout is not next to the installed plugin (parity with install.ps1).
+    if os.path.exists(MINIMAL_SOURCE):
+        bundle_dir = os.path.join(target, "mcp", "piterm_qgis_mcp")
+        os.makedirs(bundle_dir, exist_ok=True)
+        shutil.copy2(MINIMAL_SOURCE, os.path.join(bundle_dir, "minimal.py"))
     if not no_enable:
-        _enable_in_ini(profile["ini"])
+        _enable_in_ini(profile["ini"], repo_root=ROOT)
     files = sum(len(f) for _r, _d, f in os.walk(target))
     print("   deployed: %s (%d files)" % (target, files))
 
@@ -101,26 +119,56 @@ def uninstall_profile(profile, no_enable=False):
         shutil.rmtree(target)
         print("   removed: %s" % target)
     if not no_enable and os.path.exists(profile["ini"]):
-        _enable_in_ini(profile["ini"], disable=True)
+        _enable_in_ini(profile["ini"], disable=True, repo_root="")
 
 
-def _enable_in_ini(ini_path, disable=False):
+def _upsert_section_key(content, section, key, value, nl="\r\n"):
+    """Upsert ``key=value`` inside ``[section]``, creating the section if needed."""
+    match = re.search(r"(?ms)^\[%s\][ \t]*\r?\n(?P<body>.*?)(?=^\[|\Z)"
+                      % re.escape(section), content)
+    if match:
+        body = match.group("body")
+        if re.search(r"(?m)^\s*%s\s*=" % re.escape(key), body):
+            body = re.sub(r"(?m)^\s*%s\s*=[^\r\n]*" % re.escape(key),
+                          "%s=%s" % (key, value), body)
+        else:
+            body = body.rstrip("\r\n") + nl + "%s=%s" % (key, value) + nl
+        return (content[:match.start()] + "[%s]" % section + nl + body
+                + content[match.end():])
+    return (content.rstrip("\r\n") + nl + nl + "[%s]" % section + nl
+            + "%s=%s" % (key, value) + nl)
+
+
+def _enable_in_ini(ini_path, disable=False, repo_root=None):
     if not os.path.exists(ini_path):
         print("   (ini missing: %s - enable manually in the plugin manager)"
               % ini_path)
         return
     backup(ini_path)
-    with open(ini_path, "r", encoding="utf-8", errors="replace") as fh:
+    # newline="" so the file's own line endings survive the round-trip: QGIS
+    # writes CRLF on Windows and a universal-newline read would rewrite every
+    # line of the profile ini on each install.
+    with open(ini_path, "r", encoding="utf-8", errors="replace", newline="") as fh:
         content = fh.read()
+    nl = "\r\n" if "\r\n" in content else "\n"
     value = "false" if disable else "true"
     line = "%s=%s" % (PLUGIN_ID, value)
     if re.search(r"(?m)^%s\s*=" % re.escape(PLUGIN_ID), content):
-        content = re.sub(r"(?m)^%s\s*=.*$" % re.escape(PLUGIN_ID), line, content)
-    elif "[PythonPlugins]" in content:
-        content = re.sub(r"(?m)^(\[PythonPlugins\]\s*)$",
-                         r"\1\n%s" % line, content, count=1)
+        content = re.sub(r"(?m)^%s\s*=[^\r\n]*" % re.escape(PLUGIN_ID), line,
+                         content)
     else:
-        content = content.rstrip() + "\n\n[PythonPlugins]\n%s\n" % line
+        header = re.search(r"(?m)^\[PythonPlugins\][ \t]*\r?\n", content)
+        if header:
+            content = (content[:header.end()] + line + nl
+                       + content[header.end():])
+        else:
+            content = (content.rstrip("\r\n") + nl + nl + "[PythonPlugins]" + nl
+                       + line + nl)
+    # Record the checkout so the Client-setup dialog can offer the full FastMCP
+    # server as well as the bundled stdlib client (parity with install.ps1).
+    if repo_root is not None:
+        content = _upsert_section_key(content, PLUGIN_ID, "meta.repo_root",
+                                      repo_root.replace("\\", "/"), nl)
     with open(ini_path, "w", encoding="utf-8", newline="") as fh:
         fh.write(content)
     print("   ini updated: %s" % ini_path)
