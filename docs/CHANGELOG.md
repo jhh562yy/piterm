@@ -1,5 +1,17 @@
 # Changelog
 
+## Fixed — cross-platform CI (2026-10-09)
+
+* **Linux unit failure fixed.** The first push turned CI red on `ubuntu-latest`
+  (both Python versions) while Windows stayed green. Cause: `_norm_path()` in
+  `scripts/qgis_command_coverage.py` built its key with
+  `os.path.normcase(os.path.normpath(...))`, but on POSIX `normcase` is an
+  identity function (no case folding) and `normpath` treats `\` as an ordinary
+  character — so two spellings of the same sandbox path compared *unequal* on
+  Linux. It is now a pure, platform-independent canonicaliser (folds both
+  separators, resolves `.` / `..`, lower-cases everywhere); it is only ever used
+  as a comparison key, never to build a real path.
+
 ## Unreleased — published to GitHub (2026-10-09)
 
 * Repository pushed to <https://github.com/jhh562yy/piterm> (branch `main`).

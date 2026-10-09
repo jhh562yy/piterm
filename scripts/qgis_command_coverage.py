@@ -174,10 +174,29 @@ def _assert(value, message="assertion failed"):
 
 
 def _norm_path(path):
-    text = str(path or "")
+    """Cross-platform canonical key used only for path *comparison*.
+
+    Deliberately avoids ``os.path.normcase`` / ``os.path.normpath``: on POSIX
+    ``normcase`` is a no-op (no case folding) and ``normpath`` treats ``\\`` as a
+    literal character, so the two ends of a comparison could disagree on Linux
+    while agreeing on Windows. Both separators are folded to ``/``, ``.`` / ``..``
+    segments are resolved without touching the filesystem, and the result is
+    lower-cased everywhere so the sandbox interlock behaves identically on every
+    OS. Only used to compare paths, never to build one.
+    """
+    text = str(path or "").replace("\\", "/").strip()
     if not text:
         return ""
-    return os.path.normcase(os.path.normpath(text)).replace("\\", "/")
+    prefix = "/" if text.startswith("/") else ""
+    parts = []
+    for part in text.split("/"):
+        if part in ("", "."):
+            continue
+        if part == ".." and parts and parts[-1] != ".." and not parts[-1].endswith(":"):
+            parts.pop()
+        else:
+            parts.append(part)
+    return (prefix + "/".join(parts)).lower()
 
 
 def _inside_sandbox(settings_dir, env_root):
