@@ -1,8 +1,18 @@
 # Piterm QGIS AI
 
+[![tests](https://github.com/jhh562yy/piterm/actions/workflows/ci.yml/badge.svg)](https://github.com/jhh562yy/piterm/actions/workflows/ci.yml)
+![QGIS 3.28–4.x](https://img.shields.io/badge/QGIS-3.28%E2%80%934.x-589632)
+![Python 3.9+](https://img.shields.io/badge/python-3.9%2B-3776AB)
+![license](https://img.shields.io/badge/license-MIT%20%2B%20GPL--2.0--or--later-blue)
+
 **Production-grade AI control bridge for QGIS** — a QGIS plugin, an MCP server,
 and a zero-dependency CLI/skill, built as one coherent system for the piterm
 ecosystem.
+
+**Docs:** [Usage manual](docs/USAGE.md) · [中文手册](docs/USAGE.zh-CN.md) ·
+[Install](docs/INSTALL.md) · [Commands (195)](docs/TOOLS.md) ·
+[Security](docs/SECURITY.md) · [Protocol](docs/PROTOCOL.md) ·
+[Architecture](docs/ARCHITECTURE.md) · [Verification report](verification/report.md)
 
 Ask any MCP-capable agent (Claude Code / Desktop, Cursor, VS Code, Codex,
 Gemini, Qwen, Kimi, Copilot CLI, LM Studio, opencode, Hermes, opencodo…) — or
@@ -63,11 +73,11 @@ piterm-qgis-ai/
 └─ tests/                     wire/security/manifest/round-trip + sandbox units
 ```
 
-## Quick start (this machine)
+## Quick start
 
 ```powershell
-# 1) deploy into every detected QGIS profile (backup + enable + verify)
-powershell -ExecutionPolicy Bypass -File scripts\install.ps1
+# 1) deploy into every detected QGIS profile (backup + enable + bundle the client)
+powershell -ExecutionPolicy Bypass -File scripts\install.ps1 -All
 
 # 2) open QGIS → the π toolbar button starts the bridge
 #    (or dock → Start server; 127.0.0.1:9877 TCP, :9879 HTTP)
@@ -76,6 +86,9 @@ powershell -ExecutionPolicy Bypass -File scripts\install.ps1
 python mcp\piterm_qgis_mcp\minimal.py ping
 python mcp\piterm_qgis_mcp\minimal.py call layers.list '{}'
 ```
+
+Linux/macOS/CI: `python install.py --all-profiles` (or copy
+`plugin/piterm_qgis_ai/` into your profile's `python/plugins/`).
 
 MCP clients: open **Piterm QGIS AI → Client setup…** in QGIS and copy the
 pre-filled block for your client — or ask the bridge itself:

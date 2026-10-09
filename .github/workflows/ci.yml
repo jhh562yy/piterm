@@ -1,0 +1,58 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  unit:
+    name: unit (${{ matrix.os }} / py${{ matrix.python }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        python: ["3.9", "3.12"]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+
+      # The unit suite is QGIS-free by design: wire framing, security policy,
+      # registry/manifest shape, fake-bridge round-trips, client-path resolution
+      # and settings coercion. QGIS-side verification needs a real QGIS and lives
+      # in scripts/verify_all.ps1 (see docs/USAGE.md §8).
+      - name: Unit tests (no QGIS required)
+        run: python -m pytest tests -q
+
+      - name: CLI surface (stdlib only, no bridge)
+        run: python mcp/piterm_qgis_mcp/minimal.py --help
+
+      - name: Catalog + docs checks
+        run: python scripts/ci_checks.py
+
+  windows-live-hint:
+    name: windows (verify_all available)
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Install test dependencies
+        run: python -m pip install --upgrade pip pytest
+      - name: Full matrix entry point is present
+        run: |
+          if (-not (Test-Path scripts/verify_all.ps1)) { throw "missing verify_all.ps1" }
+          Write-Host "scripts/verify_all.ps1 present - run it locally with a real QGIS:"
+          Write-Host "  powershell -ExecutionPolicy Bypass -File scripts/verify_all.ps1 -Sandbox"

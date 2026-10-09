@@ -1,5 +1,15 @@
 # Changelog
 
+## Unreleased — published to GitHub (2026-10-09)
+
+* Repository pushed to <https://github.com/jhh562yy/piterm> (branch `main`).
+* Added GitHub Actions CI (`.github/workflows/ci.yml`): unit suite on
+  Ubuntu + Windows × Python 3.9/3.12, the CLI surface, and
+  `scripts/ci_checks.py` (catalog shape + required docs).
+* Added a root `SECURITY.md` (short policy + private-disclosure route, pointing at
+  the full `docs/SECURITY.md`), README badges and a docs navigation line; the
+  quick-start section is no longer machine-specific.
+
 ## Unreleased — operating manual + client-setup fixes (2026-10-09)
 
 * **`docs/USAGE.md` + `docs/USAGE.zh-CN.md`** (new): the full operating manual —
